@@ -162,27 +162,42 @@ class HeftseitenToolWidget(QWidget):
         volle_reihenfolge = lesereihenfolge(len(items))
         ziel_seite = {paar: rang + 1 for rang, paar in enumerate(volle_reihenfolge)}
 
-        # -- Phase 2: jeden Block teilen -- normal mittig, ueberbreit interaktiv --
+        # -- Phase 2a: ueberbreite Bloecke interaktiv abfragen (VOR der --
+        #    Fortschrittsanzeige, sonst blockiert deren Fenster-Modalitaet
+        #    Eingaben fuer den gleichzeitig geoeffneten Ueberbreite-Dialog,
+        #    da beide dasselbe Elternfenster haben -- der Dialog erscheint
+        #    dann zwar, laesst sich aber nicht bedienen).
+        # EN: Phase 2a: interactively ask about overwide blocks BEFORE the
+        #     progress dialog -- otherwise its window modality blocks input
+        #     to the simultaneously open overwide dialog, since both share
+        #     the same parent window (the dialog appears but can't be
+        #     interacted with).
+        ueberbreite_antworten = {}  # block_idx -> (positionen, grenze)
+        for idx, (item, (bild, dpi)) in enumerate(zip(items, gerendert)):
+            if bild.width > referenzbreite * _UEBERBREITE_SCHWELLE:
+                wp: WorkingPage = item.data(Qt.ItemDataRole.UserRole)
+                vorschlag = max(2, round(bild.width / (referenzbreite / 2)))
+                positionen, grenze = ueberbreite_seite_teilen_abfragen(
+                    self, _als_qpixmap(bild), wp.source.path.name, vorschlag,
+                    ziel_seite[(idx, "west")], ziel_seite[(idx, "ost")],
+                )
+                ueberbreite_antworten[idx] = (positionen, grenze)
+
+        # -- Phase 2b: jeden Block teilen -- normal mittig, ueberbreit nach Vorgabe --
         slot_inhalt = {}  # (block_idx, "west"|"ost") -> Liste von PageSource
-        ueberbreite_anzahl = 0
 
         anzeige = Fortschrittsanzeige(self, "Seiten werden geteilt …", len(items))
         try:
             for idx, (item, (bild, dpi)) in enumerate(zip(items, gerendert)):
-                if bild.width <= referenzbreite * _UEBERBREITE_SCHWELLE:
+                if idx not in ueberbreite_antworten:
                     west_bild, ost_bild = teile_bild(bild, SplitSpec(positionen_v=[0.5]))
                     slot_inhalt[(idx, "west")] = [
                         bild_materialisieren(west_bild, dpi, arbeits_unterordner, f"n{idx}_west")]
                     slot_inhalt[(idx, "ost")] = [
                         bild_materialisieren(ost_bild, dpi, arbeits_unterordner, f"n{idx}_ost")]
                 else:
-                    ueberbreite_anzahl += 1
+                    positionen, grenze = ueberbreite_antworten[idx]
                     wp: WorkingPage = item.data(Qt.ItemDataRole.UserRole)
-                    vorschlag = max(2, round(bild.width / (referenzbreite / 2)))
-                    positionen, grenze = ueberbreite_seite_teilen_abfragen(
-                        self, _als_qpixmap(bild), wp.source.path.name, vorschlag,
-                        ziel_seite[(idx, "west")], ziel_seite[(idx, "ost")],
-                    )
                     teile = teile_bild(bild, SplitSpec(positionen_v=positionen))
                     quellen = [bild_materialisieren(teil, dpi, arbeits_unterordner, f"{wp.source.path.stem}_teil{i}")
                               for i, teil in enumerate(teile, start=1)]
@@ -191,6 +206,8 @@ class HeftseitenToolWidget(QWidget):
                 anzeige.callback(idx + 1, len(items))
         finally:
             anzeige.schliessen()
+
+        ueberbreite_anzahl = len(ueberbreite_antworten)
 
         # -- Phase 3: alles in der Sattelheft-Lesereihenfolge zusammensetzen --
         neue_quellen = [quelle for paar in volle_reihenfolge for quelle in slot_inhalt[paar]]

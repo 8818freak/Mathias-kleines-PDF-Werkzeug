@@ -11,6 +11,23 @@ Kostenlos bereitgestellt von [Telefonanleitungen.de](https://www.telefonanleitun
 
 ![Screenshot](docs/screenshot.png)
 
+## Was es kann / What it does
+
+Fügt Seiten aus verschiedenen Dateien zu einer PDF zusammen, dreht schief
+gescannte Seiten gerade, trennt mehrere Seiten aus einem einzelnen Scan,
+bringt gescannte Doppelseiten aus gehefteten Broschüren automatisch in die
+richtige Lesereihenfolge, ordnet eine durcheinandergeratene Seitenfolge neu,
+zerlegt eine PDF in einzelne Bilddateien und verkleinert die Dateigröße
+großer Scans deutlich. Alles in einer einzigen App, ohne Internetverbindung
+und ohne zusätzliche Software.
+
+*Combines pages from different files into one PDF, straightens crooked
+scans, splits multiple pages out of a single scan, automatically puts
+scanned saddle-stitch booklet spreads back into the correct reading order,
+reorders a scrambled page sequence, breaks a PDF apart into individual
+image files, and substantially shrinks the file size of large scans. All
+in one app, no internet connection and no additional software required.*
+
 ## Funktionen / Features
 
 - **PDF erstellen** -- PDF/JPG/BMP/TIF(F) (auch mehrseitige TIFFs) zu einer
@@ -55,6 +72,23 @@ Vorgängen.
 several tools one after another without exporting in between. Plus: a
 native menu with Save/Save As/Undo/Redo, and progress indicators for every
 longer-running operation.*
+
+## Systemvoraussetzungen / System requirements
+
+- **macOS** 11 (Big Sur) oder neuer, 64-Bit (Apple Silicon oder Intel).
+  *macOS 11 (Big Sur) or later, 64-bit (Apple Silicon or Intel).*
+- **Windows** 10 (64-Bit) oder neuer.
+  *Windows 10 (64-bit) or later.*
+- Ca. 250 MB freier Speicherplatz für die App, zusätzlich freier Platz für
+  Zwischendateien während der Bearbeitung (grob das 2--3fache der Größe
+  der bearbeiteten PDF-Dateien).
+  *About 250 MB free disk space for the app, plus free space for temporary
+  files while working (roughly 2--3x the size of the PDF files being
+  processed).*
+- Keine Internetverbindung nötig, keine zusätzliche Software (kein
+  Python, kein ImageMagick/Ghostscript o. ä.) -- vollständig eigenständig.
+  *No internet connection needed, no additional software (no Python, no
+  ImageMagick/Ghostscript etc.) -- fully self-contained.*
 
 ## Installation
 

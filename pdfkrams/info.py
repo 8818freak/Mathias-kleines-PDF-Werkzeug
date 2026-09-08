@@ -16,12 +16,24 @@ PROGRAMMNAME = "Mathias' kleines PDF-Werkzeug"
 VERSION = "1.0"
 ANBIETER = "Telefonanleitungen.de"
 WEBSITE = "https://www.telefonanleitungen.de"
+COPYRIGHT_JAHR = "2026"
+COPYRIGHT_INHABER = "Mathias Herbers (8818freak), Telefonanleitungen.de"
 
 
 def voller_programmname() -> str:
     """DE: Name samt Version, z. B. fuer Fenstertitel/Metadaten.
     EN: Name including version, e.g. for window titles/metadata."""
     return f"{PROGRAMMNAME} {VERSION}"
+
+
+def copyright_zeile() -> str:
+    """DE: Copyright-Zeile fuer den Ueber-Dialog -- von der GPL-3.0 fuer
+        interaktive Programme empfohlen (siehe LICENSE, Abschnitt "How to
+        Apply These Terms").
+    EN: Copyright line for the About dialog -- recommended by GPL-3.0 for
+        interactive programs (see LICENSE, "How to Apply These Terms"
+        section)."""
+    return f"Copyright (C) {COPYRIGHT_JAHR} {COPYRIGHT_INHABER}"
 
 
 def pdf_metadaten_eintrag() -> str:

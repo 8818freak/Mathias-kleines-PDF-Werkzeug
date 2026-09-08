@@ -51,7 +51,7 @@ from pdfkrams.gui.tools.verkleinern_tool import VerkleinernToolWidget
 from pdfkrams.gui.widgets.file_tool_base import DateiListenPanel
 from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
 from pdfkrams.gui.widgets.page_list import PageListWidget
-from pdfkrams.info import ANBIETER, WEBSITE, voller_programmname
+from pdfkrams.info import ANBIETER, WEBSITE, copyright_zeile, voller_programmname
 
 # DE: Reihenfolge und Beschriftung der Werkzeuge in der Seitenleiste.
 #     None = noch nicht implementiert, wird als Platzhalter angezeigt.
@@ -161,12 +161,29 @@ class MainWindow(QMainWindow):
         hilfe_menu.addAction(action_ueber)
 
     def _ueber_anzeigen(self) -> None:
-        QMessageBox.about(
-            self, f"Über {voller_programmname()}",
-            f"<b>{voller_programmname()}</b><br><br>"
+        # DE: Eigene QMessageBox statt der .about()-Kurzform -- die
+        #     Kurzform stellt unter macOS den GESAMTEN Text fett dar (dort
+        #     gilt alles als "Haupttext"). Mit text()/informativeText()
+        #     bleibt nur der Programmname fett, der Rest normal, wie bei
+        #     einem nativen macOS-Info-Fenster ueblich.
+        # EN: A plain QMessageBox instead of the .about() convenience
+        #     function -- on macOS that renders the ENTIRE text in bold
+        #     (everything counts as "main text" there). Using
+        #     text()/informativeText() keeps only the program name bold and
+        #     the rest normal, matching a native macOS info window.
+        box = QMessageBox(self)
+        box.setWindowTitle(f"Über {voller_programmname()}")
+        box.setText(voller_programmname())
+        box.setInformativeText(
             f"Kostenlos bereitgestellt von {ANBIETER}<br>"
-            f"<a href=\"{WEBSITE}\">{WEBSITE}</a>",
+            f"<a href=\"{WEBSITE}\">{WEBSITE}</a><br><br>"
+            f"{copyright_zeile()}<br>"
+            f"Dieses Programm kommt OHNE JEDE GEWÄHRLEISTUNG. Es ist freie "
+            f"Software, und Sie dürfen es unter bestimmten Bedingungen "
+            f"weiterverbreiten -- siehe die Lizenz GNU GPL 3.0 (Datei "
+            f"LICENSE) für Details."
         )
+        box.exec()
 
     def _verlauf_aktualisieren(self) -> None:
         self._action_rueckgaengig.setEnabled(self._liste.kann_rueckgaengig())
