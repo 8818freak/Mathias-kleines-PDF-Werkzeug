@@ -71,7 +71,7 @@ Windows exe, if available.*
 Voraussetzung: Python 3.11--3.13.
 
 ```bash
-git clone <repo-url>
+git clone <URL dieses Repositories>
 cd app
 python3 -m venv .venv
 source .venv/bin/activate      # Windows: .venv\Scripts\activate
