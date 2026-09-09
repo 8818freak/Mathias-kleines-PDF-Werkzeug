@@ -33,6 +33,7 @@ from PIL import Image
 
 from ..info import pdf_metadaten
 from .document import WorkingPage, seitengroesse_pt
+from .lesezeichen import toc_erzeugen
 from .rotate import ist_rechter_winkel, normalisiert, rotiertes_bild
 from .split import teile_bild
 
@@ -59,7 +60,9 @@ def export_pdf(seiten: list[WorkingPage], ziel: Path,
         verarbeiteten Quellseite mit (erledigt, gesamt) aufgerufen -- fuer
         eine Fortschrittsanzeige in der GUI. `dokument_metadaten` (optional,
         siehe core/metadaten.py's pdf_felder()) ergaenzt Titel/Autor/Thema/
-        Stichwoerter aus dem Werkzeug "Metadaten bearbeiten".
+        Stichwoerter aus dem Werkzeug "Metadaten bearbeiten". Seiten mit
+        gesetztem `lesezeichen_titel` (siehe Lesezeichen-Werkzeug) landen
+        automatisch als Gliederung/Inhaltsverzeichnis in der Ausgabedatei.
 
     EN: Combine pages in the given order (with their respective
         rotations/mirrors/splits) into a single PDF file and save it to
@@ -67,7 +70,9 @@ def export_pdf(seiten: list[WorkingPage], ziel: Path,
         if given, is called with (done, total) after each processed source
         page -- for a progress display in the GUI. `dokument_metadaten`
         (optional, see core/metadaten.py's pdf_felder()) adds title/author/
-        subject/keywords from the "Edit metadata" tool.
+        subject/keywords from the "Edit metadata" tool. Pages with a
+        `lesezeichen_titel` set (see the bookmarks tool) automatically end
+        up as an outline/table of contents in the output file.
     """
     if not seiten:
         raise ValueError("Keine Seiten zum Exportieren.")
@@ -78,10 +83,12 @@ def export_pdf(seiten: list[WorkingPage], ziel: Path,
     # EN: Cache already-opened PDF sources so a file with many pages isn't
     #     reopened redundantly.
     offene_pdfs: dict[Path, fitz.Document] = {}
+    toc_rohdaten: list[tuple[int, str, int]] = []
     try:
         for nummer, wp in enumerate(seiten, start=1):
             source = wp.source
             grad = normalisiert(wp.rotation)
+            erste_ausgabeseite = ausgabe.page_count
 
             if wp.split is not None:
                 # DE: Teilung wirkt auf das bereits gedrehte/gespiegelte
@@ -121,9 +128,14 @@ def export_pdf(seiten: list[WorkingPage], ziel: Path,
                 bild, dpi = rotiertes_bild(source, wp.rotation, wp.spiegel_h, wp.spiegel_v)
                 _bild_einfuegen(ausgabe, bild, dpi)
 
+            if wp.lesezeichen_titel:
+                toc_rohdaten.append((wp.lesezeichen_ebene, wp.lesezeichen_titel, erste_ausgabeseite + 1))
+
             if fortschritt is not None:
                 fortschritt(nummer, len(seiten))
 
+        if toc_rohdaten:
+            ausgabe.set_toc(toc_erzeugen(toc_rohdaten))
         ausgabe.set_metadata(pdf_metadaten(dokument_metadaten))
         ausgabe.save(ziel)
     finally:

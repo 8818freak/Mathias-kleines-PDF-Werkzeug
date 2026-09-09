@@ -46,6 +46,7 @@ from pdfkrams.gui.einstellungen_dialog import EinstellungenDialog
 from pdfkrams.gui.tools.bildbereinigung_tool import BildbereinigungToolWidget
 from pdfkrams.gui.tools.combine_tool import CombineToolWidget
 from pdfkrams.gui.tools.heftseiten_tool import HeftseitenToolWidget
+from pdfkrams.gui.tools.lesezeichen_tool import LesezeichenToolWidget
 from pdfkrams.gui.tools.metadaten_tool import MetadatenToolWidget
 from pdfkrams.gui.tools.nummerieren_tool import NummerierenToolWidget
 from pdfkrams.gui.tools.pdf_zu_bildern_tool import PdfZuBildernToolWidget
@@ -74,6 +75,7 @@ _WERKZEUGE: list[tuple[str, type[QWidget] | None]] = [
     ("Seiten zusammenfügen", ZusammenfuegenToolWidget),
     ("Heftseiten teilen", HeftseitenToolWidget),
     ("Seiten nummerieren", NummerierenToolWidget),
+    ("Lesezeichen setzen", LesezeichenToolWidget),
     ("Seitenmaß normieren", SeitenmassToolWidget),
     ("Seiten zuschneiden", ZuschneidenToolWidget),
     ("PDF in Bilder teilen", PdfZuBildernToolWidget),

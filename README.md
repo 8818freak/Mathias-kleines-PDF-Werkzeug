@@ -99,6 +99,12 @@ internet connection and no additional software required.*
   *Substantially shrink file size via JPEG encoding (detects already
   efficiently compressed black-and-white pages and leaves them untouched),
   lossless structural compression, and PDF/A-2b marking for archival.*
+- **Lesezeichen setzen** -- für Broschüren/Bücher jeder Seite optional
+  einen Kapitel- oder Unterkapitel-Titel geben, wird beim Speichern
+  automatisch zu einem Lesezeichen/Inhaltsverzeichnis in der PDF-Datei.
+  *For booklets/books, optionally give each page a chapter or
+  sub-chapter title -- automatically becomes a bookmark/table of
+  contents in the PDF file when saving.*
 - **Metadaten bearbeiten** -- dokumentweite PDF-Metadaten (Titel, Autor,
   Anbieter, Produkt, Version, Releasedatum, Stichwörter) statt pro
   Seite; wird beim Speichern automatisch übernommen, inkl. automatischem

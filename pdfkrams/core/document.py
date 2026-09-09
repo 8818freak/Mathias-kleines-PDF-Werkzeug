@@ -109,6 +109,14 @@ class WorkingPage:
     #     (numbering tool). Only affects the order in the list, never
     #     changes the page image.
     ziel_nummer: int | None = None
+    # DE: Lesezeichen/Inhaltsverzeichnis-Eintrag fuer diese Seite (leerer
+    #     Titel = kein Lesezeichen hier). Ebene 1 = Kapitel, Ebene 2 =
+    #     Unterkapitel (siehe Lesezeichen-Werkzeug, core/lesezeichen.py).
+    # EN: Bookmark/table-of-contents entry for this page (empty title =
+    #     no bookmark here). Level 1 = chapter, level 2 = sub-chapter
+    #     (see the bookmarks tool, core/lesezeichen.py).
+    lesezeichen_titel: str = ""
+    lesezeichen_ebene: int = 1
 
     @property
     def unveraendert(self) -> bool:

@@ -207,12 +207,12 @@
     <message>
         <location filename="../gui/einstellungen_dialog.py" line="75"/>
         <source>Betrifft das Releasedatum im Werkzeug „Metadaten bearbeiten“ (Dateiname-Vorschlag und Stichwörter).</source>
-        <translation>Affects the release date in the "Edit metadata" tool (filename suggestion and keywords).</translation>
+        <translation>Affects the release date in the &quot;Edit metadata&quot; tool (filename suggestion and keywords).</translation>
     </message>
     <message>
         <location filename="../gui/einstellungen_dialog.py" line="84"/>
         <source>Vorbelegung für „Anbieter“ im Werkzeug „Metadaten bearbeiten“ -- leer lassen, um stattdessen immer den zuletzt dort eingetragenen Anbieter vorzuschlagen.</source>
-        <translation>Prefill for "Provider" in the "Edit metadata" tool -- leave blank to always suggest the provider most recently entered there instead.</translation>
+        <translation>Prefill for &quot;Provider&quot; in the &quot;Edit metadata&quot; tool -- leave blank to always suggest the provider most recently entered there instead.</translation>
     </message>
     <message>
         <location filename="../gui/einstellungen_dialog.py" line="91"/>
@@ -344,69 +344,118 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
     </message>
 </context>
 <context>
+    <name>LesezeichenToolWidget</name>
+    <message>
+        <location filename="../gui/tools/lesezeichen_tool.py" line="56"/>
+        <source>Für Broschüren/Bücher: jede Seite links auswählen, die ein Kapitel oder Unterkapitel beginnt, und hier einen Titel eintragen. Wird beim Speichern automatisch zu einem Lesezeichen/Inhaltsverzeichnis in der PDF-Datei.</source>
+        <translation>For booklets/books: select each page on the left that starts a chapter or sub-chapter, and enter a title here. Automatically becomes a bookmark/table of contents in the PDF file when saving.</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/lesezeichen_tool.py" line="62"/>
+        <location filename="../gui/tools/lesezeichen_tool.py" line="103"/>
+        <source>Keine Seite ausgewählt</source>
+        <translation>No page selected</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/lesezeichen_tool.py" line="70"/>
+        <source>Titel, z. B. „Kapitel 3 – Anschlüsse“</source>
+        <translation>Title, e.g. "Chapter 3 – Connections"</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/lesezeichen_tool.py" line="72"/>
+        <source>Kapitel</source>
+        <translation>Chapter</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/lesezeichen_tool.py" line="73"/>
+        <source>Unterkapitel</source>
+        <translation>Sub-chapter</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/lesezeichen_tool.py" line="74"/>
+        <source>Setzen &amp;&amp; weiter</source>
+        <translation>Set &amp;&amp; continue</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/lesezeichen_tool.py" line="76"/>
+        <source>Entfernen</source>
+        <translation>Remove</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/lesezeichen_tool.py" line="83"/>
+        <source>Bisher gesetzte Lesezeichen (anklicken springt zur Seite):</source>
+        <translation>Bookmarks set so far (click to jump to that page):</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/lesezeichen_tool.py" line="152"/>
+        <source>Seite {0}: {1}{2}</source>
+        <translation>Page {0}: {1}{2}</translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
-        <location filename="../gui/main_window.py" line="88"/>
+        <location filename="../gui/main_window.py" line="90"/>
         <source>„{0}“ kommt in einem der nächsten Schritte.</source>
         <translation>“{0}” is coming in one of the next steps.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="143"/>
+        <location filename="../gui/main_window.py" line="145"/>
         <source>Datei</source>
         <translation>File</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="145"/>
+        <location filename="../gui/main_window.py" line="147"/>
         <source>Dateien öffnen …</source>
         <translation>Open files …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="152"/>
+        <location filename="../gui/main_window.py" line="154"/>
         <source>Speichern</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="157"/>
+        <location filename="../gui/main_window.py" line="159"/>
         <source>Speichern unter …</source>
         <translation>Save as …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="162"/>
+        <location filename="../gui/main_window.py" line="164"/>
         <source>Bearbeiten</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="164"/>
+        <location filename="../gui/main_window.py" line="166"/>
         <source>Rückgängig</source>
         <translation>Undo</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="169"/>
+        <location filename="../gui/main_window.py" line="171"/>
         <source>Wiederholen</source>
         <translation>Redo</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="177"/>
+        <location filename="../gui/main_window.py" line="179"/>
         <source>Einstellungen …</source>
         <translation>Preferences …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="187"/>
+        <location filename="../gui/main_window.py" line="189"/>
         <source>Hilfe</source>
         <translation>Help</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="189"/>
+        <location filename="../gui/main_window.py" line="191"/>
         <source>Über {0} …</source>
         <translation>About {0} …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="210"/>
+        <location filename="../gui/main_window.py" line="212"/>
         <source>Über {0}</source>
         <translation>About {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="213"/>
+        <location filename="../gui/main_window.py" line="215"/>
         <source>Kostenlos bereitgestellt von {0}&lt;br&gt;&lt;a href=&quot;{1}&quot;&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;Dieses Programm kommt OHNE JEDE GEWÄHRLEISTUNG. Es ist freie Software, und Sie dürfen es unter bestimmten Bedingungen weiterverbreiten -- siehe die Lizenz GNU GPL 3.0 (Datei LICENSE) für Details.&lt;br&gt;&lt;br&gt;Entwickelt und getestet wird ausschließlich auf macOS -- die Windows-Version wird nicht selbst getestet, funktioniert aber hoffentlich fehlerfrei. Bei Fehlern bitte mit einer genauen, nachvollziehbaren Beschreibung an &lt;a href=&quot;mailto:telefonmann@telefonanleitungen.de&quot;&gt;telefonmann@telefonanleitungen.de&lt;/a&gt; schreiben, dann wird so schnell wie möglich korrigiert.</source>
         <translation>Provided free of charge by {0}&lt;br&gt;&lt;a href=&quot;{1}&quot;&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;This program comes WITH ABSOLUTELY NO WARRANTY. It is free software, and you are welcome to redistribute it under certain conditions -- see the GNU GPL 3.0 license (file LICENSE) for details.&lt;br&gt;&lt;br&gt;Developed and tested exclusively on macOS -- the Windows version is not tested by the author, but hopefully works correctly. If you run into a bug, please report it with a precise, reproducible description to &lt;a href=&quot;mailto:telefonmann@telefonanleitungen.de&quot;&gt;telefonmann@telefonanleitungen.de&lt;/a&gt;, and it will be fixed as soon as possible.</translation>
     </message>
@@ -415,47 +464,47 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
         <translation>Provided free of charge by {0}&lt;br&gt;&lt;a href=&quot;{1}&quot;&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;This program comes WITH ABSOLUTELY NO WARRANTY. It is free software, and you are welcome to redistribute it under certain conditions -- see the GNU GPL 3.0 license (file LICENSE) for details.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="285"/>
+        <location filename="../gui/main_window.py" line="287"/>
         <source>PDF speichern unter</source>
         <translation>Save PDF as</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="283"/>
+        <location filename="../gui/main_window.py" line="285"/>
         <source>dokument.pdf</source>
         <translation>document.pdf</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="285"/>
+        <location filename="../gui/main_window.py" line="287"/>
         <source>PDF-Datei (*.pdf)</source>
         <translation>PDF file (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="295"/>
+        <location filename="../gui/main_window.py" line="297"/>
         <source>Keine Seiten</source>
         <translation>No pages</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="295"/>
+        <location filename="../gui/main_window.py" line="297"/>
         <source>Die Dateiliste ist leer.</source>
         <translation>The file list is empty.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="297"/>
+        <location filename="../gui/main_window.py" line="299"/>
         <source>PDF wird erstellt …</source>
         <translation>Creating PDF …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="304"/>
+        <location filename="../gui/main_window.py" line="306"/>
         <source>Speichern fehlgeschlagen</source>
         <translation>Save failed</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="308"/>
+        <location filename="../gui/main_window.py" line="310"/>
         <source>Gespeichert</source>
         <translation>Saved</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="308"/>
+        <location filename="../gui/main_window.py" line="310"/>
         <source>PDF gespeichert unter:
 {0}</source>
         <translation>PDF saved to:
@@ -508,6 +557,10 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
     <message>
         <source>Metadaten bearbeiten</source>
         <translation>Edit metadata</translation>
+    </message>
+    <message>
+        <source>Lesezeichen setzen</source>
+        <translation>Set bookmarks</translation>
     </message>
 </context>
 <context>

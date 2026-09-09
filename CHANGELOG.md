@@ -4,6 +4,21 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 
 *All notable changes to this project are documented here.*
 
+## [1.7] – 2026-09-10
+
+### Hinzugefügt / Added
+
+- Neues Werkzeug „Lesezeichen setzen“: für Broschüren/Bücher jeder Seite
+  optional einen Kapitel- oder Unterkapitel-Titel geben -- wird beim
+  Speichern automatisch zu einem Lesezeichen/Inhaltsverzeichnis (Outline)
+  in der PDF-Datei. Übersicht aller gesetzten Lesezeichen in
+  Seitenreihenfolge, ein Klick springt zur jeweiligen Seite.
+  *New "Set bookmarks" tool: for booklets/books, optionally give each
+  page a chapter or sub-chapter title -- automatically becomes a
+  bookmark/table of contents (outline) in the PDF file when saving.
+  Overview of all bookmarks set so far in page order, click to jump to
+  that page.*
+
 ## [1.6] – 2026-09-10
 
 ### Hinzugefügt / Added

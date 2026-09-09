@@ -29,6 +29,7 @@ from PIL import Image
 
 from ..info import pdf_metadaten
 from .document import WorkingPage
+from .lesezeichen import toc_erzeugen
 from .rotate import ist_rechter_winkel, normalisiert, rotiertes_bild
 from .split import teile_bild
 
@@ -134,8 +135,9 @@ def export_pdf_komprimiert(seiten: list[WorkingPage], ziel: Path, jpeg_qualitaet
         durchgereicht -- JPEG waere hier so gut wie immer groesser UND
         schlechter (siehe _bereits_bilevel_komprimiert). `dokument_metadaten`
         (optional, siehe core/metadaten.py's pdf_felder()) ergaenzt Titel/
-        Autor/Thema/Stichwoerter. Liefert (Anzahl_Ausgabeseiten,
-        Dateigroesse_in_Bytes).
+        Autor/Thema/Stichwoerter; Lesezeichen (siehe WorkingPage.
+        lesezeichen_titel) werden wie bei combine.export_pdf uebernommen.
+        Liefert (Anzahl_Ausgabeseiten, Dateigroesse_in_Bytes).
 
     EN: Assemble pages like combine.export_pdf, but encode every page as
         JPEG at `jpeg_qualitaet` (1-95) and optionally downscale to
@@ -144,7 +146,9 @@ def export_pdf_komprimiert(seiten: list[WorkingPage], ziel: Path, jpeg_qualitaet
         passed through unchanged -- JPEG would almost always be bigger AND
         worse there (see _bereits_bilevel_komprimiert). `dokument_metadaten`
         (optional, see core/metadaten.py's pdf_felder()) adds title/author/
-        subject/keywords. Returns (output_page_count, file_size_in_bytes).
+        subject/keywords; bookmarks (see WorkingPage.lesezeichen_titel) are
+        carried over the same way as in combine.export_pdf. Returns
+        (output_page_count, file_size_in_bytes).
     """
     if not seiten:
         raise ValueError("Keine Seiten zum Exportieren.")
@@ -152,10 +156,12 @@ def export_pdf_komprimiert(seiten: list[WorkingPage], ziel: Path, jpeg_qualitaet
     ausgabe = fitz.open()
     anzahl_seiten = 0
     offene_pdfs: dict[Path, fitz.Document] = {}
+    toc_rohdaten: list[tuple[int, str, int]] = []
     try:
         for i, wp in enumerate(seiten, start=1):
             source = wp.source
             grad = normalisiert(wp.rotation)
+            erste_ausgabeseite = ausgabe.page_count
             unveraendert_pdf_seite = (
                 wp.split is None and not wp.spiegel_h and not wp.spiegel_v
                 and source.kind == "pdf" and ist_rechter_winkel(grad)
@@ -168,6 +174,8 @@ def export_pdf_komprimiert(seiten: list[WorkingPage], ziel: Path, jpeg_qualitaet
                     if abs(grad) > 1e-6:
                         ausgabe[neue_seite_nr].set_rotation(round(grad) % 360)
                     anzahl_seiten += 1
+                    if wp.lesezeichen_titel:
+                        toc_rohdaten.append((wp.lesezeichen_ebene, wp.lesezeichen_titel, erste_ausgabeseite + 1))
                     if fortschritt is not None:
                         fortschritt(i, len(seiten))
                     continue
@@ -185,6 +193,9 @@ def export_pdf_komprimiert(seiten: list[WorkingPage], ziel: Path, jpeg_qualitaet
                 seite.insert_image(seite.rect, stream=puffer.getvalue())
                 anzahl_seiten += 1
 
+            if wp.lesezeichen_titel:
+                toc_rohdaten.append((wp.lesezeichen_ebene, wp.lesezeichen_titel, erste_ausgabeseite + 1))
+
             if fortschritt is not None:
                 fortschritt(i, len(seiten))
 
@@ -192,6 +203,8 @@ def export_pdf_komprimiert(seiten: list[WorkingPage], ziel: Path, jpeg_qualitaet
         #     komprimiert die PDF-eigenen Datenstroeme zusaetzlich.
         # EN: garbage=4 drops unused objects, deflate additionally
         #     compresses the PDF's own data streams.
+        if toc_rohdaten:
+            ausgabe.set_toc(toc_erzeugen(toc_rohdaten))
         ausgabe.set_metadata(pdf_metadaten(dokument_metadaten))
         ausgabe.save(ziel, garbage=4, deflate=True, use_objstms=1)
     finally:
