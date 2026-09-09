@@ -34,7 +34,7 @@ from PySide6.QtWidgets import (
 
 from pdfkrams.core.combine import export_pdf
 from pdfkrams.core.document import render_rgb
-from pdfkrams.core.rotate import normalisiert
+from pdfkrams.core.rotate import normalisiert, rotiertes_bild, schraeglagen_korrektur_erkennen
 from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
 from pdfkrams.gui.widgets.page_list import PageListWidget
 from pdfkrams.gui.widgets.rotate_canvas import RotateCanvas
@@ -125,6 +125,17 @@ class RotateToolWidget(QWidget):
         weitere_zeile.addWidget(btn_zuruecksetzen)
         weitere_zeile.addWidget(btn_uebertragen)
         gruppe_layout.addLayout(weitere_zeile)
+
+        btn_auto_erkennen = QPushButton(self.tr("Schräglage automatisch erkennen"))
+        btn_auto_erkennen.setToolTip(
+            self.tr("Schlägt für den gewählten Bereich je Seite einen Geraderichtungs-Winkel "
+                   "vor, anhand der Textzeilen im Bild -- funktioniert nur bei Seiten mit "
+                   "erkennbarem Zeilenmuster (nicht bei Fotos o. ä.), die dann unverändert "
+                   "bleiben. Vorschlag wird direkt übernommen, aber wie gewohnt noch von "
+                   "Hand nachjustierbar.")
+        )
+        btn_auto_erkennen.clicked.connect(self._winkel_automatisch_erkennen)
+        gruppe_layout.addWidget(btn_auto_erkennen)
 
         btn_abwechselnd = QPushButton(self.tr("Abwechselnd 90° drehen (gerade/ungerade entgegengesetzt)"))
         btn_abwechselnd.setToolTip(
@@ -256,6 +267,54 @@ class RotateToolWidget(QWidget):
             wp.rotation = winkel
             self.liste.item_aktualisieren(item)
         self._auswahl_geaendert()
+
+    def _winkel_automatisch_erkennen(self) -> None:
+        """DE: Schlaegt fuer jede Seite im gewaehlten Bereich per
+            Projektionsprofil-Analyse einen Geraderichtungswinkel vor und
+            setzt ihn direkt (wie bei einer manuellen Eingabe -- weiter per
+            Ziehen/Zahlenfeld korrigierbar). Seiten ohne zuverlaessig
+            erkennbares Zeilenmuster (Fotos, grafiklastige Seiten) bleiben
+            unveraendert; am Ende wird gemeldet, fuer wie viele das der
+            Fall war.
+        EN: Suggests a straightening angle for every page in the selected
+            scope via projection-profile analysis and sets it directly
+            (like a manual entry -- still adjustable afterwards via
+            dragging/the number field). Pages without a reliably detectable
+            line pattern (photos, graphics-heavy pages) are left unchanged;
+            at the end, it's reported for how many that was the case."""
+        ziel = self._ziel_elemente()
+        if not ziel:
+            QMessageBox.information(
+                self, self.tr("Keine Auswahl"), self.tr("Bitte zuerst Seiten in der Liste links auswählen.")
+            )
+            return
+        self.liste.vor_aenderung_sichern()
+        unsicher = []
+        anzeige = Fortschrittsanzeige(self, self.tr("Schräglage wird erkannt …"), len(ziel))
+        try:
+            for i, item in enumerate(ziel, start=1):
+                wp = item.data(Qt.ItemDataRole.UserRole)
+                bild, _dpi = rotiertes_bild(wp.source, wp.rotation, wp.spiegel_h, wp.spiegel_v)
+                korrektur = schraeglagen_korrektur_erkennen(bild)
+                if korrektur is None:
+                    unsicher.append(wp.source.path.name)
+                else:
+                    wp.rotation = normalisiert(wp.rotation + korrektur)
+                    self.liste.item_aktualisieren(item)
+                anzeige.callback(i, len(ziel))
+        except Abgebrochen:
+            return
+        finally:
+            anzeige.schliessen()
+        self._auswahl_geaendert()
+        if unsicher:
+            QMessageBox.information(
+                self, self.tr("Teilweise kein Vorschlag"),
+                self.tr("Für {0} von {1} Seite(n) wurde keine zuverlässige Schräglage erkannt "
+                       "(unverändert gelassen):\n{2}").format(
+                    len(unsicher), len(ziel), "\n".join(unsicher[:10])
+                ),
+            )
 
     def _abwechselnd_drehen(self) -> None:
         elemente = self._ziel_elemente()

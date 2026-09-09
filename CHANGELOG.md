@@ -4,6 +4,25 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 
 *All notable changes to this project are documented here.*
 
+## [1.4] – 2026-09-09
+
+### Hinzugefügt / Added
+
+- „Seiten drehen“: neuer Knopf „Schräglage automatisch erkennen“ -- schlägt
+  je Seite im gewählten Bereich per Projektionsprofil-Analyse (Textzeilen
+  zu horizontalen Bändern verdichten) einen Geraderichtungswinkel vor und
+  setzt ihn direkt, weiter von Hand nachjustierbar. Seiten ohne
+  zuverlässig erkennbares Zeilenmuster (Fotos, grafiklastige Seiten)
+  bleiben unverändert, mit Meldung am Ende. Neue Abhängigkeit: numpy (für
+  die Bildanalyse).
+  *"Rotate pages": new "Detect skew automatically" button -- suggests a
+  straightening angle per page in the selected scope via projection-
+  profile analysis (condensing text lines into horizontal bands) and sets
+  it directly, still adjustable by hand afterward. Pages without a
+  reliably detectable line pattern (photos, graphics-heavy pages) are
+  left unchanged, with a report at the end. New dependency: numpy (for
+  the image analysis).*
+
 ## [1.3] – 2026-09-09
 
 ### Hinzugefügt / Added

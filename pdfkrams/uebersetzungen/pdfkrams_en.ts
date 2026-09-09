@@ -374,7 +374,11 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
         <source>PDF verkleinern &amp; PDF/A</source>
         <translation>Shrink PDF &amp; PDF/A</translation>
     </message>
-<message><location filename="../gui/main_window.py" line="105" /><source>Seiten zuschneiden</source><translation>Crop pages</translation></message></context>
+    <message>
+        <source>Seiten zuschneiden</source>
+        <translation>Crop pages</translation>
+    </message>
+</context>
 <context>
     <name>NummerierenToolWidget</name>
     <message>
@@ -671,61 +675,98 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
     </message>
     <message>
         <location filename="../gui/tools/rotate_tool.py" line="129" />
+        <source>Schräglage automatisch erkennen</source>
+        <translation>Detect skew automatically</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/rotate_tool.py" line="131" />
+        <source>Schlägt für den gewählten Bereich je Seite einen Geraderichtungs-Winkel vor, anhand der Textzeilen im Bild -- funktioniert nur bei Seiten mit erkennbarem Zeilenmuster (nicht bei Fotos o. ä.), die dann unverändert bleiben. Vorschlag wird direkt übernommen, aber wie gewohnt noch von Hand nachjustierbar.</source>
+        <translation>Suggests a straightening angle for each page in the selected scope, based on the text lines in the image -- only works for pages with a detectable line pattern (not photos etc.), which are then left unchanged. The suggestion is applied directly, but as usual can still be fine-tuned by hand.</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/rotate_tool.py" line="140" />
         <source>Abwechselnd 90° drehen (gerade/ungerade entgegengesetzt)</source>
         <translation>Rotate alternately by 90° (even/odd opposite)</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="131" />
+        <location filename="../gui/tools/rotate_tool.py" line="142" />
         <source>Für Hefte, die als Doppelseiten quer gescannt wurden: dreht jede zweite Seite um +90°, die dazwischenliegenden um -90°.</source>
         <translation>For booklets scanned sideways as double-page spreads: rotates every other page by +90°, and the ones in between by -90°.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="137" />
+        <location filename="../gui/tools/rotate_tool.py" line="148" />
         <source>Als PDF exportieren …</source>
         <translation>Export as PDF …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="264" />
+        <location filename="../gui/tools/rotate_tool.py" line="288" />
+        <source>Keine Auswahl</source>
+        <translation>No selection</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/rotate_tool.py" line="288" />
+        <source>Bitte zuerst Seiten in der Liste links auswählen.</source>
+        <translation>Please select pages in the list on the left first.</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/rotate_tool.py" line="293" />
+        <source>Schräglage wird erkannt …</source>
+        <translation>Detecting skew …</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/rotate_tool.py" line="312" />
+        <source>Teilweise kein Vorschlag</source>
+        <translation>No suggestion for some pages</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/rotate_tool.py" line="313" />
+        <source>Für {0} von {1} Seite(n) wurde keine zuverlässige Schräglage erkannt (unverändert gelassen):
+{2}</source>
+        <translation>No reliable skew was detected for {0} of {1} page(s) (left unchanged):
+{2}</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/rotate_tool.py" line="323" />
         <source>Zu wenige Seiten</source>
         <translation>Too few pages</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="265" />
+        <location filename="../gui/tools/rotate_tool.py" line="324" />
         <source>Dafür müssen mindestens zwei Seiten im gewählten Bereich liegen.</source>
         <translation>This requires at least two pages within the selected scope.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="280" />
+        <location filename="../gui/tools/rotate_tool.py" line="339" />
         <source>PDF speichern unter</source>
         <translation>Save PDF as</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="280" />
+        <location filename="../gui/tools/rotate_tool.py" line="339" />
         <source>gedreht.pdf</source>
         <translation>rotated.pdf</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="280" />
+        <location filename="../gui/tools/rotate_tool.py" line="339" />
         <source>PDF-Datei (*.pdf)</source>
         <translation>PDF file (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="285" />
+        <location filename="../gui/tools/rotate_tool.py" line="344" />
         <source>PDF wird erstellt …</source>
         <translation>Creating PDF …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="291" />
+        <location filename="../gui/tools/rotate_tool.py" line="350" />
         <source>Export fehlgeschlagen</source>
         <translation>Export failed</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="295" />
+        <location filename="../gui/tools/rotate_tool.py" line="354" />
         <source>Fertig</source>
         <translation>Done</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="295" />
+        <location filename="../gui/tools/rotate_tool.py" line="354" />
         <source>PDF gespeichert unter:
 {0}</source>
         <translation>PDF saved to:
@@ -1492,7 +1533,19 @@ Afterwards, freely drag each part with the mouse (clicking selects it). For the 
         <source>{0} Seite(n) zugeschnitten.</source>
         <translation>{0} page(s) cropped.</translation>
     </message>
-<message><location filename="../gui/tools/zuschneiden_tool.py" line="140" /><source>Aktuelle Seite</source><translation>Current page</translation></message><message><location filename="../gui/tools/zuschneiden_tool.py" line="140" /><source>Ausgewählte Seiten</source><translation>Selected pages</translation></message><message><location filename="../gui/tools/zuschneiden_tool.py" line="140" /><source>Alle Seiten</source><translation>All pages</translation></message></context>
+    <message>
+        <source>Aktuelle Seite</source>
+        <translation>Current page</translation>
+    </message>
+    <message>
+        <source>Ausgewählte Seiten</source>
+        <translation>Selected pages</translation>
+    </message>
+    <message>
+        <source>Alle Seiten</source>
+        <translation>All pages</translation>
+    </message>
+</context>
 <context>
     <name>_EinstellungenDialog</name>
     <message>

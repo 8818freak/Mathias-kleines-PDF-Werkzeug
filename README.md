@@ -40,9 +40,11 @@ internet connection and no additional software required.*
   PDF-Datei zusammenfügen.
   *Combine PDF/JPG/BMP/TIF(F) files (including multi-page TIFFs) into one PDF.*
 - **Seiten drehen** -- frei mit der Maus gerade ziehen, oder 90°/180°,
-  Spiegeln, "abwechselnd drehen" für gescannte Doppelseiten.
+  Spiegeln, "abwechselnd drehen" für gescannte Doppelseiten; Schräglage
+  lässt sich auch automatisch per Textzeilen-Erkennung vorschlagen.
   *Rotate pages freehand by dragging, or by 90°/180°, mirror, or
-  alternate rotation for scanned spreads.*
+  alternate rotation for scanned spreads; skew can also be suggested
+  automatically via text-line detection.*
 - **Seiten teilen** -- beliebiges Raster aus Zeilen × Spalten, Schnittlinien
   mit der Maus ziehen, automatische Ausrichtung auf ruhige Bildbereiche.
   *Split a page into an arbitrary row × column grid, drag the cut lines by

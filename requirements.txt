@@ -1,3 +1,4 @@
+numpy==2.5.3
 pikepdf==10.13.0.post1
 pillow==12.3.0
 pymupdf==1.28.2

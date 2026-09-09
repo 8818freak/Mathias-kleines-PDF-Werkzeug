@@ -13,6 +13,7 @@ EN: Logic for rotating (arbitrary angle, clockwise) and mirroring a single
 
 from __future__ import annotations
 
+import numpy as np
 from PIL import Image
 
 import pymupdf as fitz  # PyMuPDF (neuer Modulname / new module name)
@@ -152,3 +153,111 @@ def rotiertes_bild(source: PageSource, winkel_grad: float, spiegel_h: bool, spie
             dpi = dpi_x
 
     return bild_transformieren(bild, winkel_grad, spiegel_h, spiegel_v), dpi
+
+
+# DE: Suchbereich (+/- Grad) und Schrittweiten fuer die Schraeglagenerkennung
+#     -- grob zuerst ueber den ganzen Bereich, dann fein um den besten groben
+#     Treffer herum, statt gleich alles fein abzusuchen (deutlich schneller,
+#     bei kaum schlechterer Genauigkeit).
+# EN: Search range (+/- degrees) and step sizes for skew detection -- coarse
+#     first across the whole range, then fine around the best coarse hit,
+#     instead of searching everything at fine resolution right away (much
+#     faster, at barely worse accuracy).
+_SCHRAEGLAGE_SUCHBEREICH = 8.0
+_SCHRAEGLAGE_GROB_SCHRITT = 0.5
+_SCHRAEGLAGE_FEIN_BEREICH = 0.6
+_SCHRAEGLAGE_FEIN_SCHRITT = 0.05
+# DE: Laengere Kante in Pixeln, auf die fuer die Analyse herunterskaliert
+#     wird -- reicht fuer zuverlaessige Zeilenerkennung und ist schnell.
+# EN: Longer edge in pixels the image is downscaled to for analysis --
+#     enough for reliable line detection and fast.
+_SCHRAEGLAGE_ANALYSE_AUFLOESUNG = 700
+# DE: Graustufe (0..255), unterhalb derer ein Pixel als "Tinte" (Text/
+#     Linie) statt Hintergrund gilt.
+# EN: Grayscale value (0..255) below which a pixel counts as "ink" (text/
+#     line) rather than background.
+_SCHRAEGLAGE_TINTE_SCHWELLE = 150
+# DE: Mindestverhaeltnis von bester zu mittlerer Profil-Varianz, damit ein
+#     Treffer als zuverlaessig genug fuer einen Vorschlag gilt -- verhindert
+#     einen Vorschlag "aus dem Rauschen" bei Seiten ohne klare horizontale
+#     Struktur (Fotos, grafiklastige Seiten).
+# EN: Minimum ratio of best to mean profile variance for a hit to count as
+#     reliable enough to suggest -- prevents a suggestion "from the noise"
+#     on pages without clear horizontal structure (photos, graphics-heavy
+#     pages).
+_SCHRAEGLAGE_MINDEST_VERHAELTNIS = 1.15
+
+
+def _projektionsprofil_varianz(tinte: np.ndarray, pil_winkel_grad: float) -> float:
+    """DE: Tinte-Maske um pil_winkel_grad drehen (PIL-Konvention, gegen den
+        Uhrzeigersinn) und die Varianz der zeilenweisen Pixel-Summen
+        liefern -- hoeher, je schaerfer sich Textzeilen zu horizontalen
+        Baendern verdichten.
+    EN: Rotate the ink mask by pil_winkel_grad (PIL convention, counter-
+        clockwise) and return the variance of the row-wise pixel sums --
+        higher the more sharply text lines condense into horizontal
+        bands."""
+    gedreht = Image.fromarray(tinte).rotate(
+        pil_winkel_grad, resample=Image.Resampling.BILINEAR, expand=False, fillcolor=0,
+    )
+    zeilen_summen = np.asarray(gedreht, dtype=np.float64).sum(axis=1)
+    return float(zeilen_summen.var())
+
+
+def schraeglagen_korrektur_erkennen(bild: Image.Image) -> float | None:
+    """
+    DE: Erkennt per Projektionsprofil-Analyse (Textzeilen zu horizontalen
+        Baendern verdichten), um wie viel Grad `bild` zusaetzlich gedreht
+        werden muesste, um gerade zu stehen -- als Korrektur in der
+        Winkelkonvention der App (positiv = im Uhrzeigersinn), die auf
+        die schon in `bild` enthaltene Drehung AUFADDIERT werden soll.
+        Liefert None, wenn kein hinreichend deutliches horizontales
+        Zeilenmuster gefunden wurde (z. B. Fotos oder grafiklastige
+        Seiten ohne klaren Text) -- dann sollte kein automatischer
+        Vorschlag gemacht werden, statt eine wahrscheinlich falsche Zahl
+        anzuzeigen.
+
+    EN: Detects, via projection-profile analysis (condensing text lines
+        into horizontal bands), how many additional degrees `bild` would
+        need to be rotated to stand straight -- as a correction in the
+        app's angle convention (positive = clockwise), meant to be ADDED
+        to whatever rotation `bild` already reflects. Returns None if no
+        sufficiently clear horizontal line pattern was found (e.g. photos
+        or graphics-heavy pages without clear text) -- in that case, no
+        automatic suggestion should be made rather than showing a
+        probably-wrong number.
+    """
+    grau = bild.convert("L")
+    breite, hoehe = grau.size
+    faktor = max(1, max(breite, hoehe) // _SCHRAEGLAGE_ANALYSE_AUFLOESUNG)
+    if faktor > 1:
+        grau = grau.resize((max(1, breite // faktor), max(1, hoehe // faktor)), Image.BILINEAR)
+    tinte = (np.asarray(grau, dtype=np.uint8) < _SCHRAEGLAGE_TINTE_SCHWELLE).astype(np.uint8) * 255
+
+    grob_kandidaten = np.arange(
+        -_SCHRAEGLAGE_SUCHBEREICH, _SCHRAEGLAGE_SUCHBEREICH + 1e-9, _SCHRAEGLAGE_GROB_SCHRITT,
+    )
+    grob_varianzen = [_projektionsprofil_varianz(tinte, w) for w in grob_kandidaten]
+    bester_grob = float(grob_kandidaten[int(np.argmax(grob_varianzen))])
+
+    fein_kandidaten = np.arange(
+        bester_grob - _SCHRAEGLAGE_FEIN_BEREICH,
+        bester_grob + _SCHRAEGLAGE_FEIN_BEREICH + 1e-9,
+        _SCHRAEGLAGE_FEIN_SCHRITT,
+    )
+    fein_varianzen = [_projektionsprofil_varianz(tinte, w) for w in fein_kandidaten]
+    idx_bester = int(np.argmax(fein_varianzen))
+    bester_pil_winkel = float(fein_kandidaten[idx_bester])
+    beste_varianz = fein_varianzen[idx_bester]
+
+    mittel = float(np.mean(grob_varianzen + fein_varianzen))
+    if mittel <= 0 or beste_varianz / mittel < _SCHRAEGLAGE_MINDEST_VERHAELTNIS:
+        return None
+
+    # DE: PIL dreht bei positivem Winkel gegen den Uhrzeigersinn, daher hier
+    #     das Vorzeichen umdrehen, um unsere Konvention einzuhalten (siehe
+    #     bild_transformieren() oben).
+    # EN: PIL rotates counter-clockwise for a positive angle, so the sign
+    #     is flipped here to keep our convention (see bild_transformieren()
+    #     above).
+    return round(-bester_pil_winkel, 1)
