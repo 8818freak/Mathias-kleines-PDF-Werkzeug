@@ -91,6 +91,16 @@ def _thumbnail(wp: WorkingPage) -> QPixmap:
 def _text(wp: WorkingPage) -> str:
     """DE: Anzeigetext mit Hinweis auf Drehung/Spiegelung/Teilung, falls vorhanden.
     EN: Display text noting rotation/mirror/split, if any."""
+    # DE: pyside6-lupdate extrahiert hier NICHTS automatisch -- der String
+    #     im translate()-Aufruf innerhalb der Lambda ist die Variable
+    #     "text", kein literales Argument. Uebersetzungen fuer die unten
+    #     per t(...) verwendeten Textfragmente muessen von Hand in die
+    #     .ts-Datei eingetragen werden (Kontext "PageListWidget").
+    # EN: pyside6-lupdate extracts NOTHING here automatically -- the
+    #     string in the translate() call inside the lambda is the
+    #     variable "text", not a literal argument. Translations for the
+    #     text fragments used via t(...) below must be added to the .ts
+    #     file by hand (context "PageListWidget").
     t = lambda text: QCoreApplication.translate("PageListWidget", text)  # noqa: E731
     zusatz = []
     if wp.rotation:

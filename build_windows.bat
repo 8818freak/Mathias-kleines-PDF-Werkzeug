@@ -76,7 +76,13 @@ call .venv_win\Scripts\activate.bat
 
 echo.
 echo Installiere Abhaengigkeiten ...
-pip install --upgrade pip
+REM DE: "pip install --upgrade pip" statt "python -m pip install --upgrade pip"
+REM     schlaegt unter Windows zuverlaessig fehl (pip.exe kann sich selbst
+REM     nicht ueberschreiben, waehrend es laeuft) -- daher ueber "python -m".
+REM EN: "pip install --upgrade pip" instead of "python -m pip install
+REM     --upgrade pip" reliably fails on Windows (pip.exe can't overwrite
+REM     itself while running) -- hence invoked via "python -m".
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 if errorlevel 1 (
     echo.
