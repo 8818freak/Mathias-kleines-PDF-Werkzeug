@@ -36,6 +36,7 @@ echo
 echo "Baue die App ..."
 pyinstaller --windowed --name "$APPNAME" \
   --osx-bundle-identifier de.telefonanleitungen.pdfkrams \
+  --add-data "pdfkrams/uebersetzungen:pdfkrams/uebersetzungen" \
   --noconfirm \
   pdfkrams/main.py
 

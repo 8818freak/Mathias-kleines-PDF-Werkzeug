@@ -81,58 +81,60 @@ class RotateToolWidget(QWidget):
         self._winkel_feld.valueChanged.connect(self._winkel_vom_feld)
 
         hinweis = QLabel(
-            "Mit der Maus in der Vorschau ziehen, um die Seite geradezurichten "
-            "(die roten Linien helfen als Wasserwaage). Pfeiltasten für "
-            "Feinjustierung, Umschalt+Pfeil für größere Schritte."
+            self.tr("Mit der Maus in der Vorschau ziehen, um die Seite geradezurichten "
+                   "(die roten Linien helfen als Wasserwaage). Pfeiltasten für "
+                   "Feinjustierung, Umschalt+Pfeil für größere Schritte.")
         )
         hinweis.setWordWrap(True)
 
         self._geltungsbereich = QComboBox()
-        self._geltungsbereich.addItems([_AKTUELLE_SEITE, _AUSGEWAEHLTE_SEITEN, _ALLE_SEITEN])
+        self._geltungsbereich.addItem(self.tr(_AKTUELLE_SEITE), _AKTUELLE_SEITE)
+        self._geltungsbereich.addItem(self.tr(_AUSGEWAEHLTE_SEITEN), _AUSGEWAEHLTE_SEITEN)
+        self._geltungsbereich.addItem(self.tr(_ALLE_SEITEN), _ALLE_SEITEN)
 
-        gruppe = QGroupBox("Schnellaktionen – anwenden auf:")
+        gruppe = QGroupBox(self.tr("Schnellaktionen – anwenden auf:"))
         gruppe_layout = QVBoxLayout(gruppe)
         gruppe_layout.addWidget(self._geltungsbereich)
 
         drehen_zeile = QHBoxLayout()
-        for text, delta in (("↺ 90°", -90.0), ("↻ 90°", 90.0), ("180°", 180.0)):
+        for text, delta in ((self.tr("↺ 90°"), -90.0), (self.tr("↻ 90°"), 90.0), (self.tr("180°"), 180.0)):
             btn = QPushButton(text)
             btn.clicked.connect(lambda _checked=False, d=delta: self._schnelldrehung(d))
             drehen_zeile.addWidget(btn)
         gruppe_layout.addLayout(drehen_zeile)
 
         spiegeln_zeile = QHBoxLayout()
-        btn_spiegel_h = QPushButton("Horizontal spiegeln")
+        btn_spiegel_h = QPushButton(self.tr("Horizontal spiegeln"))
         btn_spiegel_h.clicked.connect(lambda: self._spiegeln("h"))
-        btn_spiegel_v = QPushButton("Vertikal spiegeln")
+        btn_spiegel_v = QPushButton(self.tr("Vertikal spiegeln"))
         btn_spiegel_v.clicked.connect(lambda: self._spiegeln("v"))
         spiegeln_zeile.addWidget(btn_spiegel_h)
         spiegeln_zeile.addWidget(btn_spiegel_v)
         gruppe_layout.addLayout(spiegeln_zeile)
 
         weitere_zeile = QHBoxLayout()
-        btn_zuruecksetzen = QPushButton("Zurücksetzen")
-        btn_zuruecksetzen.setToolTip("Drehung auf 0° und Spiegelung aus, für den gewählten Bereich.")
+        btn_zuruecksetzen = QPushButton(self.tr("Zurücksetzen"))
+        btn_zuruecksetzen.setToolTip(self.tr("Drehung auf 0° und Spiegelung aus, für den gewählten Bereich."))
         btn_zuruecksetzen.clicked.connect(self._zuruecksetzen)
-        btn_uebertragen = QPushButton("Feinwinkel übertragen")
+        btn_uebertragen = QPushButton(self.tr("Feinwinkel übertragen"))
         btn_uebertragen.setToolTip(
-            "Den in der Vorschau eingestellten Winkel der aktuellen Seite auf den "
-            "gewählten Bereich übertragen."
+            self.tr("Den in der Vorschau eingestellten Winkel der aktuellen Seite auf den "
+                   "gewählten Bereich übertragen.")
         )
         btn_uebertragen.clicked.connect(self._feinwinkel_uebertragen)
         weitere_zeile.addWidget(btn_zuruecksetzen)
         weitere_zeile.addWidget(btn_uebertragen)
         gruppe_layout.addLayout(weitere_zeile)
 
-        btn_abwechselnd = QPushButton("Abwechselnd 90° drehen (gerade/ungerade entgegengesetzt)")
+        btn_abwechselnd = QPushButton(self.tr("Abwechselnd 90° drehen (gerade/ungerade entgegengesetzt)"))
         btn_abwechselnd.setToolTip(
-            "Für Hefte, die als Doppelseiten quer gescannt wurden: dreht jede "
-            "zweite Seite um +90°, die dazwischenliegenden um -90°."
+            self.tr("Für Hefte, die als Doppelseiten quer gescannt wurden: dreht jede "
+                   "zweite Seite um +90°, die dazwischenliegenden um -90°.")
         )
         btn_abwechselnd.clicked.connect(self._abwechselnd_drehen)
         gruppe_layout.addWidget(btn_abwechselnd)
 
-        self._btn_export = QPushButton("Als PDF exportieren …")
+        self._btn_export = QPushButton(self.tr("Als PDF exportieren …"))
         self._btn_export.clicked.connect(self._exportieren)
         self._btn_export.setEnabled(self.liste.count() > 0)
         self.liste.geaendert.connect(
@@ -155,7 +157,7 @@ class RotateToolWidget(QWidget):
     def _ziel_elemente(self) -> list[QListWidgetItem]:
         """DE: Listeneintraege liefern, auf die Schnellaktionen wirken sollen.
         EN: Return the list entries that quick actions should act on."""
-        modus = self._geltungsbereich.currentText()
+        modus = self._geltungsbereich.currentData()
         if modus == _ALLE_SEITEN:
             return [self.liste.item(i) for i in range(self.liste.count())]
         if modus == _AUSGEWAEHLTE_SEITEN:
@@ -259,8 +261,8 @@ class RotateToolWidget(QWidget):
         elemente = self._ziel_elemente()
         if len(elemente) < 2:
             QMessageBox.information(
-                self, "Zu wenige Seiten",
-                "Dafür müssen mindestens zwei Seiten im gewählten Bereich liegen.",
+                self, self.tr("Zu wenige Seiten"),
+                self.tr("Dafür müssen mindestens zwei Seiten im gewählten Bereich liegen."),
             )
             return
         self.liste.vor_aenderung_sichern()
@@ -275,19 +277,19 @@ class RotateToolWidget(QWidget):
 
     def _exportieren(self) -> None:
         ziel, _ = QFileDialog.getSaveFileName(
-            self, "PDF speichern unter", "gedreht.pdf", "PDF-Datei (*.pdf)"
+            self, self.tr("PDF speichern unter"), self.tr("gedreht.pdf"), self.tr("PDF-Datei (*.pdf)")
         )
         if not ziel:
             return
         seiten = self.liste.seiten()
-        anzeige = Fortschrittsanzeige(self, "PDF wird erstellt …", len(seiten))
+        anzeige = Fortschrittsanzeige(self, self.tr("PDF wird erstellt …"), len(seiten))
         try:
             export_pdf(seiten, Path(ziel), fortschritt=anzeige.callback)
         except Abgebrochen:
             return
         except Exception as exc:  # noqa: BLE001 -- Fehler dem Nutzer verstaendlich zeigen
-            QMessageBox.critical(self, "Export fehlgeschlagen", str(exc))
+            QMessageBox.critical(self, self.tr("Export fehlgeschlagen"), str(exc))
             return
         finally:
             anzeige.schliessen()
-        QMessageBox.information(self, "Fertig", f"PDF gespeichert unter:\n{ziel}")
+        QMessageBox.information(self, self.tr("Fertig"), self.tr("PDF gespeichert unter:\n{0}").format(ziel))

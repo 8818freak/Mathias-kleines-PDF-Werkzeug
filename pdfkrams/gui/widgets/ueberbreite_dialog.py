@@ -57,16 +57,16 @@ class _UeberbreiteDialog(QDialog):
     def __init__(self, pixmap, bezeichnung: str, vorschlag_teile: int,
                 west_seite: int, ost_seite: int, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.setWindowTitle("Überbreite Seite teilen")
+        self.setWindowTitle(self.tr("Überbreite Seite teilen"))
         self.resize(900, 760)
         self._west_seite = west_seite
         self._ost_seite = ost_seite
 
         hinweis = QLabel(
-            f"„{bezeichnung}“ ist deutlich breiter als die übrigen ausgewählten Seiten. "
-            f"Gelbe Linien mit der Maus so verschieben, dass jede der einzelnen Seiten "
-            f"(Umschlagteile, Aufklappteil, …) für sich getrennt wird -- mit Strg/Cmd+"
-            f"Scrollen bzw. Pinch-Geste vergrößern für genaues Treffen."
+            self.tr("„{0}“ ist deutlich breiter als die übrigen ausgewählten Seiten. "
+                   "Gelbe Linien mit der Maus so verschieben, dass jede der einzelnen Seiten "
+                   "(Umschlagteile, Aufklappteil, …) für sich getrennt wird -- mit Strg/Cmd+"
+                   "Scrollen bzw. Pinch-Geste vergrößern für genaues Treffen.").format(bezeichnung)
         )
         hinweis.setWordWrap(True)
 
@@ -78,22 +78,22 @@ class _UeberbreiteDialog(QDialog):
         self._teile_feld = QSpinBox()
         self._teile_feld.setRange(1, 20)
         self._teile_feld.setValue(max(2, vorschlag_teile))
-        self._teile_feld.setPrefix("Teile: ")
+        self._teile_feld.setPrefix(self.tr("Teile: "))
         self._teile_feld.valueChanged.connect(self._teile_geaendert)
-        btn_gleichmaessig = QPushButton("Gleichmäßig verteilen")
+        btn_gleichmaessig = QPushButton(self.tr("Gleichmäßig verteilen"))
         btn_gleichmaessig.clicked.connect(self._gleichmaessig_verteilen)
 
         btn_zoom_aus = QPushButton("−")
         btn_zoom_aus.setFixedWidth(32)
         btn_zoom_aus.clicked.connect(lambda: self._canvas.zoom_schritt(1 / 1.4))
-        self._zoom_label = QLabel("100 %")
+        self._zoom_label = QLabel(self.tr("100 %"))
         self._zoom_label.setFixedWidth(56)
         btn_zoom_ein = QPushButton("+")
         btn_zoom_ein.setFixedWidth(32)
         btn_zoom_ein.clicked.connect(lambda: self._canvas.zoom_schritt(1.4))
-        btn_einpassen = QPushButton("Einpassen")
+        btn_einpassen = QPushButton(self.tr("Einpassen"))
         btn_einpassen.clicked.connect(self._canvas.einpassen)
-        self._canvas.zoomGeaendert.connect(lambda z: self._zoom_label.setText(f"{round(z * 100)} %"))
+        self._canvas.zoomGeaendert.connect(lambda z: self._zoom_label.setText(self.tr("{0} %").format(round(z * 100))))
 
         steuerung.addWidget(self._teile_feld)
         steuerung.addWidget(btn_gleichmaessig)
@@ -112,7 +112,7 @@ class _UeberbreiteDialog(QDialog):
         self._grenze_feld.setValue(self._teile_feld.value() // 2)
         self._grenze_feld.valueChanged.connect(self._grenze_aktualisieren)
         grenze_zeile = QHBoxLayout()
-        grenze_zeile.addWidget(QLabel("Grenze nach Teil:"))
+        grenze_zeile.addWidget(QLabel(self.tr("Grenze nach Teil:")))
         grenze_zeile.addWidget(self._grenze_feld)
         grenze_zeile.addStretch(1)
 
@@ -140,11 +140,18 @@ class _UeberbreiteDialog(QDialog):
     def _grenze_aktualisieren(self) -> None:
         n = self._teile_feld.value()
         k = self._grenze_feld.value()
-        links = f"Teil 1–{k}" if k > 1 else ("Teil 1" if k == 1 else "(keine)")
-        rechts = f"Teil {k + 1}–{n}" if k + 1 < n else (f"Teil {n}" if k + 1 == n else "(keine)")
+        links = (
+            self.tr("Teil 1–{0}").format(k) if k > 1
+            else (self.tr("Teil 1") if k == 1 else self.tr("(keine)"))
+        )
+        rechts = (
+            self.tr("Teil {0}–{1}").format(k + 1, n) if k + 1 < n
+            else (self.tr("Teil {0}").format(n) if k + 1 == n else self.tr("(keine)"))
+        )
         self._grenze_hinweis.setText(
-            f"{links} → Seite {self._west_seite} im fertigen Dokument.  "
-            f"{rechts} → Seite {self._ost_seite} im fertigen Dokument."
+            self.tr("{0} → Seite {1} im fertigen Dokument.  {2} → Seite {3} im fertigen Dokument.").format(
+                links, self._west_seite, rechts, self._ost_seite
+            )
         )
 
     def positionen(self) -> list[float]:

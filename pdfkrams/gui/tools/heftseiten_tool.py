@@ -74,31 +74,31 @@ class HeftseitenToolWidget(QWidget):
         self.liste = liste
 
         hinweis = QLabel(
-            "In der Dateiliste links die Doppelseiten-Scans eines Hefts in "
-            "ihrer physisch gestapelten Reihenfolge auswählen (mehrfach "
-            "anklicken bzw. mit Cmd/Shift).\n\n"
-            "Normale Scans werden automatisch mittig geteilt und beide "
-            "Hälften in die Sattelheft-Lesereihenfolge gebracht: aus Scan "
-            "1, 2, 3, … wird Seite 1, 2, 3, … in der richtigen Reihenfolge, "
-            "so wie sie physisch im Heft liegen.\n\n"
-            "Ist ein Scan deutlich breiter als die übrigen (Umschlag, "
-            "Aufklappseite -- oft mit mehreren eigenen Seiten in einem "
-            "Bild), öffnet sich der Ziehen-Editor aus „Seiten teilen“ "
-            "(inkl. Zoom): dort selbst beliebig viele Schnitte festlegen "
-            "und angeben, welche Teile zu welcher der beiden Zielseiten "
-            "gehören -- die Einsortierung geschieht danach automatisch, "
-            "kein manuelles Ziehen nötig."
+            self.tr("In der Dateiliste links die Doppelseiten-Scans eines Hefts in "
+                   "ihrer physisch gestapelten Reihenfolge auswählen (mehrfach "
+                   "anklicken bzw. mit Cmd/Shift).\n\n"
+                   "Normale Scans werden automatisch mittig geteilt und beide "
+                   "Hälften in die Sattelheft-Lesereihenfolge gebracht: aus Scan "
+                   "1, 2, 3, … wird Seite 1, 2, 3, … in der richtigen Reihenfolge, "
+                   "so wie sie physisch im Heft liegen.\n\n"
+                   "Ist ein Scan deutlich breiter als die übrigen (Umschlag, "
+                   "Aufklappseite -- oft mit mehreren eigenen Seiten in einem "
+                   "Bild), öffnet sich der Ziehen-Editor aus „Seiten teilen“ "
+                   "(inkl. Zoom): dort selbst beliebig viele Schnitte festlegen "
+                   "und angeben, welche Teile zu welcher der beiden Zielseiten "
+                   "gehören -- die Einsortierung geschieht danach automatisch, "
+                   "kein manuelles Ziehen nötig.")
         )
         hinweis.setWordWrap(True)
 
-        self._dreh_feld = QCheckBox("Scans sind quer eingescannt -- abwechselnd um 90° drehen")
+        self._dreh_feld = QCheckBox(self.tr("Scans sind quer eingescannt -- abwechselnd um 90° drehen"))
         self._dreh_feld.setToolTip(
-            "Für Hefte, die als Doppelseite quer gescannt wurden: dreht jeden "
-            "zweiten Scan um +90°, die dazwischenliegenden um -90°, bevor "
-            "geteilt wird."
+            self.tr("Für Hefte, die als Doppelseite quer gescannt wurden: dreht jeden "
+                   "zweiten Scan um +90°, die dazwischenliegenden um -90°, bevor "
+                   "geteilt wird.")
         )
 
-        self._btn_verarbeiten = QPushButton("Ausgewählte Scans teilen + sortieren")
+        self._btn_verarbeiten = QPushButton(self.tr("Ausgewählte Scans teilen + sortieren"))
         self._btn_verarbeiten.clicked.connect(self._verarbeiten)
 
         layout = QVBoxLayout(self)
@@ -111,8 +111,8 @@ class HeftseitenToolWidget(QWidget):
         items = sorted(self.liste.selectedItems(), key=self.liste.row)
         if not items:
             QMessageBox.information(
-                self, "Keine Auswahl",
-                "Bitte zuerst die Doppelseiten-Scans in der Liste auswählen.",
+                self, self.tr("Keine Auswahl"),
+                self.tr("Bitte zuerst die Doppelseiten-Scans in der Liste auswählen."),
             )
             return
 
@@ -128,7 +128,7 @@ class HeftseitenToolWidget(QWidget):
         # DE: Liste statt Dict, da QListWidgetItem in PySide6 nicht hashbar ist.
         # EN: List instead of dict, since QListWidgetItem isn't hashable in PySide6.
         gerendert = []  # parallel zu items: (bild, dpi)
-        anzeige = Fortschrittsanzeige(self, "Scans werden gerendert …", len(items))
+        anzeige = Fortschrittsanzeige(self, self.tr("Scans werden gerendert …"), len(items))
         try:
             for idx, item in enumerate(items):
                 wp: WorkingPage = item.data(Qt.ItemDataRole.UserRole)
@@ -180,7 +180,7 @@ class HeftseitenToolWidget(QWidget):
         # -- Phase 2b: jeden Block teilen -- normal mittig, ueberbreit nach Vorgabe --
         slot_inhalt = {}  # (block_idx, "west"|"ost") -> Liste von PageSource
 
-        anzeige = Fortschrittsanzeige(self, "Seiten werden geteilt …", len(items))
+        anzeige = Fortschrittsanzeige(self, self.tr("Seiten werden geteilt …"), len(items))
         try:
             for idx, (item, (bild, dpi)) in enumerate(zip(items, gerendert)):
                 if idx not in ueberbreite_antworten:
@@ -208,7 +208,9 @@ class HeftseitenToolWidget(QWidget):
         self.liste.mehrere_ersetzen(items, neue_quellen)
 
         QMessageBox.information(
-            self, "Fertig",
-            f"{len(items)} Scans zu {len(neue_quellen)} Einzelseiten geteilt und einsortiert "
-            f"({ueberbreite_anzahl} davon überbreit, individuell geteilt).",
+            self, self.tr("Fertig"),
+            self.tr("{0} Scans zu {1} Einzelseiten geteilt und einsortiert "
+                   "({2} davon überbreit, individuell geteilt).").format(
+                len(items), len(neue_quellen), ueberbreite_anzahl
+            ),
         )

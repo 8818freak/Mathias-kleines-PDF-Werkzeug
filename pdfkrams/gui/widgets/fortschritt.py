@@ -18,7 +18,7 @@ EN: Small progress indicator for longer operations (export, loading files,
 
 from __future__ import annotations
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import QCoreApplication, Qt
 from PySide6.QtWidgets import QApplication, QProgressDialog, QWidget
 
 
@@ -41,7 +41,8 @@ class Fortschrittsanzeige:
     """
 
     def __init__(self, parent: QWidget | None, titel: str, gesamt: int) -> None:
-        self._dialog = QProgressDialog(titel, "Abbrechen", 0, max(gesamt, 1), parent)
+        abbrechen_text = QCoreApplication.translate("Fortschrittsanzeige", "Abbrechen")
+        self._dialog = QProgressDialog(titel, abbrechen_text, 0, max(gesamt, 1), parent)
         self._dialog.setWindowModality(Qt.WindowModality.WindowModal)
         self._dialog.setMinimumDuration(400)
         self._dialog.setAutoClose(True)

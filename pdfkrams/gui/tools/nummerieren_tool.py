@@ -55,17 +55,17 @@ class NummerierenToolWidget(QWidget):
         self.liste.currentItemChanged.connect(lambda *_: self._auswahl_geaendert())
 
         hinweis = QLabel(
-            "Für eine durcheinandergeratene Seitenfolge: jede Seite links "
-            "auswählen und hier eintragen, an welcher Stelle sie im "
-            "fertigen Dokument stehen soll. Es wird nichts auf die Seite "
-            "geschrieben -- ein „Zuweisen & weiter“ merkt sich nur die "
-            "Zielnummer und springt automatisch zur nächsten Seite. Am "
-            "Ende „Jetzt neu anordnen“ klicken, damit die Dateiliste "
-            "entsprechend sortiert wird."
+            self.tr("Für eine durcheinandergeratene Seitenfolge: jede Seite links "
+                   "auswählen und hier eintragen, an welcher Stelle sie im "
+                   "fertigen Dokument stehen soll. Es wird nichts auf die Seite "
+                   "geschrieben -- ein „Zuweisen & weiter“ merkt sich nur die "
+                   "Zielnummer und springt automatisch zur nächsten Seite. Am "
+                   "Ende „Jetzt neu anordnen“ klicken, damit die Dateiliste "
+                   "entsprechend sortiert wird.")
         )
         hinweis.setWordWrap(True)
 
-        self._vorschau = QLabel("Keine Seite ausgewählt")
+        self._vorschau = QLabel(self.tr("Keine Seite ausgewählt"))
         self._vorschau.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._vorschau.setStyleSheet("background: #2b2b2b; color: #aaaaaa;")
         self._vorschau.setMinimumHeight(300)
@@ -75,52 +75,52 @@ class NummerierenToolWidget(QWidget):
         self._nummer_feld = QSpinBox()
         self._nummer_feld.setRange(1, 999999)
         self._nummer_feld.setValue(1)
-        self._nummer_feld.setPrefix("Zielnummer: ")
-        btn_zuweisen = QPushButton("Zuweisen && weiter")
+        self._nummer_feld.setPrefix(self.tr("Zielnummer: "))
+        btn_zuweisen = QPushButton(self.tr("Zuweisen && weiter"))
         btn_zuweisen.clicked.connect(self._zuweisen)
-        btn_entfernen = QPushButton("Zuweisung entfernen")
+        btn_entfernen = QPushButton(self.tr("Zuweisung entfernen"))
         btn_entfernen.clicked.connect(self._entfernen)
         zeile.addWidget(self._nummer_feld)
         zeile.addWidget(btn_zuweisen)
         zeile.addWidget(btn_entfernen)
 
-        self._btn_anordnen = QPushButton("Jetzt neu anordnen")
+        self._btn_anordnen = QPushButton(self.tr("Jetzt neu anordnen"))
         self._btn_anordnen.setToolTip(
-            "Sortiert die gesamte Dateiliste nach den zugewiesenen "
-            "Zielnummern. Seiten ohne Zuweisung bleiben untereinander in "
-            "ihrer bisherigen Reihenfolge und landen am Ende."
+            self.tr("Sortiert die gesamte Dateiliste nach den zugewiesenen "
+                   "Zielnummern. Seiten ohne Zuweisung bleiben untereinander in "
+                   "ihrer bisherigen Reihenfolge und landen am Ende.")
         )
         self._btn_anordnen.clicked.connect(self._neu_anordnen)
 
-        manuell_gruppe = QGroupBox("Von Hand (bei durcheinandergeratener Reihenfolge)")
+        manuell_gruppe = QGroupBox(self.tr("Von Hand (bei durcheinandergeratener Reihenfolge)"))
         manuell_layout = QVBoxLayout(manuell_gruppe)
         manuell_layout.addLayout(zeile)
         manuell_layout.addWidget(self._btn_anordnen)
 
-        btn_datum_sortieren = QPushButton("Automatisch nach Aufnahme-/Erstellungsdatum sortieren")
+        btn_datum_sortieren = QPushButton(self.tr("Automatisch nach Aufnahme-/Erstellungsdatum sortieren"))
         btn_datum_sortieren.setToolTip(
-            "Sortiert die gesamte Dateiliste automatisch nach dem "
-            "verlässlichsten verfügbaren Zeitstempel jeder Seite: zuerst "
-            "die Aufnahmezeit im Bild selbst, sonst das PDF-Erstellungsdatum, "
-            "sonst die Erstellungszeit der Datei."
+            self.tr("Sortiert die gesamte Dateiliste automatisch nach dem "
+                   "verlässlichsten verfügbaren Zeitstempel jeder Seite: zuerst "
+                   "die Aufnahmezeit im Bild selbst, sonst das PDF-Erstellungsdatum, "
+                   "sonst die Erstellungszeit der Datei.")
         )
         btn_datum_sortieren.clicked.connect(self._nach_datum_sortieren)
 
-        btn_dateien_umbenennen = QPushButton("Dateien auf der Platte nach Datum umbenennen …")
+        btn_dateien_umbenennen = QPushButton(self.tr("Dateien auf der Platte nach Datum umbenennen …"))
         btn_dateien_umbenennen.setToolTip(
-            "Unabhängig von der Dateiliste hier: benennt Dateien in einem "
-            "Ordner durchlaufend um, sortiert nach Aufnahme-/"
-            "Erstellungsdatum oder nach Namen -- wie das frühere "
-            "benennen.py-Skript."
+            self.tr("Unabhängig von der Dateiliste hier: benennt Dateien in einem "
+                   "Ordner durchlaufend um, sortiert nach Aufnahme-/"
+                   "Erstellungsdatum oder nach Namen -- wie das frühere "
+                   "benennen.py-Skript.")
         )
         btn_dateien_umbenennen.clicked.connect(self._dateien_umbenennen)
 
-        automatisch_gruppe = QGroupBox("Automatisch nach Datum")
+        automatisch_gruppe = QGroupBox(self.tr("Automatisch nach Datum"))
         automatisch_layout = QVBoxLayout(automatisch_gruppe)
         automatisch_layout.addWidget(btn_datum_sortieren)
         automatisch_layout.addWidget(btn_dateien_umbenennen)
 
-        self._btn_export = QPushButton("Als PDF exportieren …")
+        self._btn_export = QPushButton(self.tr("Als PDF exportieren …"))
         self._btn_export.clicked.connect(self._exportieren)
         self._btn_export.setEnabled(self.liste.count() > 0)
         self.liste.geaendert.connect(
@@ -140,7 +140,7 @@ class NummerierenToolWidget(QWidget):
         wp = self.liste.aktuelle_seite()
         if wp is None:
             self._vorschau.clear()
-            self._vorschau.setText("Keine Seite ausgewählt")
+            self._vorschau.setText(self.tr("Keine Seite ausgewählt"))
             return
         pixmap = vorschau_pixmap(wp, _VORSCHAU_GROESSE)
         self._vorschau.setPixmap(
@@ -189,10 +189,10 @@ class NummerierenToolWidget(QWidget):
         neue_reihenfolge = sorted(items, key=schluessel)
         self.liste.neu_anordnen(neue_reihenfolge)
 
-        hinweis = f"{zugewiesen} von {anzahl} Seiten hatten eine Zielnummer."
+        hinweis = self.tr("{0} von {1} Seiten hatten eine Zielnummer.").format(zugewiesen, anzahl)
         if zugewiesen < anzahl:
-            hinweis += " Die übrigen bleiben in ihrer bisherigen Reihenfolge am Ende."
-        QMessageBox.information(self, "Neu angeordnet", hinweis)
+            hinweis += " " + self.tr("Die übrigen bleiben in ihrer bisherigen Reihenfolge am Ende.")
+        QMessageBox.information(self, self.tr("Neu angeordnet"), hinweis)
 
     def _nach_datum_sortieren(self) -> None:
         anzahl = self.liste.count()
@@ -214,9 +214,10 @@ class NummerierenToolWidget(QWidget):
 
         quellen_verwendet = sorted({quelle for _, _, quelle in bewertet})
         QMessageBox.information(
-            self, "Sortiert",
-            f"{anzahl} Seiten nach Datum sortiert. Verwendete Zeitquelle(n): "
-            f"{', '.join(quellen_verwendet)}.",
+            self, self.tr("Sortiert"),
+            self.tr("{0} Seiten nach Datum sortiert. Verwendete Zeitquelle(n): {1}.").format(
+                anzahl, ", ".join(quellen_verwendet)
+            ),
         )
 
     def _dateien_umbenennen(self) -> None:
@@ -224,19 +225,19 @@ class NummerierenToolWidget(QWidget):
 
     def _exportieren(self) -> None:
         ziel, _ = QFileDialog.getSaveFileName(
-            self, "PDF speichern unter", "sortiert.pdf", "PDF-Datei (*.pdf)"
+            self, self.tr("PDF speichern unter"), self.tr("sortiert.pdf"), self.tr("PDF-Datei (*.pdf)")
         )
         if not ziel:
             return
         seiten = self.liste.seiten()
-        anzeige = Fortschrittsanzeige(self, "PDF wird erstellt …", len(seiten))
+        anzeige = Fortschrittsanzeige(self, self.tr("PDF wird erstellt …"), len(seiten))
         try:
             export_pdf(seiten, Path(ziel), fortschritt=anzeige.callback)
         except Abgebrochen:
             return
         except Exception as exc:  # noqa: BLE001 -- Fehler dem Nutzer verstaendlich zeigen
-            QMessageBox.critical(self, "Export fehlgeschlagen", str(exc))
+            QMessageBox.critical(self, self.tr("Export fehlgeschlagen"), str(exc))
             return
         finally:
             anzeige.schliessen()
-        QMessageBox.information(self, "Fertig", f"PDF gespeichert unter:\n{ziel}")
+        QMessageBox.information(self, self.tr("Fertig"), self.tr("PDF gespeichert unter:\n{0}").format(ziel))

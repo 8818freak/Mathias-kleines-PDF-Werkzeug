@@ -43,32 +43,37 @@ from pdfkrams.core.datei_umbenennen import (
     umbenennungsplan,
 )
 
+# DE: Sortierart -> (unuebersetzter) Anzeigename -- Auswahl per
+#     currentData() statt currentText(), damit sie sprachunabhaengig funktioniert.
+# EN: Sort kind -> (untranslated) display name -- selected via
+#     currentData() instead of currentText(), so it's language-independent.
 _SORTIERUNG_ANZEIGE = {
-    "Datum (Aufnahme-/Erstellungszeit)": NACH_DATUM,
-    "Name (natürliche Sortierung)": NACH_NAME,
+    NACH_DATUM: "Datum (Aufnahme-/Erstellungszeit)",
+    NACH_NAME: "Name (natürliche Sortierung)",
 }
 
 
 class _UmbenennenDialog(QDialog):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.setWindowTitle("Dateien auf der Platte umbenennen")
+        self.setWindowTitle(self.tr("Dateien auf der Platte umbenennen"))
         self.resize(700, 600)
         self._plan = []
 
         self._ordner_feld = QLineEdit()
         self._ordner_feld.setReadOnly(True)
-        btn_ordner = QPushButton("Wählen …")
+        btn_ordner = QPushButton(self.tr("Wählen …"))
         btn_ordner.clicked.connect(self._ordner_waehlen)
         ordner_zeile = QHBoxLayout()
         ordner_zeile.addWidget(self._ordner_feld)
         ordner_zeile.addWidget(btn_ordner)
 
         self._sortierung_feld = QComboBox()
-        self._sortierung_feld.addItems(_SORTIERUNG_ANZEIGE.keys())
+        for art, anzeige in _SORTIERUNG_ANZEIGE.items():
+            self._sortierung_feld.addItem(self.tr(anzeige), art)
 
         self._basis_feld = QLineEdit()
-        self._basis_feld.setPlaceholderText("optional, z. B. SEL_UNIMAT4070")
+        self._basis_feld.setPlaceholderText(self.tr("optional, z. B. SEL_UNIMAT4070"))
 
         self._start_feld = QSpinBox()
         self._start_feld.setRange(0, 999999)
@@ -78,46 +83,46 @@ class _UmbenennenDialog(QDialog):
         self._stellen_feld.setRange(1, 8)
         self._stellen_feld.setValue(4)
 
-        self._an_ort_feld = QCheckBox("An Ort und Stelle umbenennen")
+        self._an_ort_feld = QCheckBox(self.tr("An Ort und Stelle umbenennen"))
         self._an_ort_feld.setChecked(True)
         self._an_ort_feld.toggled.connect(self._an_ort_umgeschaltet)
 
         self._zielordner_feld = QLineEdit()
         self._zielordner_feld.setReadOnly(True)
         self._zielordner_feld.setEnabled(False)
-        self._btn_zielordner = QPushButton("Zielordner wählen …")
+        self._btn_zielordner = QPushButton(self.tr("Zielordner wählen …"))
         self._btn_zielordner.setEnabled(False)
         self._btn_zielordner.clicked.connect(self._zielordner_waehlen)
         zielordner_zeile = QHBoxLayout()
         zielordner_zeile.addWidget(self._zielordner_feld)
         zielordner_zeile.addWidget(self._btn_zielordner)
 
-        self._kopieren_feld = QCheckBox("Kopieren statt verschieben")
+        self._kopieren_feld = QCheckBox(self.tr("Kopieren statt verschieben"))
 
         formular = QFormLayout()
-        formular.addRow("Ordner:", ordner_zeile)
-        formular.addRow("Sortierung:", self._sortierung_feld)
-        formular.addRow("Basisname:", self._basis_feld)
-        formular.addRow("Startnummer:", self._start_feld)
-        formular.addRow("Stellen:", self._stellen_feld)
+        formular.addRow(self.tr("Ordner:"), ordner_zeile)
+        formular.addRow(self.tr("Sortierung:"), self._sortierung_feld)
+        formular.addRow(self.tr("Basisname:"), self._basis_feld)
+        formular.addRow(self.tr("Startnummer:"), self._start_feld)
+        formular.addRow(self.tr("Stellen:"), self._stellen_feld)
         formular.addRow(self._an_ort_feld)
-        formular.addRow("Zielordner:", zielordner_zeile)
+        formular.addRow(self.tr("Zielordner:"), zielordner_zeile)
         formular.addRow(self._kopieren_feld)
 
-        btn_vorschau = QPushButton("Vorschau aktualisieren")
+        btn_vorschau = QPushButton(self.tr("Vorschau aktualisieren"))
         btn_vorschau.clicked.connect(self._vorschau_aktualisieren)
 
         self._vorschau_liste = QListWidget()
 
         self._hinweis = QLabel(
-            "Zuerst Ordner wählen und „Vorschau aktualisieren“ -- erst danach lässt "
-            "sich tatsächlich umbenennen. Es wird nichts überschrieben; bei "
-            "Namenskollisionen wird vorher gewarnt."
+            self.tr("Zuerst Ordner wählen und „Vorschau aktualisieren“ -- erst danach lässt "
+                   "sich tatsächlich umbenennen. Es wird nichts überschrieben; bei "
+                   "Namenskollisionen wird vorher gewarnt.")
         )
         self._hinweis.setWordWrap(True)
 
         knoepfe = QDialogButtonBox(QDialogButtonBox.StandardButton.Cancel)
-        self._btn_ausfuehren = knoepfe.addButton("Jetzt umbenennen", QDialogButtonBox.ButtonRole.AcceptRole)
+        self._btn_ausfuehren = knoepfe.addButton(self.tr("Jetzt umbenennen"), QDialogButtonBox.ButtonRole.AcceptRole)
         self._btn_ausfuehren.setEnabled(False)
         knoepfe.rejected.connect(self.reject)
         self._btn_ausfuehren.clicked.connect(self._ausfuehren)
@@ -136,7 +141,7 @@ class _UmbenennenDialog(QDialog):
             self._zielordner_feld.clear()
 
     def _ordner_waehlen(self) -> None:
-        ordner = QFileDialog.getExistingDirectory(self, "Ordner wählen")
+        ordner = QFileDialog.getExistingDirectory(self, self.tr("Ordner wählen"))
         if ordner:
             self._ordner_feld.setText(ordner)
             self._plan = []
@@ -144,7 +149,7 @@ class _UmbenennenDialog(QDialog):
             self._vorschau_liste.clear()
 
     def _zielordner_waehlen(self) -> None:
-        ordner = QFileDialog.getExistingDirectory(self, "Zielordner wählen")
+        ordner = QFileDialog.getExistingDirectory(self, self.tr("Zielordner wählen"))
         if ordner:
             self._zielordner_feld.setText(ordner)
 
@@ -154,16 +159,18 @@ class _UmbenennenDialog(QDialog):
         self._vorschau_liste.clear()
 
         if not self._ordner_feld.text():
-            QMessageBox.information(self, "Kein Ordner", "Bitte zuerst einen Ordner wählen.")
+            QMessageBox.information(self, self.tr("Kein Ordner"), self.tr("Bitte zuerst einen Ordner wählen."))
             return
 
         ordner = Path(self._ordner_feld.text())
         dateien = dateien_sammeln(ordner)
         if not dateien:
-            QMessageBox.information(self, "Keine Dateien", "Keine passenden Dateien in diesem Ordner gefunden.")
+            QMessageBox.information(
+                self, self.tr("Keine Dateien"), self.tr("Keine passenden Dateien in diesem Ordner gefunden.")
+            )
             return
 
-        art = _SORTIERUNG_ANZEIGE[self._sortierung_feld.currentText()]
+        art = self._sortierung_feld.currentData()
         sortiert = [f for f, _quelle in sortieren(dateien, art)]
 
         zielordner = None if self._an_ort_feld.isChecked() else (
@@ -175,7 +182,7 @@ class _UmbenennenDialog(QDialog):
         )
 
         for eintrag in self._plan:
-            self._vorschau_liste.addItem(f"{eintrag.alt.name}  →  {eintrag.neu.name}")
+            self._vorschau_liste.addItem(self.tr("{0}  →  {1}").format(eintrag.alt.name, eintrag.neu.name))
 
         self._btn_ausfuehren.setEnabled(True)
 
@@ -185,18 +192,18 @@ class _UmbenennenDialog(QDialog):
         ueberschneidungen = kollisionen(self._plan)
         if ueberschneidungen:
             QMessageBox.warning(
-                self, "Namenskollision",
-                "Diese Zieldateien existieren bereits und würden überschrieben "
-                "werden -- abgebrochen, bitte Startnummer/Basisname anpassen:\n"
-                + "\n".join(p.name for p in ueberschneidungen[:10]),
+                self, self.tr("Namenskollision"),
+                self.tr("Diese Zieldateien existieren bereits und würden überschrieben "
+                       "werden -- abgebrochen, bitte Startnummer/Basisname anpassen:\n{0}"
+                       ).format("\n".join(p.name for p in ueberschneidungen[:10])),
             )
             return
 
-        aktion = "kopiert" if self._kopieren_feld.isChecked() else "umbenannt/verschoben"
+        aktion = self.tr("kopiert") if self._kopieren_feld.isChecked() else self.tr("umbenannt/verschoben")
         antwort = QMessageBox.question(
-            self, "Wirklich umbenennen?",
-            f"{len(self._plan)} Dateien werden jetzt {aktion}. Das lässt sich nicht "
-            f"rückgängig machen. Fortfahren?",
+            self, self.tr("Wirklich umbenennen?"),
+            self.tr("{0} Dateien werden jetzt {1}. Das lässt sich nicht "
+                   "rückgängig machen. Fortfahren?").format(len(self._plan), aktion),
         )
         if antwort != QMessageBox.StandardButton.Yes:
             return
@@ -204,10 +211,10 @@ class _UmbenennenDialog(QDialog):
         try:
             plan_ausfuehren(self._plan, self._kopieren_feld.isChecked())
         except Exception as exc:  # noqa: BLE001 -- Fehler dem Nutzer verstaendlich zeigen
-            QMessageBox.critical(self, "Fehlgeschlagen", str(exc))
+            QMessageBox.critical(self, self.tr("Fehlgeschlagen"), str(exc))
             return
 
-        QMessageBox.information(self, "Fertig", f"{len(self._plan)} Dateien {aktion}.")
+        QMessageBox.information(self, self.tr("Fertig"), self.tr("{0} Dateien {1}.").format(len(self._plan), aktion))
         self.accept()
 
 

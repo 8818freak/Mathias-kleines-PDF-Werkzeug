@@ -210,8 +210,8 @@ class ZusammenfuegenCanvas(QWidget):
             painter.setPen(QColor(255, 255, 255, 140))
             painter.drawText(
                 self.rect(), Qt.AlignmentFlag.AlignCenter | Qt.TextFlag.TextWordWrap,
-                "Noch keine Anordnung.\n\nLinks mindestens zwei Seiten auswählen,\n"
-                "dann oben auf „Anordnung aus Auswahl erzeugen“ klicken.",
+                self.tr("Noch keine Anordnung.\n\nLinks mindestens zwei Seiten auswählen,\n"
+                       "dann oben auf „Anordnung aus Auswahl erzeugen“ klicken."),
             )
             return
 

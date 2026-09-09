@@ -16,6 +16,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
+from PySide6.QtCore import QCoreApplication
 from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
@@ -27,8 +28,13 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-# DE: Anzeigename -> Dateiendung. EN: Display name -> file extension.
-_FORMATE = {"PDF (eine Seite je Datei)": ".pdf", "JPEG": ".jpg", "TIFF": ".tif", "BMP": ".bmp"}
+# DE: Dateiendung -> (unuebersetzter) Anzeigename. Als Dateiendung
+#     verschluesselt statt als uebersetzten Anzeigetext, damit die
+#     Auswahl per currentData() sprachunabhaengig funktioniert.
+# EN: File extension -> (untranslated) display name. Keyed by file
+#     extension rather than the translated display text, so selection
+#     via currentData() works independently of the current language.
+_FORMATE = {".pdf": "PDF (eine Seite je Datei)", ".jpg": "JPEG", ".tif": "TIFF", ".bmp": "BMP"}
 
 
 @dataclass
@@ -43,13 +49,14 @@ class EinzelExportEinstellungen:
 class _EinstellungenDialog(QDialog):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.setWindowTitle("Als einzelne Dateien exportieren")
+        self.setWindowTitle(self.tr("Als einzelne Dateien exportieren"))
 
         self._format_feld = QComboBox()
-        self._format_feld.addItems(_FORMATE.keys())
+        for endung, anzeige in _FORMATE.items():
+            self._format_feld.addItem(self.tr(anzeige), endung)
 
         self._basis_feld = QLineEdit()
-        self._basis_feld.setPlaceholderText("optional, z. B. Anleitung")
+        self._basis_feld.setPlaceholderText(self.tr("optional, z. B. Anleitung"))
 
         self._start_feld = QSpinBox()
         self._start_feld.setRange(0, 999999)
@@ -60,10 +67,10 @@ class _EinstellungenDialog(QDialog):
         self._stellen_feld.setValue(4)
 
         formular = QFormLayout()
-        formular.addRow("Format:", self._format_feld)
-        formular.addRow("Basisname:", self._basis_feld)
-        formular.addRow("Startnummer:", self._start_feld)
-        formular.addRow("Stellen:", self._stellen_feld)
+        formular.addRow(self.tr("Format:"), self._format_feld)
+        formular.addRow(self.tr("Basisname:"), self._basis_feld)
+        formular.addRow(self.tr("Startnummer:"), self._start_feld)
+        formular.addRow(self.tr("Stellen:"), self._stellen_feld)
 
         knoepfe = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         knoepfe.accepted.connect(self.accept)
@@ -74,7 +81,7 @@ class _EinstellungenDialog(QDialog):
         formular.addRow(knoepfe)
 
     def endung(self) -> str:
-        return _FORMATE[self._format_feld.currentText()]
+        return self._format_feld.currentData()
 
     def basis(self) -> str:
         return self._basis_feld.text().strip()
@@ -98,7 +105,7 @@ def einzelexport_abfragen(parent: QWidget) -> EinzelExportEinstellungen | None:
     if dialog.exec() != QDialog.DialogCode.Accepted:
         return None
 
-    zielordner = QFileDialog.getExistingDirectory(parent, "Zielordner wählen")
+    zielordner = QFileDialog.getExistingDirectory(parent, QCoreApplication.translate("ExportDialog", "Zielordner wählen"))
     if not zielordner:
         return None
 

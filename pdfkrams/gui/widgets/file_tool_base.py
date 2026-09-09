@@ -16,15 +16,19 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from PySide6.QtCore import QCoreApplication
 from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QLabel, QMessageBox, QPushButton, QVBoxLayout, QWidget
 
 from pdfkrams.core.document import UNTERSTUETZTE_ENDUNGEN, datei_aufschluesseln, ist_unterstuetzt
 from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
 from pdfkrams.gui.widgets.page_list import PageListWidget
 
-# DE: Dateifilter fuer den Auswahldialog, aus den unterstuetzten Endungen gebaut.
-# EN: File filter for the open dialog, built from the supported extensions.
-DATEIFILTER = "Unterstützte Dateien (" + " ".join(f"*{e}" for e in sorted(UNTERSTUETZTE_ENDUNGEN)) + ")"
+
+def _dateifilter() -> str:
+    """DE: Dateifilter fuer den Auswahldialog, aus den unterstuetzten Endungen gebaut.
+    EN: File filter for the open dialog, built from the supported extensions."""
+    text = QCoreApplication.translate("DateiListenPanel", "Unterstützte Dateien")
+    return text + " (" + " ".join(f"*{e}" for e in sorted(UNTERSTUETZTE_ENDUNGEN)) + ")"
 
 
 class DateiListenPanel(QWidget):
@@ -44,16 +48,16 @@ class DateiListenPanel(QWidget):
         self.liste = PageListWidget(self)
 
         hinweis = QLabel(
-            "Dateien (gilt für alle Werkzeuge -- einmal laden, nacheinander "
-            "bearbeiten): per Drag&Drop hierher ziehen oder auswählen."
+            self.tr("Dateien (gilt für alle Werkzeuge -- einmal laden, nacheinander "
+                   "bearbeiten): per Drag&Drop hierher ziehen oder auswählen.")
         )
         hinweis.setWordWrap(True)
 
-        btn_hinzufuegen = QPushButton("Dateien hinzufügen …")
+        btn_hinzufuegen = QPushButton(self.tr("Dateien hinzufügen …"))
         btn_hinzufuegen.clicked.connect(self.dateien_hinzufuegen_dialog)
-        btn_entfernen = QPushButton("Auswahl entfernen")
+        btn_entfernen = QPushButton(self.tr("Auswahl entfernen"))
         btn_entfernen.clicked.connect(self.liste.ausgewaehlte_entfernen)
-        btn_leeren = QPushButton("Liste leeren")
+        btn_leeren = QPushButton(self.tr("Liste leeren"))
         btn_leeren.clicked.connect(self.liste.alle_entfernen)
 
         knopfzeile = QHBoxLayout()
@@ -67,7 +71,7 @@ class DateiListenPanel(QWidget):
         layout.addWidget(self.liste, 1)
 
     def dateien_hinzufuegen_dialog(self) -> None:
-        pfade, _ = QFileDialog.getOpenFileNames(self, "Dateien auswählen", "", DATEIFILTER)
+        pfade, _ = QFileDialog.getOpenFileNames(self, self.tr("Dateien auswählen"), "", _dateifilter())
         self._pfade_verarbeiten([Path(p) for p in pfade])
 
     def _pfade_verarbeiten(self, pfade: list[Path]) -> None:
@@ -79,7 +83,7 @@ class DateiListenPanel(QWidget):
         if not pfade:
             return
         unbekannt = []
-        anzeige = Fortschrittsanzeige(self, "Dateien werden geladen …", len(pfade))
+        anzeige = Fortschrittsanzeige(self, self.tr("Dateien werden geladen …"), len(pfade))
         try:
             with self.liste.stapelverarbeitung():
                 for i, pfad in enumerate(pfade, start=1):
@@ -95,8 +99,8 @@ class DateiListenPanel(QWidget):
         if unbekannt:
             QMessageBox.warning(
                 self,
-                "Nicht unterstütztes Format",
-                "Diese Dateien wurden übersprungen:\n" + "\n".join(unbekannt),
+                self.tr("Nicht unterstütztes Format"),
+                self.tr("Diese Dateien wurden übersprungen:\n{0}").format("\n".join(unbekannt)),
             )
 
     # -- Drag & Drop vom Finder / from Finder ------------------------------

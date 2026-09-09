@@ -28,6 +28,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from PySide6.QtCore import QCoreApplication
 from PySide6.QtGui import QAction, QKeySequence
 from PySide6.QtWidgets import (
     QFileDialog,
@@ -41,6 +42,7 @@ from PySide6.QtWidgets import (
 )
 
 from pdfkrams.core.combine import export_pdf
+from pdfkrams.gui.einstellungen_dialog import EinstellungenDialog
 from pdfkrams.gui.tools.combine_tool import CombineToolWidget
 from pdfkrams.gui.tools.heftseiten_tool import HeftseitenToolWidget
 from pdfkrams.gui.tools.nummerieren_tool import NummerierenToolWidget
@@ -77,7 +79,8 @@ _WERKZEUGE: list[tuple[str, type[QWidget] | None]] = [
 def _platzhalter(name: str) -> QWidget:
     """DE: Hinweisseite fuer ein noch nicht gebautes Werkzeug.
     EN: Placeholder page for a tool that hasn't been built yet."""
-    label = QLabel(f"„{name}“ kommt in einem der nächsten Schritte.")
+    text = QCoreApplication.translate("MainWindow", "„{0}“ kommt in einem der nächsten Schritte.").format(name)
+    label = QLabel(text)
     label.setStyleSheet("color: gray; padding: 24px;")
     return label
 
@@ -97,7 +100,17 @@ class MainWindow(QMainWindow):
         self._werkzeuge = QStackedWidget()
 
         for name, widget_klasse in _WERKZEUGE:
-            self._seitenleiste.addItem(name)
+            # DE: self.tr(name) statt eines literalen Strings -- pyside6-lupdate
+            #     kann das nicht automatisch extrahieren, da `name` eine
+            #     Variable ist; die Uebersetzungen fuer diese neun Namen
+            #     werden von Hand in der .ts-Datei ergaenzt (siehe
+            #     uebersetzungen/README bzw. Kommentar dort).
+            # EN: self.tr(name) instead of a literal string -- pyside6-lupdate
+            #     can't auto-extract this since `name` is a variable; the
+            #     translations for these nine names are added by hand to
+            #     the .ts file (see uebersetzungen/README resp. the
+            #     comment there).
+            self._seitenleiste.addItem(self.tr(name))
             self._werkzeuge.addWidget(widget_klasse(self._liste) if widget_klasse else _platzhalter(name))
 
         self._seitenleiste.currentRowChanged.connect(self._werkzeuge.setCurrentIndex)
@@ -119,33 +132,33 @@ class MainWindow(QMainWindow):
     def _menu_erstellen(self) -> None:
         menu = self.menuBar()
 
-        datei_menu = menu.addMenu("Datei")
+        datei_menu = menu.addMenu(self.tr("Datei"))
 
-        action_oeffnen = QAction("Dateien öffnen …", self)
+        action_oeffnen = QAction(self.tr("Dateien öffnen …"), self)
         action_oeffnen.setShortcut(QKeySequence.StandardKey.Open)
         action_oeffnen.triggered.connect(self._dateiliste_panel.dateien_hinzufuegen_dialog)
         datei_menu.addAction(action_oeffnen)
 
         datei_menu.addSeparator()
 
-        self._action_speichern = QAction("Speichern", self)
+        self._action_speichern = QAction(self.tr("Speichern"), self)
         self._action_speichern.setShortcut(QKeySequence.StandardKey.Save)
         self._action_speichern.triggered.connect(self._speichern)
         datei_menu.addAction(self._action_speichern)
 
-        action_speichern_unter = QAction("Speichern unter …", self)
+        action_speichern_unter = QAction(self.tr("Speichern unter …"), self)
         action_speichern_unter.setShortcut(QKeySequence.StandardKey.SaveAs)
         action_speichern_unter.triggered.connect(self._speichern_unter)
         datei_menu.addAction(action_speichern_unter)
 
-        bearbeiten_menu = menu.addMenu("Bearbeiten")
+        bearbeiten_menu = menu.addMenu(self.tr("Bearbeiten"))
 
-        self._action_rueckgaengig = QAction("Rückgängig", self)
+        self._action_rueckgaengig = QAction(self.tr("Rückgängig"), self)
         self._action_rueckgaengig.setShortcut(QKeySequence.StandardKey.Undo)
         self._action_rueckgaengig.triggered.connect(self._liste.rueckgaengig)
         bearbeiten_menu.addAction(self._action_rueckgaengig)
 
-        self._action_wiederholen = QAction("Wiederholen", self)
+        self._action_wiederholen = QAction(self.tr("Wiederholen"), self)
         self._action_wiederholen.setShortcut(QKeySequence.StandardKey.Redo)
         self._action_wiederholen.triggered.connect(self._liste.wiederholen)
         bearbeiten_menu.addAction(self._action_wiederholen)
@@ -153,9 +166,19 @@ class MainWindow(QMainWindow):
         self._liste.verlaufGeaendert.connect(self._verlauf_aktualisieren)
         self._verlauf_aktualisieren()
 
-        hilfe_menu = menu.addMenu("Hilfe")
+        action_einstellungen = QAction(self.tr("Einstellungen …"), self)
+        action_einstellungen.setShortcut(QKeySequence.StandardKey.Preferences)
+        # DE: PreferencesRole -- macOS verschiebt diesen Eintrag automatisch
+        #     in das native Anwendungsmenü (Cmd+,).
+        # EN: PreferencesRole -- macOS automatically moves this entry into
+        #     the native application menu (Cmd+,).
+        action_einstellungen.setMenuRole(QAction.MenuRole.PreferencesRole)
+        action_einstellungen.triggered.connect(self._einstellungen_anzeigen)
+        bearbeiten_menu.addAction(action_einstellungen)
 
-        action_ueber = QAction(f"Über {voller_programmname()} …", self)
+        hilfe_menu = menu.addMenu(self.tr("Hilfe"))
+
+        action_ueber = QAction(self.tr("Über {0} …").format(voller_programmname()), self)
         # DE: AboutRole -- macOS verschiebt diesen Eintrag automatisch in
         #     das native Anwendungsmenü ("Über Mathias' kleines ...").
         # EN: AboutRole -- macOS automatically moves this entry into the
@@ -176,18 +199,21 @@ class MainWindow(QMainWindow):
         #     text()/informativeText() keeps only the program name bold and
         #     the rest normal, matching a native macOS info window.
         box = QMessageBox(self)
-        box.setWindowTitle(f"Über {voller_programmname()}")
+        box.setWindowTitle(self.tr("Über {0}").format(voller_programmname()))
         box.setText(voller_programmname())
         box.setInformativeText(
-            f"Kostenlos bereitgestellt von {ANBIETER}<br>"
-            f"<a href=\"{WEBSITE}\">{WEBSITE}</a><br><br>"
-            f"{copyright_zeile()}<br>"
-            f"Dieses Programm kommt OHNE JEDE GEWÄHRLEISTUNG. Es ist freie "
-            f"Software, und Sie dürfen es unter bestimmten Bedingungen "
-            f"weiterverbreiten -- siehe die Lizenz GNU GPL 3.0 (Datei "
-            f"LICENSE) für Details."
+            self.tr("Kostenlos bereitgestellt von {0}<br>"
+                   "<a href=\"{1}\">{1}</a><br><br>"
+                   "{2}<br>"
+                   "Dieses Programm kommt OHNE JEDE GEWÄHRLEISTUNG. Es ist freie "
+                   "Software, und Sie dürfen es unter bestimmten Bedingungen "
+                   "weiterverbreiten -- siehe die Lizenz GNU GPL 3.0 (Datei "
+                   "LICENSE) für Details.").format(ANBIETER, WEBSITE, copyright_zeile())
         )
         box.exec()
+
+    def _einstellungen_anzeigen(self) -> None:
+        EinstellungenDialog(self).exec()
 
     def _verlauf_aktualisieren(self) -> None:
         self._action_rueckgaengig.setEnabled(self._liste.kann_rueckgaengig())
@@ -203,7 +229,7 @@ class MainWindow(QMainWindow):
 
     def _speichern_unter(self) -> None:
         ziel, _ = QFileDialog.getSaveFileName(
-            self, "PDF speichern unter", "dokument.pdf", "PDF-Datei (*.pdf)"
+            self, self.tr("PDF speichern unter"), self.tr("dokument.pdf"), self.tr("PDF-Datei (*.pdf)")
         )
         if not ziel:
             return
@@ -213,16 +239,16 @@ class MainWindow(QMainWindow):
     def _pdf_schreiben(self, ziel: Path) -> None:
         seiten = self._liste.seiten()
         if not seiten:
-            QMessageBox.information(self, "Keine Seiten", "Die Dateiliste ist leer.")
+            QMessageBox.information(self, self.tr("Keine Seiten"), self.tr("Die Dateiliste ist leer."))
             return
-        anzeige = Fortschrittsanzeige(self, "PDF wird erstellt …", len(seiten))
+        anzeige = Fortschrittsanzeige(self, self.tr("PDF wird erstellt …"), len(seiten))
         try:
             export_pdf(seiten, ziel, fortschritt=anzeige.callback)
         except Abgebrochen:
             return
         except Exception as exc:  # noqa: BLE001 -- Fehler dem Nutzer verstaendlich zeigen
-            QMessageBox.critical(self, "Speichern fehlgeschlagen", str(exc))
+            QMessageBox.critical(self, self.tr("Speichern fehlgeschlagen"), str(exc))
             return
         finally:
             anzeige.schliessen()
-        QMessageBox.information(self, "Gespeichert", f"PDF gespeichert unter:\n{ziel}")
+        QMessageBox.information(self, self.tr("Gespeichert"), self.tr("PDF gespeichert unter:\n{0}").format(ziel))

@@ -23,9 +23,24 @@ from PIL import Image
 from .document import WorkingPage
 from .rotate import rotiertes_bild
 
-# DE: DIN-A-Reihe (ISO 216) -- (kurze Kante, lange Kante) in mm.
-# EN: DIN A series (ISO 216) -- (short edge, long edge) in mm.
-DIN_GROESSEN: dict[str, tuple[float, float]] = {
+# DE: Die wichtigsten Papierformate weltweit -- (kurze Kante, lange
+#     Kante) in mm, unabhaengig davon geschrieben, in welcher Masseinheit
+#     sie ueblicherweise angegeben werden (US-Formate sind eigentlich in
+#     Zoll definiert, hier aber wie alle anderen einheitlich in mm
+#     hinterlegt -- die Anzeige in der gewaehlten Masseinheit passiert
+#     erst in der Oberflaeche, siehe mm_zu_einheit()). Immer alle
+#     Formate anbieten, unabhaengig von der eingestellten Masseinheit --
+#     nur die ANGEZEIGTE Zahl richtet sich nach der Einheit, nicht die
+#     Auswahl der Formate selbst.
+# EN: The most important paper formats worldwide -- (short edge, long
+#     edge) in mm, written uniformly regardless of which unit they are
+#     conventionally specified in (US formats are technically defined in
+#     inches, but stored here in mm like everything else -- display in
+#     the chosen unit only happens in the UI, see mm_zu_einheit()).
+#     Always offer every format regardless of the selected measurement
+#     unit -- only the DISPLAYED number depends on the unit, not which
+#     formats are available.
+PAPIERFORMATE: dict[str, tuple[float, float]] = {
     "A0": (841.0, 1189.0),
     "A1": (594.0, 841.0),
     "A2": (420.0, 594.0),
@@ -33,9 +48,25 @@ DIN_GROESSEN: dict[str, tuple[float, float]] = {
     "A4": (210.0, 297.0),
     "A5": (148.0, 210.0),
     "A6": (105.0, 148.0),
+    "US Letter": (215.9, 279.4),
+    "US Legal": (215.9, 355.6),
+    "US Executive": (184.15, 266.7),
+    "US Tabloid/Ledger": (279.4, 431.8),
 }
 
 _MM_PRO_ZOLL = 25.4
+
+
+def mm_zu_einheit(mm: float, einheit: str) -> float:
+    """DE: Millimeter in die gewaehlte Anzeigeeinheit ("mm" oder "in") umrechnen.
+    EN: Convert millimeters into the chosen display unit ("mm" or "in")."""
+    return mm / _MM_PRO_ZOLL if einheit == "in" else mm
+
+
+def einheit_zu_mm(wert: float, einheit: str) -> float:
+    """DE: Einen in der gewaehlten Einheit ("mm" oder "in") angegebenen Wert nach mm umrechnen.
+    EN: Convert a value given in the chosen unit ("mm" or "in") back to millimeters."""
+    return wert * _MM_PRO_ZOLL if einheit == "in" else wert
 # DE: Graustufe (0..255), unterhalb derer eine Zeile/Spalte im Mittel als
 #     "schwarzer Rand" gilt.
 # EN: Grayscale value (0..255) below which a row/column counts, on
@@ -115,22 +146,22 @@ def aktuelle_groesse_mm(wp: WorkingPage, rand_abschneiden: bool = True) -> tuple
     return breite_px / dpi * _MM_PRO_ZOLL, hoehe_px / dpi * _MM_PRO_ZOLL
 
 
-def naheliegende_din_groesse(breite_mm: float, hoehe_mm: float, toleranz: float = 0.05) -> str | None:
+def naheliegendes_format(breite_mm: float, hoehe_mm: float, toleranz: float = 0.05) -> str | None:
     """
-    DE: Liefert den Namen des DIN-A-Formats, dessen Masse (in passender
-        Ausrichtung) am naechsten an (breite_mm, hoehe_mm) liegen, wenn
-        die Abweichung in beiden Richtungen innerhalb `toleranz` liegt --
-        sonst None (kein Format passt gut genug).
+    DE: Liefert den Namen des Papierformats (DIN oder US), dessen Masse
+        (in passender Ausrichtung) am naechsten an (breite_mm, hoehe_mm)
+        liegen, wenn die Abweichung in beiden Richtungen innerhalb
+        `toleranz` liegt -- sonst None (kein Format passt gut genug).
 
-    EN: Return the name of the DIN A format whose dimensions (in the
-        matching orientation) come closest to (breite_mm, hoehe_mm), if
-        the deviation in both directions is within `toleranz` -- otherwise
-        None (no format fits well enough).
+    EN: Return the name of the paper format (DIN or US) whose dimensions
+        (in the matching orientation) come closest to (breite_mm,
+        hoehe_mm), if the deviation in both directions is within
+        `toleranz` -- otherwise None (no format fits well enough).
     """
     kurz, lang = min(breite_mm, hoehe_mm), max(breite_mm, hoehe_mm)
     beste: str | None = None
     beste_abweichung = None
-    for name, (k, l) in DIN_GROESSEN.items():
+    for name, (k, l) in PAPIERFORMATE.items():
         abweichung = max(abs(kurz - k) / k, abs(lang - l) / l)
         if abweichung <= toleranz and (beste_abweichung is None or abweichung < beste_abweichung):
             beste = name

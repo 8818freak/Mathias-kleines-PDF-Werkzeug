@@ -62,11 +62,14 @@ internet connection and no additional software required.*
   Aufnahmedatum.
   *Rearrange a scrambled page sequence by assigning target numbers, plus
   automatic sorting/renaming by capture date.*
-- **Seitenmaß normieren** -- Seiten auf ein exaktes DIN-A-Format oder ein
-  freies Maß in mm bringen; schwarze Scan-Ränder werden dabei automatisch
-  erkannt und abgeschnitten, inkl. Größenvorschlag je Seite.
-  *Normalize pages to an exact DIN A format or a free size in mm; black
-  scan borders are automatically detected and cropped, including a
+- **Seitenmaß normieren** -- Seiten auf ein exaktes DIN-A-Format, ein
+  US-Format (Letter, Legal, …) oder ein freies Maß bringen (Millimeter
+  oder Zoll, umstellbar in den Einstellungen); schwarze Scan-Ränder werden
+  dabei automatisch erkannt und abgeschnitten, inkl. Größenvorschlag je
+  Seite.
+  *Normalize pages to an exact DIN A format, a US format (Letter, Legal,
+  …), or a free size (millimeters or inches, switchable in Preferences);
+  black scan borders are automatically detected and cropped, including a
   per-page size suggestion.*
 - **PDF in Bilder teilen** -- als einzelne durchnummerierte Bilddateien oder
   als eine mehrseitige TIFF-Datei exportieren.
@@ -89,6 +92,18 @@ Vorgängen.
 several tools one after another without exporting in between. Plus: a
 native menu with Save/Save As/Undo/Redo, and progress indicators for every
 longer-running operation.*
+
+Die Oberfläche ist auf Deutsch und Englisch verfügbar (in den
+Einstellungen umstellbar, Deutsch bleibt die Voreinstellung), dazu eine
+frei wählbare Maßeinheit (mm/Zoll) für "Seitenmaß normieren" -- beides
+absichtlich nicht an die Systemsprache gekoppelt, da bearbeitete PDFs aus
+jedem Land stammen können.
+
+*The interface is available in German and English (switchable in
+Preferences, German stays the default), plus a freely selectable
+measurement unit (mm/inch) for "Normalize page size" -- both deliberately
+not tied to the system language, since the PDFs being edited can come
+from any country.*
 
 ## Systemvoraussetzungen / System requirements
 

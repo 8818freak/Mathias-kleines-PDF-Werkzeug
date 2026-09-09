@@ -30,13 +30,13 @@ class CombineToolWidget(QWidget):
         self.liste = liste
 
         hinweis = QLabel(
-            "Baut aus der Dateiliste links eine einzelne PDF-Datei, in der dort "
-            "gezeigten Reihenfolge (inklusive bereits vorgenommener Drehungen, "
-            "Spiegelungen und Teilungen)."
+            self.tr("Baut aus der Dateiliste links eine einzelne PDF-Datei, in der dort "
+                   "gezeigten Reihenfolge (inklusive bereits vorgenommener Drehungen, "
+                   "Spiegelungen und Teilungen).")
         )
         hinweis.setWordWrap(True)
 
-        self._btn_export = QPushButton("Als PDF exportieren …")
+        self._btn_export = QPushButton(self.tr("Als PDF exportieren …"))
         self._btn_export.clicked.connect(self._exportieren)
         self._btn_export.setEnabled(self.liste.count() > 0)
         self.liste.geaendert.connect(
@@ -50,19 +50,19 @@ class CombineToolWidget(QWidget):
 
     def _exportieren(self) -> None:
         ziel, _ = QFileDialog.getSaveFileName(
-            self, "PDF speichern unter", "zusammengefuegt.pdf", "PDF-Datei (*.pdf)"
+            self, self.tr("PDF speichern unter"), self.tr("zusammengefuegt.pdf"), self.tr("PDF-Datei (*.pdf)")
         )
         if not ziel:
             return
         seiten = self.liste.seiten()
-        anzeige = Fortschrittsanzeige(self, "PDF wird erstellt …", len(seiten))
+        anzeige = Fortschrittsanzeige(self, self.tr("PDF wird erstellt …"), len(seiten))
         try:
             export_pdf(seiten, Path(ziel), fortschritt=anzeige.callback)
         except Abgebrochen:
             return
         except Exception as exc:  # noqa: BLE001 -- Fehler dem Nutzer verstaendlich zeigen
-            QMessageBox.critical(self, "Export fehlgeschlagen", str(exc))
+            QMessageBox.critical(self, self.tr("Export fehlgeschlagen"), str(exc))
             return
         finally:
             anzeige.schliessen()
-        QMessageBox.information(self, "Fertig", f"PDF gespeichert unter:\n{ziel}")
+        QMessageBox.information(self, self.tr("Fertig"), self.tr("PDF gespeichert unter:\n{0}").format(ziel))

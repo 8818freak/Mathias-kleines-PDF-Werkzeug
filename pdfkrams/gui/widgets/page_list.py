@@ -32,7 +32,7 @@ from __future__ import annotations
 import copy
 from contextlib import contextmanager
 
-from PySide6.QtCore import QSize, Qt, Signal
+from PySide6.QtCore import QCoreApplication, QSize, Qt, Signal
 from PySide6.QtGui import QIcon, QImage, QPixmap, QTransform
 from PySide6.QtWidgets import QListWidget, QListWidgetItem
 
@@ -91,24 +91,25 @@ def _thumbnail(wp: WorkingPage) -> QPixmap:
 def _text(wp: WorkingPage) -> str:
     """DE: Anzeigetext mit Hinweis auf Drehung/Spiegelung/Teilung, falls vorhanden.
     EN: Display text noting rotation/mirror/split, if any."""
+    t = lambda text: QCoreApplication.translate("PageListWidget", text)  # noqa: E731
     zusatz = []
     if wp.rotation:
         zusatz.append(f"{wp.rotation:+.1f}°")
     if wp.spiegel_h:
-        zusatz.append("horiz. gespiegelt")
+        zusatz.append(t("horiz. gespiegelt"))
     if wp.spiegel_v:
-        zusatz.append("vert. gespiegelt")
+        zusatz.append(t("vert. gespiegelt"))
     if wp.split:
         spalten = len(wp.split.positionen_v) + 1
         zeilen = len(wp.split.positionen_h) + 1
         if zeilen == 1:
-            zusatz.append(f"{spalten} Teile (senkrecht)")
+            zusatz.append(t("{0} Teile (senkrecht)").format(spalten))
         elif spalten == 1:
-            zusatz.append(f"{zeilen} Teile (waagerecht)")
+            zusatz.append(t("{0} Teile (waagerecht)").format(zeilen))
         else:
-            zusatz.append(f"{zeilen}×{spalten} Raster")
+            zusatz.append(t("{0}×{1} Raster").format(zeilen, spalten))
     if wp.ziel_nummer is not None:
-        zusatz.append(f"→ Ziel {wp.ziel_nummer}")
+        zusatz.append(t("→ Ziel {0}").format(wp.ziel_nummer))
     if not zusatz:
         return wp.source.label
     return f"{wp.source.label} ({', '.join(zusatz)})"

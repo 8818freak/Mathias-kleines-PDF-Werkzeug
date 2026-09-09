@@ -79,16 +79,16 @@ class ZusammenfuegenToolWidget(QWidget):
         self._ausgewaehlter_index = -1
 
         hinweis = QLabel(
-            "Für großformatige Vorlagen (z. B. Schaltpläne), die in mehreren "
-            "kleineren Teilen gescannt wurden: In der Dateiliste links die "
-            "Teile in der gewünschten Lesereihenfolge auswählen (Cmd/Shift-"
-            "Klick), Spaltenzahl festlegen und „Anordnung erzeugen“ -- die "
-            "Teile werden Kante an Kante in einem Raster platziert.\n\n"
-            "Danach jedes Teil mit der Maus frei verschieben (anklicken "
-            "wählt es aus). Für das ausgewählte Teil rechts eine "
-            "Feindrehung und einen Beschnitt je Rand einstellen, um leicht "
-            "unterschiedliche Scan-Ränder bzw. eine bewusste Überlappung "
-            "auszugleichen."
+            self.tr("Für großformatige Vorlagen (z. B. Schaltpläne), die in mehreren "
+                   "kleineren Teilen gescannt wurden: In der Dateiliste links die "
+                   "Teile in der gewünschten Lesereihenfolge auswählen (Cmd/Shift-"
+                   "Klick), Spaltenzahl festlegen und „Anordnung erzeugen“ -- die "
+                   "Teile werden Kante an Kante in einem Raster platziert.\n\n"
+                   "Danach jedes Teil mit der Maus frei verschieben (anklicken "
+                   "wählt es aus). Für das ausgewählte Teil rechts eine "
+                   "Feindrehung und einen Beschnitt je Rand einstellen, um leicht "
+                   "unterschiedliche Scan-Ränder bzw. eine bewusste Überlappung "
+                   "auszugleichen.")
         )
         hinweis.setWordWrap(True)
 
@@ -96,8 +96,8 @@ class ZusammenfuegenToolWidget(QWidget):
         self._spalten_feld = QSpinBox()
         self._spalten_feld.setRange(1, 20)
         self._spalten_feld.setValue(2)
-        self._spalten_feld.setPrefix("Spalten: ")
-        btn_anordnung = QPushButton("Anordnung aus Auswahl erzeugen")
+        self._spalten_feld.setPrefix(self.tr("Spalten: "))
+        btn_anordnung = QPushButton(self.tr("Anordnung aus Auswahl erzeugen"))
         btn_anordnung.clicked.connect(self._anordnung_erzeugen)
         einstellungen_zeile.addWidget(self._spalten_feld)
         einstellungen_zeile.addWidget(btn_anordnung)
@@ -111,12 +111,12 @@ class ZusammenfuegenToolWidget(QWidget):
         btn_zoom_aus = QPushButton("−")
         btn_zoom_aus.setFixedWidth(32)
         btn_zoom_aus.clicked.connect(lambda: self._canvas.zoom_schritt(1 / 1.4))
-        self._zoom_label = QLabel("100 %")
+        self._zoom_label = QLabel(self.tr("100 %"))
         self._zoom_label.setFixedWidth(56)
         btn_zoom_ein = QPushButton("+")
         btn_zoom_ein.setFixedWidth(32)
         btn_zoom_ein.clicked.connect(lambda: self._canvas.zoom_schritt(1.4))
-        btn_einpassen = QPushButton("Einpassen")
+        btn_einpassen = QPushButton(self.tr("Einpassen"))
         btn_einpassen.clicked.connect(self._canvas.einpassen)
         zoom_zeile.addWidget(btn_zoom_aus)
         zoom_zeile.addWidget(self._zoom_label)
@@ -125,39 +125,39 @@ class ZusammenfuegenToolWidget(QWidget):
         zoom_zeile.addStretch(1)
 
         # -- Feineinstellungen fuer die ausgewaehlte Kachel --------------
-        self._feineinstellung_gruppe = QGroupBox("Ausgewähltes Teil")
+        self._feineinstellung_gruppe = QGroupBox(self.tr("Ausgewähltes Teil"))
         feineinstellung_layout = QVBoxLayout(self._feineinstellung_gruppe)
 
         self._rotation_feld = QDoubleSpinBox()
         self._rotation_feld.setRange(-180.0, 180.0)
         self._rotation_feld.setSingleStep(0.1)
         self._rotation_feld.setDecimals(1)
-        self._rotation_feld.setPrefix("Feindrehung: ")
+        self._rotation_feld.setPrefix(self.tr("Feindrehung: "))
         self._rotation_feld.setSuffix(" °")
         self._rotation_feld.valueChanged.connect(self._feineinstellung_geaendert)
         feineinstellung_layout.addWidget(self._rotation_feld)
 
         beschnitt_zeile1 = QHBoxLayout()
-        self._beschnitt_links_feld = self._beschnitt_feld("Links: ")
-        self._beschnitt_rechts_feld = self._beschnitt_feld("Rechts: ")
+        self._beschnitt_links_feld = self._beschnitt_feld(self.tr("Links: "))
+        self._beschnitt_rechts_feld = self._beschnitt_feld(self.tr("Rechts: "))
         beschnitt_zeile1.addWidget(self._beschnitt_links_feld)
         beschnitt_zeile1.addWidget(self._beschnitt_rechts_feld)
         beschnitt_zeile2 = QHBoxLayout()
-        self._beschnitt_oben_feld = self._beschnitt_feld("Oben: ")
-        self._beschnitt_unten_feld = self._beschnitt_feld("Unten: ")
+        self._beschnitt_oben_feld = self._beschnitt_feld(self.tr("Oben: "))
+        self._beschnitt_unten_feld = self._beschnitt_feld(self.tr("Unten: "))
         beschnitt_zeile2.addWidget(self._beschnitt_oben_feld)
         beschnitt_zeile2.addWidget(self._beschnitt_unten_feld)
-        feineinstellung_layout.addWidget(QLabel("Beschnitt je Rand:"))
+        feineinstellung_layout.addWidget(QLabel(self.tr("Beschnitt je Rand:")))
         feineinstellung_layout.addLayout(beschnitt_zeile1)
         feineinstellung_layout.addLayout(beschnitt_zeile2)
 
         self._feineinstellung_gruppe.setEnabled(False)
 
-        self._btn_uebernehmen = QPushButton("Übernehmen")
+        self._btn_uebernehmen = QPushButton(self.tr("Übernehmen"))
         self._btn_uebernehmen.setToolTip(
-            "Setzt alle Teile gemäß ihrer aktuellen Anordnung zu einer Seite "
-            "zusammen und ersetzt die ursprünglich ausgewählten Seiten in der "
-            "Liste durch diese eine neue Seite."
+            self.tr("Setzt alle Teile gemäß ihrer aktuellen Anordnung zu einer Seite "
+                   "zusammen und ersetzt die ursprünglich ausgewählten Seiten in der "
+                   "Liste durch diese eine neue Seite.")
         )
         self._btn_uebernehmen.setEnabled(False)
         self._btn_uebernehmen.clicked.connect(self._uebernehmen)
@@ -186,9 +186,9 @@ class ZusammenfuegenToolWidget(QWidget):
         items = sorted(self.liste.selectedItems(), key=self.liste.row)
         if len(items) < 2:
             QMessageBox.information(
-                self, "Zu wenig ausgewählt",
-                "Bitte mindestens zwei Seiten in der Liste links auswählen "
-                "(in der gewünschten Reihenfolge).",
+                self, self.tr("Zu wenig ausgewählt"),
+                self.tr("Bitte mindestens zwei Seiten in der Liste links auswählen "
+                       "(in der gewünschten Reihenfolge)."),
             )
             return
         self._items = items
@@ -242,7 +242,7 @@ class ZusammenfuegenToolWidget(QWidget):
         self._kacheln[index].y_pt = y_pt
 
     def _zoom_anzeige_aktualisieren(self, zoom: float) -> None:
-        self._zoom_label.setText(f"{round(zoom * 100)} %")
+        self._zoom_label.setText(self.tr("{0} %").format(round(zoom * 100)))
 
     # -- Übernehmen / apply -------------------------------------------------
 
@@ -250,7 +250,7 @@ class ZusammenfuegenToolWidget(QWidget):
         try:
             bild, dpi = zusammengefuegtes_bild(self._seiten, self._kacheln)
         except Exception as exc:  # noqa: BLE001 -- Fehler dem Nutzer verstaendlich zeigen
-            QMessageBox.critical(self, "Fehlgeschlagen", str(exc))
+            QMessageBox.critical(self, self.tr("Fehlgeschlagen"), str(exc))
             return
         ziel = arbeitsordner.pfad() / uuid.uuid4().hex
         source = bild_materialisieren(bild, dpi, ziel, "zusammengefuegt")
@@ -264,4 +264,4 @@ class ZusammenfuegenToolWidget(QWidget):
         self._btn_uebernehmen.setEnabled(False)
         self._feineinstellung_gruppe.setEnabled(False)
 
-        QMessageBox.information(self, "Fertig", "Die Teile wurden zu einer Seite zusammengefügt.")
+        QMessageBox.information(self, self.tr("Fertig"), self.tr("Die Teile wurden zu einer Seite zusammengefügt."))
