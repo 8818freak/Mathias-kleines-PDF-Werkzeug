@@ -15,18 +15,24 @@ Kostenlos bereitgestellt von [Telefonanleitungen.de](https://www.telefonanleitun
 
 Fügt Seiten aus verschiedenen Dateien zu einer PDF zusammen, dreht schief
 gescannte Seiten gerade, trennt mehrere Seiten aus einem einzelnen Scan,
-bringt gescannte Doppelseiten aus gehefteten Broschüren automatisch in die
-richtige Lesereihenfolge, ordnet eine durcheinandergeratene Seitenfolge neu,
-zerlegt eine PDF in einzelne Bilddateien und verkleinert die Dateigröße
-großer Scans deutlich. Alles in einer einzigen App, ohne Internetverbindung
-und ohne zusätzliche Software.
+fügt umgekehrt mehrere Teile (z. B. A4-Scans einer A1-Zeichnung) zu einer
+großen Seite zusammen, bringt gescannte Doppelseiten aus gehefteten
+Broschüren automatisch in die richtige Lesereihenfolge, ordnet eine
+durcheinandergeratene Seitenfolge neu, bringt Seiten auf ein exaktes
+DIN-Format oder Maß in mm (inkl. automatischem Abschneiden schwarzer
+Scan-Ränder), zerlegt eine PDF in einzelne Bilddateien und verkleinert die
+Dateigröße großer Scans deutlich. Alles in einer einzigen App, ohne
+Internetverbindung und ohne zusätzliche Software.
 
 *Combines pages from different files into one PDF, straightens crooked
-scans, splits multiple pages out of a single scan, automatically puts
-scanned saddle-stitch booklet spreads back into the correct reading order,
-reorders a scrambled page sequence, breaks a PDF apart into individual
-image files, and substantially shrinks the file size of large scans. All
-in one app, no internet connection and no additional software required.*
+scans, splits multiple pages out of a single scan, conversely merges
+several parts (e.g. A4 scans of an A1 drawing) into one large page,
+automatically puts scanned saddle-stitch booklet spreads back into the
+correct reading order, reorders a scrambled page sequence, brings pages
+to an exact DIN format or size in mm (including automatically cropping
+black scan borders), breaks a PDF apart into individual image files, and
+substantially shrinks the file size of large scans. All in one app, no
+internet connection and no additional software required.*
 
 ## Funktionen / Features
 
@@ -41,6 +47,11 @@ in one app, no internet connection and no additional software required.*
   mit der Maus ziehen, automatische Ausrichtung auf ruhige Bildbereiche.
   *Split a page into an arbitrary row × column grid, drag the cut lines by
   hand, with automatic alignment to quiet image areas.*
+- **Seiten zusammenfügen** -- mehrere Teile (z. B. A4-Scans einer großen
+  Zeichnung) zu einer Seite verbinden: Raster-Anordnung, frei verschiebbar,
+  Feindrehung und Randbeschnitt je Teil.
+  *Combine several parts (e.g. A4 scans of a large drawing) into one page:
+  grid layout, freely draggable, per-part fine rotation and edge crop.*
 - **Heftseiten teilen** -- gescannte Doppelseiten aus gehefteten Broschüren
   automatisch in die richtige Reihenfolge bringen (inkl. überbreiter
   Umschlag-/Aufklappseiten).
@@ -51,6 +62,12 @@ in one app, no internet connection and no additional software required.*
   Aufnahmedatum.
   *Rearrange a scrambled page sequence by assigning target numbers, plus
   automatic sorting/renaming by capture date.*
+- **Seitenmaß normieren** -- Seiten auf ein exaktes DIN-A-Format oder ein
+  freies Maß in mm bringen; schwarze Scan-Ränder werden dabei automatisch
+  erkannt und abgeschnitten, inkl. Größenvorschlag je Seite.
+  *Normalize pages to an exact DIN A format or a free size in mm; black
+  scan borders are automatically detected and cropped, including a
+  per-page size suggestion.*
 - **PDF in Bilder teilen** -- als einzelne durchnummerierte Bilddateien oder
   als eine mehrseitige TIFF-Datei exportieren.
   *Export as individually numbered image files or as one multi-page TIFF.*

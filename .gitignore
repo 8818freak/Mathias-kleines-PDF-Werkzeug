@@ -18,3 +18,7 @@ dist/
 # IDEs
 .vscode/
 .idea/
+
+# Interne Notizen fuer Claude, nicht fuer die Veroeffentlichung gedacht
+# Internal notes for Claude, not meant for publication
+CLAUDE.md

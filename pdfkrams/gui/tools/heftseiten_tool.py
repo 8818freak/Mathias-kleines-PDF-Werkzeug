@@ -45,7 +45,6 @@ import statistics
 import uuid
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QImage, QPixmap
 from PySide6.QtWidgets import QCheckBox, QLabel, QMessageBox, QPushButton, QVBoxLayout, QWidget
 
 from pdfkrams.core import arbeitsordner
@@ -54,6 +53,7 @@ from pdfkrams.core.export_dateien import bild_materialisieren
 from pdfkrams.core.heftseiten import lesereihenfolge
 from pdfkrams.core.rotate import normalisiert, rotiertes_bild
 from pdfkrams.core.split import teile_bild
+from pdfkrams.gui.bildkonvertierung import pil_zu_qpixmap as _als_qpixmap
 from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
 from pdfkrams.gui.widgets.page_list import PageListWidget
 from pdfkrams.gui.widgets.ueberbreite_dialog import ueberbreite_seite_teilen_abfragen
@@ -61,12 +61,6 @@ from pdfkrams.gui.widgets.ueberbreite_dialog import ueberbreite_seite_teilen_abf
 # DE: Ab welchem Vielfachen der ueblichen Breite ein Scan als "ueberbreit" gilt.
 # EN: From what multiple of the usual width a scan counts as "overwide".
 _UEBERBREITE_SCHWELLE = 1.3
-
-
-def _als_qpixmap(bild) -> QPixmap:
-    rgb = bild.convert("RGB")
-    qimg = QImage(rgb.tobytes(), rgb.width, rgb.height, rgb.width * 3, QImage.Format.Format_RGB888)
-    return QPixmap.fromImage(qimg.copy())
 
 
 class HeftseitenToolWidget(QWidget):

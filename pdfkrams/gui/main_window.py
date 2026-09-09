@@ -46,8 +46,10 @@ from pdfkrams.gui.tools.heftseiten_tool import HeftseitenToolWidget
 from pdfkrams.gui.tools.nummerieren_tool import NummerierenToolWidget
 from pdfkrams.gui.tools.pdf_zu_bildern_tool import PdfZuBildernToolWidget
 from pdfkrams.gui.tools.rotate_tool import RotateToolWidget
+from pdfkrams.gui.tools.seitenmass_tool import SeitenmassToolWidget
 from pdfkrams.gui.tools.split_tool import SplitToolWidget
 from pdfkrams.gui.tools.verkleinern_tool import VerkleinernToolWidget
+from pdfkrams.gui.tools.zusammenfuegen_tool import ZusammenfuegenToolWidget
 from pdfkrams.gui.widgets.file_tool_base import DateiListenPanel
 from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
 from pdfkrams.gui.widgets.page_list import PageListWidget
@@ -63,8 +65,10 @@ _WERKZEUGE: list[tuple[str, type[QWidget] | None]] = [
     ("PDF erstellen", CombineToolWidget),
     ("Seiten drehen", RotateToolWidget),
     ("Seiten teilen", SplitToolWidget),
+    ("Seiten zusammenfügen", ZusammenfuegenToolWidget),
     ("Heftseiten teilen", HeftseitenToolWidget),
     ("Seiten nummerieren", NummerierenToolWidget),
+    ("Seitenmaß normieren", SeitenmassToolWidget),
     ("PDF in Bilder teilen", PdfZuBildernToolWidget),
     ("PDF verkleinern & PDF/A", VerkleinernToolWidget),
 ]
