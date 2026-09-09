@@ -42,17 +42,32 @@ class Fortschrittsanzeige:
 
     def __init__(self, parent: QWidget | None, titel: str, gesamt: int) -> None:
         abbrechen_text = QCoreApplication.translate("Fortschrittsanzeige", "Abbrechen")
-        self._dialog = QProgressDialog(titel, abbrechen_text, 0, max(gesamt, 1), parent)
+        self._titel = titel
+        self._dialog = QProgressDialog("", abbrechen_text, 0, max(gesamt, 1), parent)
         self._dialog.setWindowModality(Qt.WindowModality.WindowModal)
         self._dialog.setMinimumDuration(400)
         self._dialog.setAutoClose(True)
+        self._text_aktualisieren(0, gesamt)
         self._dialog.setValue(0)
+
+    def _text_aktualisieren(self, erledigt: int, gesamt: int) -> None:
+        # DE: Zaehlstand ("N von M") explizit im Text ergaenzen -- der
+        #     Balken allein zeigt nur den Anteil, nicht die konkreten
+        #     Stueckzahlen, nach denen aber oft gefragt wird.
+        # EN: Explicitly add the count ("N of M") to the text -- the bar
+        #     alone only shows the proportion, not the concrete item
+        #     counts, which are often what people actually want to see.
+        text = QCoreApplication.translate("Fortschrittsanzeige", "{0} ({1} von {2})").format(
+            self._titel, erledigt, gesamt
+        )
+        self._dialog.setLabelText(text)
 
     def callback(self, erledigt: int, gesamt: int) -> None:
         """DE: An Kernfunktionen als `fortschritt`-Parameter uebergeben.
         EN: Pass to core functions as the `fortschritt` parameter."""
         self._dialog.setMaximum(max(gesamt, 1))
         self._dialog.setValue(erledigt)
+        self._text_aktualisieren(erledigt, gesamt)
         QApplication.processEvents()
         if self._dialog.wasCanceled():
             raise Abgebrochen()

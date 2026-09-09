@@ -30,7 +30,7 @@ from __future__ import annotations
 
 from typing import Callable
 
-from PySide6.QtCore import QObject, Qt, QThread, Signal
+from PySide6.QtCore import QCoreApplication, QObject, Qt, QThread, Signal
 from PySide6.QtWidgets import QProgressDialog, QWidget
 
 
@@ -87,6 +87,11 @@ def im_hintergrund_ausfuehren(parent: QWidget, titel: str, funktion: Callable):
         if gesamt > 0:
             dialog.setMaximum(gesamt)
             dialog.setValue(erledigt)
+            dialog.setLabelText(
+                QCoreApplication.translate("Fortschrittsanzeige", "{0} ({1} von {2})").format(
+                    titel, erledigt, gesamt
+                )
+            )
 
     def bei_fertig(ergebnis) -> None:
         ergebnis_box["wert"] = ergebnis

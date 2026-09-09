@@ -71,6 +71,14 @@ internet connection and no additional software required.*
   …), or a free size (millimeters or inches, switchable in Preferences);
   black scan borders are automatically detected and cropped, including a
   per-page size suggestion.*
+- **Seiten zuschneiden** -- Seiten von allen vier Rändern aus um ein frei
+  wählbares Maß beschneiden (z. B. einen Lochrandstreifen oder Heftrand
+  entfernen), mit ziehbaren Linien in der Vorschau und Live-Anzeige der
+  Ergebnisgröße inkl. Formatvorschlag.
+  *Crop pages on all four edges by a freely chosen amount (e.g. to remove
+  a punch-hole strip or binding margin), with draggable lines in the
+  preview and a live display of the resulting size including a format
+  suggestion.*
 - **PDF in Bilder teilen** -- als einzelne durchnummerierte Bilddateien oder
   als eine mehrseitige TIFF-Datei exportieren.
   *Export as individually numbered image files or as one multi-page TIFF.*
@@ -121,6 +129,20 @@ from any country.*
   Python, kein ImageMagick/Ghostscript o. ä.) -- vollständig eigenständig.
   *No internet connection needed, no additional software (no Python, no
   ImageMagick/Ghostscript etc.) -- fully self-contained.*
+
+## Hinweis zu Windows / Note on Windows
+
+Entwickelt und getestet wird ausschließlich auf macOS -- die Windows-Version
+wird nicht selbst getestet, funktioniert aber hoffentlich fehlerfrei. Bei
+Fehlern bitte mit einer genauen, nachvollziehbaren Beschreibung an
+[telefonmann@telefonanleitungen.de](mailto:telefonmann@telefonanleitungen.de)
+schreiben, dann wird so schnell wie möglich korrigiert.
+
+*Developed and tested exclusively on macOS -- the Windows version is not
+tested by the author, but hopefully works correctly. If you run into a bug,
+please report it with a precise, reproducible description to
+[telefonmann@telefonanleitungen.de](mailto:telefonmann@telefonanleitungen.de),
+and it will be fixed as soon as possible.*
 
 ## Installation
 

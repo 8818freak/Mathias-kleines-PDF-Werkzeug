@@ -30,6 +30,7 @@ EN: Logic for combining several pages/images into a single large page --
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Callable
 
 from PIL import Image
 
@@ -129,7 +130,10 @@ def raster_anordnen(seiten: list[WorkingPage], spalten: int) -> list[Kachel]:
     return kacheln
 
 
-def zusammengefuegtes_bild(seiten: list[WorkingPage], kacheln: list[Kachel]) -> tuple[Image.Image, float]:
+def zusammengefuegtes_bild(
+    seiten: list[WorkingPage], kacheln: list[Kachel],
+    fortschritt: Callable[[int, int], None] | None = None,
+) -> tuple[Image.Image, float]:
     """
     DE: Alle Kacheln gemaess ihrer Position zu einem einzigen Bild
         zusammensetzen. Kacheln mit niedrigerer nativer Aufloesung werden
@@ -137,19 +141,27 @@ def zusammengefuegtes_bild(seiten: list[WorkingPage], kacheln: list[Kachel]) -> 
         umgekehrt), damit keine bereits vorhandene Detailschaerfe verloren
         geht. Spaeter in `kacheln` stehende Teile werden ueber frueher
         eingesetzte gezeichnet (relevant nur bei bewusster Ueberlappung).
-        Liefert (Bild, dpi).
+        Liefert (Bild, dpi). `fortschritt`, falls angegeben, wird nach
+        jeder gerenderten Kachel mit (erledigt, gesamt) aufgerufen -- fuer
+        eine Fortschrittsanzeige in der GUI.
 
     EN: Assemble all tiles into a single image according to their
         position. Tiles with lower native resolution are upscaled to the
         highest resolution involved (not the other way round), so no
         already-present detail is lost. Tiles listed later in `kacheln`
         are drawn over earlier ones (only relevant for deliberate
-        overlap). Returns (image, dpi).
+        overlap). Returns (image, dpi). `fortschritt`, if given, is
+        called with (done, total) after each rendered tile -- for a
+        progress display in the GUI.
     """
     if not kacheln:
         raise ValueError("Keine Kacheln zum Zusammenfuegen.")
 
-    gerendert = [(kachel_bild(seiten[k.index], k), k) for k in kacheln]
+    gerendert = []
+    for i, k in enumerate(kacheln, start=1):
+        gerendert.append((kachel_bild(seiten[k.index], k), k))
+        if fortschritt is not None:
+            fortschritt(i, len(kacheln))
     dpi_ziel = max(dpi for (_, dpi), _ in gerendert)
     skala = dpi_ziel / 72.0
 

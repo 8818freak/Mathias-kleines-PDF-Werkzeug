@@ -105,22 +105,43 @@ class DateiListenPanel(QWidget):
     def _pfade_verarbeiten(self, pfade: list[Path]) -> None:
         """DE: Ausgewaehlte/gezogene Dateien in Seiten aufschluesseln und
         anhaengen -- als ein einziger Rueckgaengig-Schritt, egal wie viele
-        Dateien es sind.
+        Dateien es sind. Die Fortschrittsanzeige zaehlt dabei SEITEN, nicht
+        Dateien -- sonst haengt sie bei einer einzelnen vielseitigen Datei
+        (z. B. eine 900-seitige PDF) die ganze Zeit unbewegt bei "0 von 1",
+        weil das Rendern der Miniaturen je Seite der eigentlich langsame
+        Teil ist, nicht das Aufschluesseln der Datei selbst.
         EN: Break selected/dropped files down into pages and append them --
-        as a single undo step, regardless of how many files there are."""
+        as a single undo step, regardless of how many files there are. The
+        progress display counts PAGES, not files -- otherwise it sits
+        unmoving at "0 of 1" the whole time for a single many-page file
+        (e.g. a 900-page PDF), since rendering the thumbnails per page is
+        the actually slow part, not breaking the file down itself."""
         if not pfade:
             return
         war_leer = self.liste.count() == 0
         unbekannt = []
-        anzeige = Fortschrittsanzeige(self, self.tr("Dateien werden geladen …"), len(pfade))
+        quellen_je_datei: list[list | None] = []
+        for pfad in pfade:
+            if not ist_unterstuetzt(pfad):
+                unbekannt.append(pfad.name)
+                quellen_je_datei.append(None)
+            else:
+                quellen_je_datei.append(datei_aufschluesseln(pfad))
+
+        gesamt_seiten = sum(len(q) for q in quellen_je_datei if q is not None)
+        anzeige = Fortschrittsanzeige(self, self.tr("Dateien werden geladen …"), gesamt_seiten)
+        erledigt = 0
         try:
             with self.liste.stapelverarbeitung():
-                for i, pfad in enumerate(pfade, start=1):
-                    if not ist_unterstuetzt(pfad):
-                        unbekannt.append(pfad.name)
-                    else:
-                        self.liste.seiten_anhaengen(datei_aufschluesseln(pfad))
-                    anzeige.callback(i, len(pfade))
+                for quellen in quellen_je_datei:
+                    if quellen is None:
+                        continue
+                    basis = erledigt
+                    self.liste.seiten_anhaengen(
+                        quellen,
+                        fortschritt=lambda e, g, basis=basis: anzeige.callback(basis + e, gesamt_seiten),
+                    )
+                    erledigt += len(quellen)
         except Abgebrochen:
             return
         finally:

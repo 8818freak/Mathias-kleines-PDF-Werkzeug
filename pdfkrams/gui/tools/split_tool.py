@@ -278,15 +278,22 @@ class SplitToolWidget(QWidget):
             )
             return
         self.liste.vor_aenderung_sichern()
-        for item in elemente:
-            wp = item.data(Qt.ItemDataRole.UserRole)
-            bild = _pixmap_zu_pil(wp)
-            neue_v = (automatische_positionen(bild, "vertikal", len(wp.split.positionen_v) + 1)
-                     if wp.split.positionen_v else [])
-            neue_h = (automatische_positionen(bild, "waagerecht", len(wp.split.positionen_h) + 1)
-                     if wp.split.positionen_h else [])
-            wp.split = SplitSpec(positionen_v=neue_v, positionen_h=neue_h)
-            self.liste.item_aktualisieren(item)
+        anzeige = Fortschrittsanzeige(self, self.tr("Schnitte werden ausgerichtet …"), len(elemente))
+        try:
+            for i, item in enumerate(elemente, start=1):
+                wp = item.data(Qt.ItemDataRole.UserRole)
+                bild = _pixmap_zu_pil(wp)
+                neue_v = (automatische_positionen(bild, "vertikal", len(wp.split.positionen_v) + 1)
+                         if wp.split.positionen_v else [])
+                neue_h = (automatische_positionen(bild, "waagerecht", len(wp.split.positionen_h) + 1)
+                         if wp.split.positionen_h else [])
+                wp.split = SplitSpec(positionen_v=neue_v, positionen_h=neue_h)
+                self.liste.item_aktualisieren(item)
+                anzeige.callback(i, len(elemente))
+        except Abgebrochen:
+            return
+        finally:
+            anzeige.schliessen()
         self._auswahl_geaendert()
 
     def _teilung_entfernen(self) -> None:
@@ -317,11 +324,18 @@ class SplitToolWidget(QWidget):
         # EN: Replace back to front so the row numbers of not-yet-processed
         #     entries don't shift while doing so. stapelverarbeitung()
         #     bundles all replacements into a single undo step.
-        with self.liste.stapelverarbeitung():
-            for item in sorted(ziel, key=self.liste.row, reverse=True):
-                wp = item.data(Qt.ItemDataRole.UserRole)
-                neue_quellen = materialisiere_teilung(wp)
-                self.liste.ersetzen(item, neue_quellen)
+        anzeige = Fortschrittsanzeige(self, self.tr("Seiten werden geteilt …"), len(ziel))
+        try:
+            with self.liste.stapelverarbeitung():
+                for i, item in enumerate(sorted(ziel, key=self.liste.row, reverse=True), start=1):
+                    wp = item.data(Qt.ItemDataRole.UserRole)
+                    neue_quellen = materialisiere_teilung(wp)
+                    self.liste.ersetzen(item, neue_quellen)
+                    anzeige.callback(i, len(ziel))
+        except Abgebrochen:
+            return
+        finally:
+            anzeige.schliessen()
         self._auswahl_geaendert()
 
     # -- Export -------------------------------------------------------------

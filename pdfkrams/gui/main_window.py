@@ -51,6 +51,7 @@ from pdfkrams.gui.tools.rotate_tool import RotateToolWidget
 from pdfkrams.gui.tools.seitenmass_tool import SeitenmassToolWidget
 from pdfkrams.gui.tools.split_tool import SplitToolWidget
 from pdfkrams.gui.tools.verkleinern_tool import VerkleinernToolWidget
+from pdfkrams.gui.tools.zuschneiden_tool import ZuschneidenToolWidget
 from pdfkrams.gui.tools.zusammenfuegen_tool import ZusammenfuegenToolWidget
 from pdfkrams.gui.widgets.file_tool_base import DateiListenPanel
 from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
@@ -71,6 +72,7 @@ _WERKZEUGE: list[tuple[str, type[QWidget] | None]] = [
     ("Heftseiten teilen", HeftseitenToolWidget),
     ("Seiten nummerieren", NummerierenToolWidget),
     ("Seitenmaß normieren", SeitenmassToolWidget),
+    ("Seiten zuschneiden", ZuschneidenToolWidget),
     ("PDF in Bilder teilen", PdfZuBildernToolWidget),
     ("PDF verkleinern & PDF/A", VerkleinernToolWidget),
 ]
@@ -210,7 +212,15 @@ class MainWindow(QMainWindow):
                    "Dieses Programm kommt OHNE JEDE GEWÄHRLEISTUNG. Es ist freie "
                    "Software, und Sie dürfen es unter bestimmten Bedingungen "
                    "weiterverbreiten -- siehe die Lizenz GNU GPL 3.0 (Datei "
-                   "LICENSE) für Details.").format(ANBIETER, WEBSITE, copyright_zeile())
+                   "LICENSE) für Details.<br><br>"
+                   "Entwickelt und getestet wird ausschließlich auf macOS -- die "
+                   "Windows-Version wird nicht selbst getestet, funktioniert aber "
+                   "hoffentlich fehlerfrei. Bei Fehlern bitte mit einer genauen, "
+                   "nachvollziehbaren Beschreibung an "
+                   "<a href=\"mailto:telefonmann@telefonanleitungen.de\">"
+                   "telefonmann@telefonanleitungen.de</a> schreiben, dann wird so "
+                   "schnell wie möglich korrigiert."
+                   ).format(ANBIETER, WEBSITE, copyright_zeile())
         )
         box.exec()
 

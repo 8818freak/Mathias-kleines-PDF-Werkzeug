@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import copy
 from contextlib import contextmanager
+from typing import Callable
 
 from PySide6.QtCore import QCoreApplication, QSize, Qt, Signal
 from PySide6.QtGui import QIcon, QImage, QPixmap, QTransform
@@ -165,6 +166,11 @@ class PageListWidget(QListWidget):
         #     was rowsMoved (danach ausgeloest) nicht mehr leisten kann.
         #     Deshalb wird hier nur "geaendert" gemeldet; die Sicherung
         #     selbst passiert in startDrag().
+        # EN: Drag&drop reordering within the list is also a change that
+        #     should be undoable -- but the snapshot must happen BEFORE
+        #     the move, which rowsMoved (fired afterwards) can no longer
+        #     provide. So this only emits "changed" here; the actual
+        #     snapshot happens in startDrag().
         self.geaendert.emit()
 
     def startDrag(self, supportedActions) -> None:  # noqa: N802 (Qt-Ueberschreibung)
@@ -247,12 +253,25 @@ class PageListWidget(QListWidget):
         item.setData(Qt.ItemDataRole.UserRole, wp)
         return item
 
-    def seiten_anhaengen(self, sources: list[PageSource]) -> None:
+    def seiten_anhaengen(
+        self, sources: list[PageSource],
+        fortschritt: Callable[[int, int], None] | None = None,
+    ) -> None:
         """DE: Seiten am Ende der Liste einfuegen und Miniaturen rendern.
-        EN: Append pages at the end of the list and render their thumbnails."""
+            `fortschritt`, falls angegeben, wird nach jeder gerenderten
+            Miniatur mit (erledigt, gesamt) aufgerufen -- das Rendern
+            einer Miniatur pro Seite ist der eigentlich langsame Teil
+            beim Laden vielseitiger Dateien.
+        EN: Append pages at the end of the list and render their
+            thumbnails. `fortschritt`, if given, is called with (done,
+            total) after each rendered thumbnail -- rendering one
+            thumbnail per page is the actually slow part when loading
+            many-page files."""
         self.vor_aenderung_sichern()
-        for source in sources:
+        for i, source in enumerate(sources, start=1):
             self.addItem(self._erzeuge_item(source))
+            if fortschritt is not None:
+                fortschritt(i, len(sources))
         self.geaendert.emit()
 
     def ersetzen(self, item: QListWidgetItem, sources: list[PageSource]) -> None:

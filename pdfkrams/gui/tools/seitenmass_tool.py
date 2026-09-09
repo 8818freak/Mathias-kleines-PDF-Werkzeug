@@ -52,6 +52,7 @@ from pdfkrams.core.seitenmass import (
     seite_normieren,
 )
 from pdfkrams.einstellungen import einstellungen
+from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
 from pdfkrams.gui.widgets.page_list import PageListWidget
 
 _AKTUELLE_SEITE = "Aktuelle Seite"
@@ -383,12 +384,19 @@ class SeitenmassToolWidget(QWidget):
         rand_abschneiden = self._rand_feld.isChecked()
         arbeits_unterordner = arbeitsordner.pfad() / uuid.uuid4().hex
 
-        with self.liste.stapelverarbeitung():
-            for item in ziel:
-                wp = item.data(Qt.ItemDataRole.UserRole)
-                bild, ziel_dpi = seite_normieren(wp, breite_mm, hoehe_mm, dpi, rand_abschneiden)
-                source = bild_materialisieren(bild, ziel_dpi, arbeits_unterordner, f"normiert_{uuid.uuid4().hex[:8]}")
-                self.liste.ersetzen(item, [source])
+        anzeige = Fortschrittsanzeige(self, self.tr("Seiten werden normiert …"), len(ziel))
+        try:
+            with self.liste.stapelverarbeitung():
+                for i, item in enumerate(ziel, start=1):
+                    wp = item.data(Qt.ItemDataRole.UserRole)
+                    bild, ziel_dpi = seite_normieren(wp, breite_mm, hoehe_mm, dpi, rand_abschneiden)
+                    source = bild_materialisieren(bild, ziel_dpi, arbeits_unterordner, f"normiert_{uuid.uuid4().hex[:8]}")
+                    self.liste.ersetzen(item, [source])
+                    anzeige.callback(i, len(ziel))
+        except Abgebrochen:
+            return
+        finally:
+            anzeige.schliessen()
 
         self._auswahl_geaendert()
         QMessageBox.information(

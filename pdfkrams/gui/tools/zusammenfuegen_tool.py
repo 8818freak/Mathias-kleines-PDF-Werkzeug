@@ -53,6 +53,7 @@ from pdfkrams.core.document import WorkingPage
 from pdfkrams.core.export_dateien import bild_materialisieren
 from pdfkrams.core.zusammenfuegen import Kachel, kachel_bild, raster_anordnen, zusammengefuegtes_bild
 from pdfkrams.gui.bildkonvertierung import pil_zu_qpixmap
+from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
 from pdfkrams.gui.widgets.page_list import PageListWidget
 from pdfkrams.gui.widgets.zusammenfuegen_canvas import ZusammenfuegenCanvas
 
@@ -247,11 +248,16 @@ class ZusammenfuegenToolWidget(QWidget):
     # -- Übernehmen / apply -------------------------------------------------
 
     def _uebernehmen(self) -> None:
+        anzeige = Fortschrittsanzeige(self, self.tr("Seite wird zusammengefügt …"), len(self._kacheln))
         try:
-            bild, dpi = zusammengefuegtes_bild(self._seiten, self._kacheln)
+            bild, dpi = zusammengefuegtes_bild(self._seiten, self._kacheln, fortschritt=anzeige.callback)
+        except Abgebrochen:
+            return
         except Exception as exc:  # noqa: BLE001 -- Fehler dem Nutzer verstaendlich zeigen
             QMessageBox.critical(self, self.tr("Fehlgeschlagen"), str(exc))
             return
+        finally:
+            anzeige.schliessen()
         ziel = arbeitsordner.pfad() / uuid.uuid4().hex
         source = bild_materialisieren(bild, dpi, ziel, "zusammengefuegt")
         self.liste.mehrere_ersetzen(self._items, [source])

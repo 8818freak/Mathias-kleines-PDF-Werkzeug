@@ -4,6 +4,51 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 
 *All notable changes to this project are documented here.*
 
+## [1.3] – 2026-09-09
+
+### Hinzugefügt / Added
+
+- Neues Werkzeug „Seiten zuschneiden“: Seiten von allen vier Rändern aus
+  um ein frei wählbares Maß beschneiden (z. B. einen Lochrandstreifen
+  oder Heftrand entfernen) -- anders als „Seitenmaß normieren“ ohne
+  Skalierung, mit ziehbaren Linien in der Vorschau (der abgeschnittene
+  Bereich wird abgedunkelt dargestellt) und Live-Anzeige der
+  Ergebnisgröße inkl. Formatvorschlag.
+  *New "Crop pages" tool: crop pages on all four edges by a freely
+  chosen amount (e.g. to remove a punch-hole strip or binding margin) --
+  unlike "Normalize page size", without scaling, with draggable lines in
+  the preview (the cropped-away area is shown darkened) and a live
+  display of the resulting size including a format suggestion.*
+- Jede Fortschrittsanzeige zeigt jetzt zusätzlich "(N von M)" als Text an,
+  nicht nur den Balken.
+  *Every progress dialog now additionally shows "(N of M)" as text, not
+  just the bar.*
+- Hinweis zu Windows im Über-Dialog, README und allen Anleitungen: die
+  Windows-Version wird vom Autor nicht selbst getestet, Fehlerberichte
+  bitte an telefonmann@telefonanleitungen.de.
+  *Note about Windows in the About dialog, README, and all manuals: the
+  Windows version is not tested by the author, please report bugs to
+  telefonmann@telefonanleitungen.de.*
+
+### Behoben / Fixed
+
+- Fortschrittsanzeigen ergänzt, wo sie bisher fehlten: „Seitenmaß
+  normieren“, „Seiten zusammenfügen“, und beim eigentlichen Teilen bzw.
+  automatischen Ausrichten in „Seiten teilen“.
+  *Added progress dialogs where they were previously missing:
+  "Normalize page size", "Combine pages", and the actual splitting resp.
+  auto-alignment in "Split pages".*
+- Der Ladefortschritt zählt jetzt Seiten statt Dateien -- bei einer
+  einzelnen vielseitigen Datei (z. B. eine 900-seitige PDF) bewegte sich
+  der Balken vorher die ganze Zeit nicht.
+  *Loading progress now counts pages instead of files -- for a single
+  many-page file (e.g. a 900-page PDF) the bar previously didn't move at
+  all during the whole load.*
+- Ein rein deutscher Kommentar (ohne EN-Übersetzung) in `page_list.py`
+  ergänzt.
+  *A German-only comment (missing its EN translation) in `page_list.py`
+  completed.*
+
 ## [1.2.2] – 2026-09-09
 
 ### Behoben / Fixed
