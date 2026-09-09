@@ -95,6 +95,8 @@ class MainWindow(QMainWindow):
 
         self._dateiliste_panel = DateiListenPanel()
         self._liste: PageListWidget = self._dateiliste_panel.liste
+        self._dateiliste_panel.einzelneDateiGeoeffnet.connect(self._dokument_geoeffnet)
+        self._dateiliste_panel.andereDateienHinzugefuegt.connect(self._speicherziel_verwerfen)
 
         self._seitenleiste = QListWidget()
         self._werkzeuge = QStackedWidget()
@@ -215,11 +217,47 @@ class MainWindow(QMainWindow):
     def _einstellungen_anzeigen(self) -> None:
         EinstellungenDialog(self).exec()
 
+    def dateien_oeffnen(self, pfade: list[Path]) -> None:
+        """DE: Von aussen uebergebene Dateien in die Dateiliste laden --
+            z. B. vom Finder ("Oeffnen mit …"), per Doppelklick oder ueber
+            die Kommandozeile. Bringt das Fenster dabei in den Vordergrund,
+            falls es (etwa beim erneuten Oeffnen einer Datei waehrend die
+            App schon laeuft) im Hintergrund war.
+        EN: Load externally supplied files into the file list -- e.g. from
+            Finder's "Open With …", a double-click, or the command line.
+            Also brings the window to the front, in case it was in the
+            background (e.g. opening another file while the app is
+            already running)."""
+        self.show()
+        self.raise_()
+        self.activateWindow()
+        self._dateiliste_panel._pfade_verarbeiten(pfade)
+
     def _verlauf_aktualisieren(self) -> None:
         self._action_rueckgaengig.setEnabled(self._liste.kann_rueckgaengig())
         self._action_wiederholen.setEnabled(self._liste.kann_wiederholen())
 
     # -- Speichern / saving -------------------------------------------------
+
+    def _dokument_geoeffnet(self, pfad: Path) -> None:
+        """DE: Merkt sich eine frisch geoeffnete Einzel-PDF als Speicherziel
+            fuer "Speichern" (Cmd+S) -- so ueberschreibt Speichern direkt
+            diese Datei, statt jedes Mal nach einem Ort zu fragen. Wird nur
+            ausgeloest, wenn wirklich genau eine PDF in eine leere Liste
+            geladen wurde (siehe DateiListenPanel.einzelneDateiGeoeffnet);
+            sobald weitere Dateien hinzukommen, ist die Liste kein Abbild
+            mehr dieser einen Datei, und "Speichern" fragt wieder nach.
+        EN: Remembers a freshly opened single PDF as the save target for
+            "Save" (Cmd+S) -- so Save overwrites that file directly
+            instead of asking for a location every time. Only fires when
+            exactly one PDF was loaded into an empty list (see
+            DateiListenPanel.einzelneDateiGeoeffnet); once more files are
+            added, the list no longer mirrors that one file, and "Save"
+            asks again."""
+        self._letzter_pdf_pfad = pfad
+
+    def _speicherziel_verwerfen(self) -> None:
+        self._letzter_pdf_pfad = None
 
     def _speichern(self) -> None:
         if self._letzter_pdf_pfad is None:

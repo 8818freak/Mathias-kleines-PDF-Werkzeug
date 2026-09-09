@@ -16,7 +16,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PySide6.QtCore import QCoreApplication
+from PySide6.QtCore import QCoreApplication, Signal
 from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QLabel, QMessageBox, QPushButton, QVBoxLayout, QWidget
 
 from pdfkrams.core.document import UNTERSTUETZTE_ENDUNGEN, datei_aufschluesseln, ist_unterstuetzt
@@ -41,6 +41,34 @@ class DateiListenPanel(QWidget):
         file picker dialog and drag&drop from Finder. Created once in the
         main window and used jointly by every tool.
     """
+
+    # DE: Wird ausgeloest, wenn genau eine PDF-Datei in eine zuvor leere
+    #     Liste geladen wurde -- also erkennbar "diese eine Datei geoeffnet"
+    #     statt "mehrere Dateien zu etwas Neuem zusammengestellt". Das
+    #     Hauptfenster nutzt das, um "Speichern" (Cmd+S) direkt in diese
+    #     Datei schreiben zu lassen, statt jedes Mal nach einem Speicherort
+    #     zu fragen.
+    # EN: Fired when exactly one PDF file was loaded into a previously
+    #     empty list -- i.e. recognizably "this one file was opened"
+    #     rather than "several files assembled into something new". The
+    #     main window uses this to make "Save" (Cmd+S) write straight back
+    #     into that file, instead of asking for a location every time.
+    einzelneDateiGeoeffnet = Signal(Path)
+
+    # DE: Wird ausgeloest, wenn Dateien dazukommen, OHNE dass der Fall oben
+    #     zutrifft (mehrere Dateien auf einmal, oder Hinzufuegen zu einer
+    #     schon nicht mehr leeren Liste) -- die Liste stellt dann nicht mehr
+    #     eine einzelne, unveraenderte Ausgangsdatei dar. Das Hauptfenster
+    #     verwirft darauf ein zuvor gemerktes Speicherziel, damit "Speichern"
+    #     nicht versehentlich die urspruengliche Datei mit zusammengefuehrten
+    #     Inhalten ueberschreibt, ohne vorher zu fragen.
+    # EN: Fired when files are added WITHOUT the case above applying
+    #     (several files at once, or adding to an already non-empty list)
+    #     -- the list no longer represents a single, unmodified source
+    #     file. The main window discards any previously remembered save
+    #     target so "Save" doesn't silently overwrite the original file
+    #     with merged content without asking first.
+    andereDateienHinzugefuegt = Signal()
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -82,6 +110,7 @@ class DateiListenPanel(QWidget):
         as a single undo step, regardless of how many files there are."""
         if not pfade:
             return
+        war_leer = self.liste.count() == 0
         unbekannt = []
         anzeige = Fortschrittsanzeige(self, self.tr("Dateien werden geladen …"), len(pfade))
         try:
@@ -102,6 +131,10 @@ class DateiListenPanel(QWidget):
                 self.tr("Nicht unterstütztes Format"),
                 self.tr("Diese Dateien wurden übersprungen:\n{0}").format("\n".join(unbekannt)),
             )
+        if war_leer and len(pfade) == 1 and not unbekannt and pfade[0].suffix.lower() == ".pdf":
+            self.einzelneDateiGeoeffnet.emit(pfade[0])
+        else:
+            self.andereDateienHinzugefuegt.emit()
 
     # -- Drag & Drop vom Finder / from Finder ------------------------------
 
