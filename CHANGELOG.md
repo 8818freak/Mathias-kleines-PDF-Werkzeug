@@ -4,6 +4,26 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 
 *All notable changes to this project are documented here.*
 
+## [1.5] – 2026-09-10
+
+### Hinzugefügt / Added
+
+- Neues Werkzeug „Bildbereinigung“: für gescannte Schwarzweiß-/
+  Textvorlagen -- Binarisieren (Schwellwert, auf Wunsch automatisch per
+  Otsu-Verfahren vorgeschlagen) und Despeckle (kleine dunkle Flecken/
+  Staub entfernen), beide Schritte unabhängig voneinander zuschaltbar,
+  mit Live-Vorschau. Binarisierte Seiten lassen sich anschließend in
+  „PDF verkleinern & PDF/A“ oft deutlich kleiner komprimieren. Despeckle
+  ist bewusst ohne die Abhängigkeit scipy umgesetzt (rein mit numpy), um
+  die App schlank zu halten.
+  *New "Image cleanup" tool: for scanned black-and-white/text originals
+  -- binarizing (threshold, optionally auto-suggested via Otsu's method)
+  and despeckling (removing small dark specks/dust), both steps
+  independently toggleable, with a live preview. Binarized pages can
+  often be compressed significantly smaller afterwards in "Shrink PDF &
+  PDF/A". Despeckle is deliberately implemented without the scipy
+  dependency (pure numpy), to keep the app lean.*
+
 ## [1.4] – 2026-09-09
 
 ### Hinzugefügt / Added

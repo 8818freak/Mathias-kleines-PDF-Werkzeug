@@ -43,6 +43,7 @@ from PySide6.QtWidgets import (
 
 from pdfkrams.core.combine import export_pdf
 from pdfkrams.gui.einstellungen_dialog import EinstellungenDialog
+from pdfkrams.gui.tools.bildbereinigung_tool import BildbereinigungToolWidget
 from pdfkrams.gui.tools.combine_tool import CombineToolWidget
 from pdfkrams.gui.tools.heftseiten_tool import HeftseitenToolWidget
 from pdfkrams.gui.tools.nummerieren_tool import NummerierenToolWidget
@@ -67,6 +68,7 @@ from pdfkrams.info import ANBIETER, WEBSITE, copyright_zeile, voller_programmnam
 _WERKZEUGE: list[tuple[str, type[QWidget] | None]] = [
     ("PDF erstellen", CombineToolWidget),
     ("Seiten drehen", RotateToolWidget),
+    ("Bildbereinigung", BildbereinigungToolWidget),
     ("Seiten teilen", SplitToolWidget),
     ("Seiten zusammenfügen", ZusammenfuegenToolWidget),
     ("Heftseiten teilen", HeftseitenToolWidget),

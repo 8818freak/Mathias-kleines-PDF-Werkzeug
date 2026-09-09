@@ -2,6 +2,85 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US">
 <context>
+    <name>BildbereinigungToolWidget</name>
+    <message>
+        <location filename="../gui/tools/bildbereinigung_tool.py" line="69" />
+        <source>Für gescannte Schwarzweiß-/Textvorlagen: wandelt in reines Schwarzweiß um (Schwellwert, auf Wunsch automatisch vorgeschlagen) und/oder entfernt kleine dunkle Flecken (Staub, Druckpunkte). Beide Schritte sind unabhängig voneinander zuschaltbar; binarisierte Seiten lassen sich in „PDF verkleinern &amp; PDF/A“ oft besonders klein komprimieren.</source>
+        <translation>For scanned black-and-white/text originals: converts to pure black and white (threshold, optionally auto-suggested) and/or removes small dark specks (dust, print artifacts). Both steps can be toggled independently; binarized pages can often be compressed especially small in "Shrink PDF &amp; PDF/A".</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/bildbereinigung_tool.py" line="77" />
+        <location filename="../gui/tools/bildbereinigung_tool.py" line="167" />
+        <source>Keine Seite ausgewählt</source>
+        <translation>No page selected</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/bildbereinigung_tool.py" line="88" />
+        <source>Bereinigung – anwenden auf:</source>
+        <translation>Cleanup -- apply to:</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/bildbereinigung_tool.py" line="96" />
+        <source>Schwellwert: </source>
+        <translation>Threshold: </translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/bildbereinigung_tool.py" line="98" />
+        <source>Automatisch vorschlagen</source>
+        <translation>Suggest automatically</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/bildbereinigung_tool.py" line="100" />
+        <source>Schlägt per Otsu-Verfahren einen Schwellwert vor, der Text/Linien am deutlichsten vom Hintergrund trennt.</source>
+        <translation>Suggests a threshold via Otsu's method that most clearly separates text/lines from the background.</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/bildbereinigung_tool.py" line="108" />
+        <source>In reines Schwarzweiß umwandeln (Binarisieren)</source>
+        <translation>Convert to pure black and white (binarize)</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/bildbereinigung_tool.py" line="117" />
+        <source>Flecken entfernen (Stärke): </source>
+        <translation>Remove specks (strength): </translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/bildbereinigung_tool.py" line="119" />
+        <source>0 = aus. Je höher, desto größere Flecken verschwinden -- aber auch desto eher leiden dünne Textstriche. 1-2 ist meist ein guter Start.</source>
+        <translation>0 = off. The higher, the larger the specks that disappear -- but also the more likely thin text strokes suffer. 1-2 is usually a good start.</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/bildbereinigung_tool.py" line="126" />
+        <source>Anwenden</source>
+        <translation>Apply</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/bildbereinigung_tool.py" line="186" />
+        <source>Keine Auswahl</source>
+        <translation>No selection</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/bildbereinigung_tool.py" line="186" />
+        <source>Bitte zuerst Seiten in der Liste links auswählen.</source>
+        <translation>Please select pages in the list on the left first.</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/bildbereinigung_tool.py" line="195" />
+        <source>Seiten werden bereinigt …</source>
+        <translation>Cleaning up pages …</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/bildbereinigung_tool.py" line="211" />
+        <source>Fertig</source>
+        <translation>Done</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/bildbereinigung_tool.py" line="211" />
+        <source>{0} Seite(n) bereinigt.</source>
+        <translation>{0} page(s) cleaned up.</translation>
+    </message>
+<message><location filename="../gui/tools/bildbereinigung_tool.py" line="140" /><source>Aktuelle Seite</source><translation>Current page</translation></message><message><location filename="../gui/tools/bildbereinigung_tool.py" line="140" /><source>Ausgewählte Seiten</source><translation>Selected pages</translation></message><message><location filename="../gui/tools/bildbereinigung_tool.py" line="140" /><source>Alle Seiten</source><translation>All pages</translation></message></context>
+<context>
     <name>CombineToolWidget</name>
     <message>
         <location filename="../gui/tools/combine_tool.py" line="33" />
@@ -223,67 +302,67 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../gui/main_window.py" line="84" />
+        <location filename="../gui/main_window.py" line="86" />
         <source>„{0}“ kommt in einem der nächsten Schritte.</source>
         <translation>“{0}” is coming in one of the next steps.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="139" />
+        <location filename="../gui/main_window.py" line="141" />
         <source>Datei</source>
         <translation>File</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="141" />
+        <location filename="../gui/main_window.py" line="143" />
         <source>Dateien öffnen …</source>
         <translation>Open files …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="148" />
+        <location filename="../gui/main_window.py" line="150" />
         <source>Speichern</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="153" />
+        <location filename="../gui/main_window.py" line="155" />
         <source>Speichern unter …</source>
         <translation>Save as …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="158" />
+        <location filename="../gui/main_window.py" line="160" />
         <source>Bearbeiten</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="160" />
+        <location filename="../gui/main_window.py" line="162" />
         <source>Rückgängig</source>
         <translation>Undo</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="165" />
+        <location filename="../gui/main_window.py" line="167" />
         <source>Wiederholen</source>
         <translation>Redo</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="173" />
+        <location filename="../gui/main_window.py" line="175" />
         <source>Einstellungen …</source>
         <translation>Preferences …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="183" />
+        <location filename="../gui/main_window.py" line="185" />
         <source>Hilfe</source>
         <translation>Help</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="185" />
+        <location filename="../gui/main_window.py" line="187" />
         <source>Über {0} …</source>
         <translation>About {0} …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="206" />
+        <location filename="../gui/main_window.py" line="208" />
         <source>Über {0}</source>
         <translation>About {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="209" />
+        <location filename="../gui/main_window.py" line="211" />
         <source>Kostenlos bereitgestellt von {0}&lt;br&gt;&lt;a href="{1}"&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;Dieses Programm kommt OHNE JEDE GEWÄHRLEISTUNG. Es ist freie Software, und Sie dürfen es unter bestimmten Bedingungen weiterverbreiten -- siehe die Lizenz GNU GPL 3.0 (Datei LICENSE) für Details.&lt;br&gt;&lt;br&gt;Entwickelt und getestet wird ausschließlich auf macOS -- die Windows-Version wird nicht selbst getestet, funktioniert aber hoffentlich fehlerfrei. Bei Fehlern bitte mit einer genauen, nachvollziehbaren Beschreibung an &lt;a href="mailto:telefonmann@telefonanleitungen.de"&gt;telefonmann@telefonanleitungen.de&lt;/a&gt; schreiben, dann wird so schnell wie möglich korrigiert.</source>
         <translation>Provided free of charge by {0}&lt;br&gt;&lt;a href="{1}"&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;This program comes WITH ABSOLUTELY NO WARRANTY. It is free software, and you are welcome to redistribute it under certain conditions -- see the GNU GPL 3.0 license (file LICENSE) for details.&lt;br&gt;&lt;br&gt;Developed and tested exclusively on macOS -- the Windows version is not tested by the author, but hopefully works correctly. If you run into a bug, please report it with a precise, reproducible description to &lt;a href="mailto:telefonmann@telefonanleitungen.de"&gt;telefonmann@telefonanleitungen.de&lt;/a&gt;, and it will be fixed as soon as possible.</translation>
     </message>
@@ -292,47 +371,47 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
         <translation>Provided free of charge by {0}&lt;br&gt;&lt;a href="{1}"&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;This program comes WITH ABSOLUTELY NO WARRANTY. It is free software, and you are welcome to redistribute it under certain conditions -- see the GNU GPL 3.0 license (file LICENSE) for details.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="280" />
+        <location filename="../gui/main_window.py" line="282" />
         <source>PDF speichern unter</source>
         <translation>Save PDF as</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="280" />
+        <location filename="../gui/main_window.py" line="282" />
         <source>dokument.pdf</source>
         <translation>document.pdf</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="280" />
+        <location filename="../gui/main_window.py" line="282" />
         <source>PDF-Datei (*.pdf)</source>
         <translation>PDF file (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="290" />
+        <location filename="../gui/main_window.py" line="292" />
         <source>Keine Seiten</source>
         <translation>No pages</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="290" />
+        <location filename="../gui/main_window.py" line="292" />
         <source>Die Dateiliste ist leer.</source>
         <translation>The file list is empty.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="292" />
+        <location filename="../gui/main_window.py" line="294" />
         <source>PDF wird erstellt …</source>
         <translation>Creating PDF …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="298" />
+        <location filename="../gui/main_window.py" line="300" />
         <source>Speichern fehlgeschlagen</source>
         <translation>Save failed</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="302" />
+        <location filename="../gui/main_window.py" line="304" />
         <source>Gespeichert</source>
         <translation>Saved</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="302" />
+        <location filename="../gui/main_window.py" line="304" />
         <source>PDF gespeichert unter:
 {0}</source>
         <translation>PDF saved to:
@@ -378,7 +457,7 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
         <source>Seiten zuschneiden</source>
         <translation>Crop pages</translation>
     </message>
-</context>
+<message><location filename="../gui/main_window.py" line="105" /><source>Bildbereinigung</source><translation>Image cleanup</translation></message></context>
 <context>
     <name>NummerierenToolWidget</name>
     <message>

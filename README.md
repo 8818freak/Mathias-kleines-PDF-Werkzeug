@@ -45,6 +45,14 @@ internet connection and no additional software required.*
   *Rotate pages freehand by dragging, or by 90°/180°, mirror, or
   alternate rotation for scanned spreads; skew can also be suggested
   automatically via text-line detection.*
+- **Bildbereinigung** -- für gescannte Schwarzweiß-/Textvorlagen:
+  Binarisieren (Schwellwert, auf Wunsch automatisch per Otsu-Verfahren
+  vorgeschlagen) und Despeckle (kleine dunkle Flecken/Staub entfernen),
+  beide Schritte unabhängig voneinander zuschaltbar, mit Live-Vorschau.
+  *Image cleanup for scanned black-and-white/text originals: binarizing
+  (threshold, optionally auto-suggested via Otsu's method) and
+  despeckling (removing small dark specks/dust), both steps
+  independently toggleable, with a live preview.*
 - **Seiten teilen** -- beliebiges Raster aus Zeilen × Spalten, Schnittlinien
   mit der Maus ziehen, automatische Ausrichtung auf ruhige Bildbereiche.
   *Split a page into an arbitrary row × column grid, drag the cut lines by
@@ -185,6 +193,7 @@ dependencies into their own virtual environment and then build with
 - [PyMuPDF](https://pypi.org/project/pymupdf/) -- PDF lesen/schreiben/rendern
 - [Pillow](https://pypi.org/project/pillow/) -- Bildverarbeitung inkl. TIFF
 - [pikepdf](https://pypi.org/project/pikepdf/) -- PDF/A-Metadaten
+- [numpy](https://pypi.org/project/numpy/) -- Bildanalyse (Schräglagenerkennung, Bildbereinigung)
 
 Bewusst ohne jede externe Kommandozeilen-Abhängigkeit (kein ImageMagick,
 kein Ghostscript) -- alles reine Python-Bibliotheken, damit sich eine
