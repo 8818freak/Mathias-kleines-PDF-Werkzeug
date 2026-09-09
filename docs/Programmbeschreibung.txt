@@ -1,0 +1,36 @@
+Mathias' kleines PDF-Werkzeug
+
+Ich brauchte für meine Arbeit hier verschiedene Programme, um die gescannten Unterlagen hier als PDF zur Verfügung stellen zu können. Nicht alle von mir benötigten Funktionen konnte ich in ferttigen Programmen finden, also habe ich mir von einer KI dies nützliche Programm nach meinen Anweisungen bauen lassen, das erleichtert mir meine Arbeit ungemein!
+
+Was das Programm kann
+
+Mathias' kleines PDF-Werkzeug hilft dabei, gescannte Dokumente
+nachträglich in Ordnung zu bringen:
+
+- Fügt Seiten aus verschiedenen Dateien zu einer PDF zusammen
+- Dreht schief gescannte Seiten gerade (jede einzeln in kleinstens 0,1° Schritten, auch mit der Maus drehbar)
+- Trennt mehrere Seiten aus einem einzelnen Scan
+- Bringt gescannte Doppelseiten aus gehefteten Broschüren automatisch
+  in die richtige Lesereihenfolge, nachdem es sie teilte
+- Ordnet eine durcheinandergeratene Seitenfolge neu
+- Zerlegt eine PDF in einzelne Bilddateien
+- Verkleinert die Dateigröße großer Scans deutlich
+
+Alle Funktionen arbeiten in einer einzigen App: Dateien einmal laden
+und mit mehreren Werkzeugen nacheinander bearbeiten, ohne
+zwischendurch exportieren zu müssen. Keine Internetverbindung und
+keine zusätzliche Software nötig.
+
+
+Systemvoraussetzungen
+
+- macOS 11 (Big Sur) oder neuer, 64-Bit (Apple Silicon oder Intel)
+- Windows 10 (64-Bit) oder neuer
+- Ca. 250 MB freier Speicherplatz für die App, zusätzlich freier
+  Platz für Zwischendateien während der Bearbeitung (grob das
+  2- bis 3-fache der Größe der bearbeiteten PDF-Dateien)
+- Keine Internetverbindung nötig
+- Keine zusätzliche Software nötig (kein Python, kein ImageMagick,
+  kein Ghostscript o. ä.) -- vollständig eigenständig
+
+  Hier kann man es nach Anmeldung herunterladen. https://telefonanleitungen.de/php/downloadbereich.php?objekt=Verschiedenes/Mathias%20kleines%20PDF-Werkzeug
