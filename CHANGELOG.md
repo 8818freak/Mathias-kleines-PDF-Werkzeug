@@ -4,6 +4,32 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 
 *All notable changes to this project are documented here.*
 
+## [1.2.2] – 2026-09-09
+
+### Behoben / Fixed
+
+- „Öffnen mit …“ im Finder öffnete zwar die App, lud die gewünschte Datei
+  aber nicht -- macOS übergibt sie als Apple-Event, nicht als
+  Kommandozeilenargument, das wurde bisher gar nicht abgefangen. Betrifft
+  jetzt auch den Fall, dass die App schon läuft. Unter Windows wird eine
+  per Doppelklick/Dateizuordnung geöffnete Datei ebenfalls verarbeitet.
+  *"Open With …" in Finder did open the app but never loaded the intended
+  file -- macOS hands it over as an Apple Event, not a command-line
+  argument, which wasn't being caught at all. Now also covers the case
+  where the app is already running. On Windows, a file opened via
+  double-click/file association is now handled as well.*
+- „Speichern“ (Cmd+S) fragte immer nach einem Speicherort, selbst wenn
+  genau eine bestehende PDF geöffnet wurde -- die App merkte sich nur
+  Ziele aus „Speichern unter“. Wird jetzt beim Öffnen einer einzelnen PDF
+  ebenfalls als Speicherziel übernommen; kommt eine weitere Datei hinzu,
+  fragt „Speichern“ wieder nach, damit nichts versehentlich überschrieben
+  wird.
+  *"Save" (Cmd+S) always asked for a location, even when exactly one
+  existing PDF had been opened -- the app only remembered targets from
+  "Save As". Now also adopted as the save target when a single PDF is
+  opened; once another file is added, "Save" asks again so nothing gets
+  overwritten by accident.*
+
 ## [1.2.1] – 2026-09-09
 
 ### Behoben / Fixed
