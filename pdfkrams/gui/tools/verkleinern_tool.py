@@ -148,8 +148,9 @@ class VerkleinernToolWidget(QWidget):
     # -- Dateigroesse verringern / reduce file size -----------------------
 
     def _exportieren(self) -> None:
+        vorschlag = self.liste.dateiname_vorschlag() or self.tr("verkleinert.pdf")
         ziel, _ = QFileDialog.getSaveFileName(
-            self, self.tr("PDF speichern unter"), self.tr("verkleinert.pdf"), self.tr("PDF-Datei (*.pdf)")
+            self, self.tr("PDF speichern unter"), vorschlag, self.tr("PDF-Datei (*.pdf)")
         )
         if not ziel:
             return
@@ -163,6 +164,7 @@ class VerkleinernToolWidget(QWidget):
             anzahl, groesse = export_pdf_komprimiert(
                 seiten, ziel_pfad, jpeg_qualitaet=self._qualitaet_feld.value(),
                 max_dpi=max_dpi, fortschritt=anzeige.callback,
+                dokument_metadaten=self.liste.pdf_metadaten_felder(),
             )
         except Abgebrochen:
             return
@@ -173,10 +175,11 @@ class VerkleinernToolWidget(QWidget):
             anzeige.schliessen()
 
         if self._pdfa_beim_export_feld.isChecked():
+            titel = self.liste.dokument_metadaten["titel"] or ziel_pfad.stem
             try:
                 im_hintergrund_ausfuehren(
                     self, self.tr("PDF/A-Kennzeichnung wird erstellt …"),
-                    lambda _f: als_pdfa_markieren(ziel_pfad, ziel_pfad, titel=ziel_pfad.stem),
+                    lambda _f: als_pdfa_markieren(ziel_pfad, ziel_pfad, titel=titel),
                 )
                 groesse = ziel_pfad.stat().st_size
             except Exception as exc:  # noqa: BLE001

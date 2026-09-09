@@ -1,5 +1,6 @@
 """
-DE: Persistente Anwendungseinstellungen (Sprache, Maßeinheit) -- über
+DE: Persistente Anwendungseinstellungen (Sprache, Maßeinheit,
+    Datumsformat, Standard-Anbieter) -- über
     QSettings gespeichert (landet automatisch am für macOS/Windows
     jeweils üblichen Ort), an genau dieser Stelle zentral gebündelt.
 
@@ -10,7 +11,8 @@ DE: Persistente Anwendungseinstellungen (Sprache, Maßeinheit) -- über
     Deshalb hier ausschließlich manuelle Umschaltung, nichts wird
     automatisch anhand der Systemsprache vorbelegt.
 
-EN: Persistent application settings (language, measurement unit) --
+EN: Persistent application settings (language, measurement unit, date
+    format, default provider) --
     stored via QSettings (lands automatically wherever macOS/Windows
     conventionally keep such data), bundled centrally in exactly this
     place.
@@ -25,7 +27,11 @@ EN: Persistent application settings (language, measurement unit) --
 
 from __future__ import annotations
 
+from datetime import date
+
 from PySide6.QtCore import QObject, QSettings, Signal
+
+from pdfkrams.info import ANBIETER
 
 _ORGANISATION = "Telefonanleitungen.de"
 _ANWENDUNG = "MathiasKleinesPDFWerkzeug"
@@ -48,6 +54,26 @@ MASSEINHEITEN: dict[str, str] = {
 }
 STANDARD_MASSEINHEIT = "mm"
 
+# DE: Datumsformat fuer das Releasedatum im Werkzeug "Metadaten
+#     bearbeiten" (Dateiname-Vorschlag + Stichwoerter) -- Anzeigename ->
+#     strftime-Muster. Bewusst als feste Auswahl statt freier
+#     strftime-Eingabe, um Tippfehler zu vermeiden.
+# EN: Date format for the release date in the "Edit metadata" tool
+#     (filename suggestion + keywords) -- display name -> strftime
+#     pattern. Deliberately a fixed choice instead of free-form strftime
+#     input, to avoid typos.
+DATUMSFORMATE: dict[str, str] = {
+    "jj-mm": "JJ-MM (z. B. 26-09)",
+    "jjjj-mm-tt": "JJJJ-MM-TT (z. B. 2026-09-10)",
+    "tt.mm.jjjj": "TT.MM.JJJJ (z. B. 10.09.2026)",
+}
+_DATUMSFORMAT_MUSTER: dict[str, str] = {
+    "jj-mm": "%y-%m",
+    "jjjj-mm-tt": "%Y-%m-%d",
+    "tt.mm.jjjj": "%d.%m.%Y",
+}
+STANDARD_DATUMSFORMAT = "jj-mm"
+
 
 class _Einstellungen(QObject):
     """
@@ -64,6 +90,8 @@ class _Einstellungen(QObject):
 
     spracheGeaendert = Signal(str)
     masseinheitGeaendert = Signal(str)
+    datumsformatGeaendert = Signal(str)
+    anbieterStandardGeaendert = Signal(str)
 
     def __init__(self) -> None:
         super().__init__()
@@ -88,6 +116,55 @@ class _Einstellungen(QObject):
             return
         self._settings.setValue("masseinheit", code)
         self.masseinheitGeaendert.emit(code)
+
+    def datumsformat(self) -> str:
+        wert = self._settings.value("datumsformat", STANDARD_DATUMSFORMAT)
+        return wert if wert in DATUMSFORMATE else STANDARD_DATUMSFORMAT
+
+    def datumsformat_setzen(self, code: str) -> None:
+        if code not in DATUMSFORMATE or code == self.datumsformat():
+            return
+        self._settings.setValue("datumsformat", code)
+        self.datumsformatGeaendert.emit(code)
+
+    def datum_formatieren(self, datum: date) -> str:
+        """DE: Formatiert ein Datum nach dem aktuell eingestellten
+            Datumsformat (siehe DATUMSFORMATE).
+        EN: Formats a date according to the currently configured date
+            format (see DATUMSFORMATE)."""
+        return datum.strftime(_DATUMSFORMAT_MUSTER[self.datumsformat()])
+
+    def anbieter_standard(self) -> str:
+        """DE: In den Einstellungen fest hinterlegter Standard-Anbieter
+            (z. B. "Telefonanleitungen.de") -- wird beim Metadaten-
+            Werkzeug vorbelegt, solange fuer das aktuelle Dokument noch
+            kein eigener Anbieter eingetragen wurde. Voreingestellt auf
+            ANBIETER aus info.py, aber jederzeit anpassbar/loeschbar.
+        EN: A default provider fixed in Preferences (e.g.
+            "Telefonanleitungen.de") -- prefills the metadata tool as
+            long as the current document hasn't had its own provider
+            entered yet. Defaults to ANBIETER from info.py, but can be
+            changed/cleared at any time."""
+        wert = self._settings.value("anbieterStandard", None)
+        return ANBIETER if wert is None else wert
+
+    def anbieter_standard_setzen(self, text: str) -> None:
+        if text == self.anbieter_standard():
+            return
+        self._settings.setValue("anbieterStandard", text)
+        self.anbieterStandardGeaendert.emit(text)
+
+    def anbieter_letzter(self) -> str:
+        """DE: Zuletzt im Metadaten-Werkzeug eingetragener Anbieter --
+            Rueckfallebene, falls kein Standard-Anbieter in den
+            Einstellungen hinterlegt ist (siehe anbieter_standard).
+        EN: The provider most recently entered in the metadata tool --
+            fallback if no default provider is set in Preferences (see
+            anbieter_standard)."""
+        return self._settings.value("anbieterLetzter", "")
+
+    def anbieter_letzter_setzen(self, text: str) -> None:
+        self._settings.setValue("anbieterLetzter", text)
 
 
 # DE: Eine einzige, geteilte Instanz fuer die ganze App -- wie bei

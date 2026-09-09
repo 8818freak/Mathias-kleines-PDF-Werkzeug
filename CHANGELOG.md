@@ -4,6 +4,41 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 
 *All notable changes to this project are documented here.*
 
+## [1.6] – 2026-09-10
+
+### Hinzugefügt / Added
+
+- Neues Werkzeug „Metadaten bearbeiten“: dokumentweite PDF-Metadaten
+  (Titel, Autor, Anbieter, Produkt, Version, Releasedatum, Stichwörter)
+  -- anders als alle anderen Werkzeuge gilt das fürs gesamte Dokument,
+  nicht pro Seite. Wird beim Speichern automatisch übernommen (Titel/
+  Autor+Anbieter/Produkt/Version+Datum+Stichwörter fließen in die vier
+  PDF-Standardfelder Titel/Autor/Thema/Stichwörter ein), inkl. einer
+  Textvorschau. „Speichern unter“ schlägt daraus automatisch einen
+  Dateinamen vor (z. B. „Gigaset E290 - Bedienungsanleitung v1.2
+  (26-09).pdf“). Neue Einstellungen: Standard-Anbieter (fällt sonst auf
+  den zuletzt verwendeten zurück) und Datumsformat fürs Releasedatum.
+  *New "Edit metadata" tool: document-wide PDF metadata (title, author,
+  provider, product, version, release date, keywords) -- unlike every
+  other tool, this applies to the whole document, not per page. Applied
+  automatically when saving (title/author+provider/product/version+date
+  +keywords flow into the four standard PDF fields title/author/subject/
+  keywords), including a text preview. "Save As" automatically suggests
+  a filename built from these (e.g. "Gigaset E290 - Bedienungsanleitung
+  v1.2 (26-09).pdf"). New preferences: default provider (falls back to
+  the most recently used one otherwise) and date format for the release
+  date.*
+
+### Behoben / Fixed
+
+- „PDF/A beim Export“ (im Werkzeug „PDF verkleinern & PDF/A“) schlug
+  bislang immer fehl, da die PDF/A-Kennzeichnung dieselbe Datei, die
+  gerade erst geschrieben wurde, direkt wieder überschreiben wollte --
+  pikepdf verlangt dafür eine explizite Erlaubnis.
+  *"PDF/A on export" (in the "Shrink PDF & PDF/A" tool) always failed,
+  since PDF/A marking tried to overwrite the very file it had just
+  written -- pikepdf requires explicit permission for that.*
+
 ## [1.5] – 2026-09-10
 
 ### Hinzugefügt / Added

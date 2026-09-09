@@ -99,6 +99,14 @@ internet connection and no additional software required.*
   *Substantially shrink file size via JPEG encoding (detects already
   efficiently compressed black-and-white pages and leaves them untouched),
   lossless structural compression, and PDF/A-2b marking for archival.*
+- **Metadaten bearbeiten** -- dokumentweite PDF-Metadaten (Titel, Autor,
+  Anbieter, Produkt, Version, Releasedatum, Stichwörter) statt pro
+  Seite; wird beim Speichern automatisch übernommen, inkl. automatischem
+  Dateinamen-Vorschlag beim Speichern unter.
+  *Document-wide PDF metadata (title, author, provider, product,
+  version, release date, keywords) instead of per page; applied
+  automatically when saving, including an automatic filename suggestion
+  for Save As.*
 
 Alle Werkzeuge arbeiten auf derselben gemeinsamen Dateiliste -- einmal
 laden, mit mehreren Werkzeugen nacheinander bearbeiten, ohne zwischendurch

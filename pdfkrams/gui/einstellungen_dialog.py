@@ -1,23 +1,25 @@
 """
 DE: Einstellungen-Fenster (macOS: "Einstellungen …" im Anwendungsmenü,
-    Cmd+,) -- aktuell Sprache und Maßeinheit. Änderungen wirken sofort
-    (Maßeinheit) bzw. nach einem Neustart (Sprache -- ein Neuaufbau aller
-    bereits erzeugten Fenster/Werkzeuge mit neuen Texten wäre deutlich
+    Cmd+,) -- Sprache, Maßeinheit, Datumsformat und Standard-Anbieter.
+    Änderungen wirken sofort (Maßeinheit, Datumsformat, Anbieter) bzw.
+    nach einem Neustart (Sprache -- ein Neuaufbau aller bereits
+    erzeugten Fenster/Werkzeuge mit neuen Texten wäre deutlich
     aufwendiger und fehleranfälliger als ein einfacher Neustart-Hinweis).
 
 EN: Preferences window (macOS: "Preferences …" in the application menu,
-    Cmd+,) -- currently language and measurement unit. Changes take
-    effect immediately (measurement unit) resp. after a restart
-    (language -- rebuilding every already-created window/tool with new
-    text would be considerably more complex and error-prone than a
-    simple restart notice).
+    Cmd+,) -- language, measurement unit, date format, and default
+    provider. Changes take effect immediately (measurement unit, date
+    format, provider) resp. after a restart (language -- rebuilding
+    every already-created window/tool with new text would be
+    considerably more complex and error-prone than a simple restart
+    notice).
 """
 
 from __future__ import annotations
 
-from PySide6.QtWidgets import QComboBox, QDialog, QFormLayout, QLabel, QVBoxLayout
+from PySide6.QtWidgets import QComboBox, QDialog, QFormLayout, QLabel, QLineEdit, QVBoxLayout
 
-from pdfkrams.einstellungen import MASSEINHEITEN, SPRACHEN, einstellungen
+from pdfkrams.einstellungen import DATUMSFORMATE, MASSEINHEITEN, SPRACHEN, einstellungen
 
 
 class EinstellungenDialog(QDialog):
@@ -63,14 +65,43 @@ class EinstellungenDialog(QDialog):
         masseinheit_hinweis.setWordWrap(True)
         masseinheit_hinweis.setStyleSheet("color: gray;")
 
+        self._datumsformat_feld = QComboBox()
+        for code, name in DATUMSFORMATE.items():
+            self._datumsformat_feld.addItem(self.tr(name), code)
+        self._datumsformat_feld.setCurrentIndex(self._datumsformat_feld.findData(einstellungen.datumsformat()))
+        self._datumsformat_feld.currentIndexChanged.connect(self._datumsformat_geaendert)
+
+        datumsformat_hinweis = QLabel(
+            self.tr("Betrifft das Releasedatum im Werkzeug „Metadaten bearbeiten“ (Dateiname-Vorschlag und Stichwörter).")
+        )
+        datumsformat_hinweis.setWordWrap(True)
+        datumsformat_hinweis.setStyleSheet("color: gray;")
+
+        self._anbieter_feld = QLineEdit(einstellungen.anbieter_standard())
+        self._anbieter_feld.textChanged.connect(einstellungen.anbieter_standard_setzen)
+
+        anbieter_hinweis = QLabel(
+            self.tr("Vorbelegung für „Anbieter“ im Werkzeug „Metadaten bearbeiten“ -- leer lassen, um "
+                   "stattdessen immer den zuletzt dort eingetragenen Anbieter vorzuschlagen.")
+        )
+        anbieter_hinweis.setWordWrap(True)
+        anbieter_hinweis.setStyleSheet("color: gray;")
+
         formular = QFormLayout()
         formular.addRow(self.tr("Sprache:"), self._sprache_feld)
         formular.addRow("", self._sprache_hinweis)
         formular.addRow(self.tr("Maßeinheit:"), self._masseinheit_feld)
         formular.addRow("", masseinheit_hinweis)
+        formular.addRow(self.tr("Datumsformat:"), self._datumsformat_feld)
+        formular.addRow("", datumsformat_hinweis)
+        formular.addRow(self.tr("Anbieter (Standard):"), self._anbieter_feld)
+        formular.addRow("", anbieter_hinweis)
 
         layout = QVBoxLayout(self)
         layout.addLayout(formular)
+
+    def _datumsformat_geaendert(self, _index: int) -> None:
+        einstellungen.datumsformat_setzen(self._datumsformat_feld.currentData())
 
     def _sprache_geaendert(self, _index: int) -> None:
         code = self._sprache_feld.currentData()

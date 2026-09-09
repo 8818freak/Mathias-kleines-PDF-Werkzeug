@@ -46,6 +46,7 @@ from pdfkrams.gui.einstellungen_dialog import EinstellungenDialog
 from pdfkrams.gui.tools.bildbereinigung_tool import BildbereinigungToolWidget
 from pdfkrams.gui.tools.combine_tool import CombineToolWidget
 from pdfkrams.gui.tools.heftseiten_tool import HeftseitenToolWidget
+from pdfkrams.gui.tools.metadaten_tool import MetadatenToolWidget
 from pdfkrams.gui.tools.nummerieren_tool import NummerierenToolWidget
 from pdfkrams.gui.tools.pdf_zu_bildern_tool import PdfZuBildernToolWidget
 from pdfkrams.gui.tools.rotate_tool import RotateToolWidget
@@ -77,6 +78,7 @@ _WERKZEUGE: list[tuple[str, type[QWidget] | None]] = [
     ("Seiten zuschneiden", ZuschneidenToolWidget),
     ("PDF in Bilder teilen", PdfZuBildernToolWidget),
     ("PDF verkleinern & PDF/A", VerkleinernToolWidget),
+    ("Metadaten bearbeiten", MetadatenToolWidget),
 ]
 
 
@@ -278,8 +280,9 @@ class MainWindow(QMainWindow):
         self._pdf_schreiben(self._letzter_pdf_pfad)
 
     def _speichern_unter(self) -> None:
+        vorschlag = self._liste.dateiname_vorschlag() or self.tr("dokument.pdf")
         ziel, _ = QFileDialog.getSaveFileName(
-            self, self.tr("PDF speichern unter"), self.tr("dokument.pdf"), self.tr("PDF-Datei (*.pdf)")
+            self, self.tr("PDF speichern unter"), vorschlag, self.tr("PDF-Datei (*.pdf)")
         )
         if not ziel:
             return
@@ -293,7 +296,8 @@ class MainWindow(QMainWindow):
             return
         anzeige = Fortschrittsanzeige(self, self.tr("PDF wird erstellt …"), len(seiten))
         try:
-            export_pdf(seiten, ziel, fortschritt=anzeige.callback)
+            export_pdf(seiten, ziel, fortschritt=anzeige.callback,
+                      dokument_metadaten=self._liste.pdf_metadaten_felder())
         except Abgebrochen:
             return
         except Exception as exc:  # noqa: BLE001 -- Fehler dem Nutzer verstaendlich zeigen

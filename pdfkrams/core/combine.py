@@ -49,20 +49,25 @@ def _bild_einfuegen(ausgabe: fitz.Document, bild: Image.Image, dpi: float) -> No
 
 
 def export_pdf(seiten: list[WorkingPage], ziel: Path,
-               fortschritt: Callable[[int, int], None] | None = None) -> None:
+               fortschritt: Callable[[int, int], None] | None = None,
+               dokument_metadaten: dict[str, str] | None = None) -> None:
     """
     DE: Seiten in der gegebenen Reihenfolge (mit ihren jeweiligen
         Drehungen/Spiegelungen/Teilungen) zu einer PDF-Datei zusammenfuegen
         und unter `ziel` speichern. Eine geteilte Seite wird zu mehreren
         Ausgabeseiten. `fortschritt`, falls angegeben, wird nach jeder
         verarbeiteten Quellseite mit (erledigt, gesamt) aufgerufen -- fuer
-        eine Fortschrittsanzeige in der GUI.
+        eine Fortschrittsanzeige in der GUI. `dokument_metadaten` (optional,
+        siehe core/metadaten.py's pdf_felder()) ergaenzt Titel/Autor/Thema/
+        Stichwoerter aus dem Werkzeug "Metadaten bearbeiten".
 
     EN: Combine pages in the given order (with their respective
         rotations/mirrors/splits) into a single PDF file and save it to
         `ziel`. A split page becomes multiple output pages. `fortschritt`,
         if given, is called with (done, total) after each processed source
-        page -- for a progress display in the GUI.
+        page -- for a progress display in the GUI. `dokument_metadaten`
+        (optional, see core/metadaten.py's pdf_felder()) adds title/author/
+        subject/keywords from the "Edit metadata" tool.
     """
     if not seiten:
         raise ValueError("Keine Seiten zum Exportieren.")
@@ -119,7 +124,7 @@ def export_pdf(seiten: list[WorkingPage], ziel: Path,
             if fortschritt is not None:
                 fortschritt(nummer, len(seiten))
 
-        ausgabe.set_metadata(pdf_metadaten())
+        ausgabe.set_metadata(pdf_metadaten(dokument_metadaten))
         ausgabe.save(ziel)
     finally:
         ausgabe.close()

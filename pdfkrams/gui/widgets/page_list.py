@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import copy
 from contextlib import contextmanager
+from datetime import date
 from typing import Callable
 
 from PySide6.QtCore import QCoreApplication, QSize, Qt, Signal
@@ -38,6 +39,8 @@ from PySide6.QtGui import QIcon, QImage, QPixmap, QTransform
 from PySide6.QtWidgets import QListWidget, QListWidgetItem
 
 from pdfkrams.core.document import PageSource, WorkingPage, render_rgb
+from pdfkrams.core.metadaten import dateiname_vorschlagen, leere_rohdaten, pdf_felder
+from pdfkrams.einstellungen import einstellungen
 
 # DE: Kantenlaenge der Miniaturbilder in Pixeln.
 # EN: Edge length of thumbnail images in pixels.
@@ -158,6 +161,41 @@ class PageListWidget(QListWidget):
         self._rueckgaengig_verlauf: list[list[WorkingPage]] = []
         self._wiederholen_verlauf: list[list[WorkingPage]] = []
         self._verlauf_gesperrt = False
+
+        # DE: Dokumentweite PDF-Metadaten (Titel, Autor, Anbieter, ...) --
+        #     anders als alles andere hier gilt das fuer das gesamte
+        #     Dokument, nicht pro Seite, daher kein WorkingPage-Feld,
+        #     sondern ein einzelnes geteiltes dict (siehe
+        #     core/metadaten.py, gui/tools/metadaten_tool.py). Bewusst
+        #     nicht im Rueckgaengig-Verlauf erfasst, wie die
+        #     Einstellungen auch.
+        # EN: Document-wide PDF metadata (title, author, provider, ...)
+        #     -- unlike everything else here, this applies to the whole
+        #     document, not per page, so it's not a WorkingPage field but
+        #     a single shared dict (see core/metadaten.py,
+        #     gui/tools/metadaten_tool.py). Deliberately not covered by
+        #     undo/redo, same as Preferences.
+        self.dokument_metadaten: dict[str, str] = leere_rohdaten()
+
+    def _releasedatum_formatiert(self) -> str:
+        wert = self.dokument_metadaten["releasedatum"]
+        return einstellungen.datum_formatieren(date.fromisoformat(wert)) if wert else ""
+
+    def pdf_metadaten_felder(self) -> dict[str, str]:
+        """DE: Fasst die dokumentweiten Metadaten-Rohfelder (Titel, Autor,
+            Anbieter, ...) zu den vier PDF-Standardfeldern zusammen --
+            siehe core/metadaten.py's pdf_felder().
+        EN: Merges the document-wide raw metadata fields (title, author,
+            provider, ...) into the four standard PDF fields -- see
+            core/metadaten.py's pdf_felder()."""
+        return pdf_felder(self.dokument_metadaten, self._releasedatum_formatiert())
+
+    def dateiname_vorschlag(self) -> str:
+        """DE: Dateinamensvorschlag aus den Metadaten-Rohfeldern -- siehe
+            core/metadaten.py's dateiname_vorschlagen().
+        EN: Filename suggestion from the raw metadata fields -- see
+            core/metadaten.py's dateiname_vorschlagen()."""
+        return dateiname_vorschlagen(self.dokument_metadaten, self._releasedatum_formatiert())
 
     def _per_drag_verschoben(self, *_args) -> None:
         # DE: Drag&Drop-Umsortierung in der Liste selbst ist ebenfalls eine

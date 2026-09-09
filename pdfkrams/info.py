@@ -13,7 +13,7 @@ EN: Central facts about the program itself -- name, version, provider,
 from __future__ import annotations
 
 PROGRAMMNAME = "Mathias' kleines PDF-Werkzeug"
-VERSION = "1.5"
+VERSION = "1.6"
 ANBIETER = "Telefonanleitungen.de"
 WEBSITE = "https://www.telefonanleitungen.de"
 COPYRIGHT_JAHR = "2026"
@@ -46,12 +46,19 @@ def pdf_metadaten_eintrag() -> str:
     return f"{voller_programmname()} -- kostenlos bereitgestellt von {ANBIETER} -- {WEBSITE}"
 
 
-def pdf_metadaten() -> dict[str, str]:
+def pdf_metadaten(dokument: dict[str, str] | None = None) -> dict[str, str]:
     """
-    DE: Fertiges Dict fuer fitz.Document.set_metadata() -- setzt Creator
-        und Producer, laesst alle anderen Felder (Titel etc.) unangetastet.
-    EN: Ready-made dict for fitz.Document.set_metadata() -- sets Creator
-        and Producer, leaves every other field (title etc.) untouched.
+    DE: Fertiges Dict fuer fitz.Document.set_metadata() -- setzt immer
+        Creator und Producer; `dokument` (optional, siehe
+        core/metadaten.py's pdf_felder()) ergaenzt Titel/Autor/Thema/
+        Stichwoerter, falls im Werkzeug "Metadaten bearbeiten" gesetzt.
+    EN: Ready-made dict for fitz.Document.set_metadata() -- always sets
+        Creator and Producer; `dokument` (optional, see
+        core/metadaten.py's pdf_felder()) adds title/author/subject/
+        keywords, if set in the "Edit metadata" tool.
     """
     eintrag = pdf_metadaten_eintrag()
-    return {"creator": eintrag, "producer": eintrag}
+    ergebnis = {"creator": eintrag, "producer": eintrag}
+    if dokument:
+        ergebnis.update(dokument)
+    return ergebnis

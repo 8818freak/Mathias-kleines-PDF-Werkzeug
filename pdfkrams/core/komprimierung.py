@@ -123,7 +123,8 @@ def ausgangsgroesse_falls_eindeutig(seiten: list[WorkingPage]) -> int | None:
 
 def export_pdf_komprimiert(seiten: list[WorkingPage], ziel: Path, jpeg_qualitaet: int = 75,
                            max_dpi: float | None = 200.0,
-                           fortschritt: Callable[[int, int], None] | None = None) -> tuple[int, int]:
+                           fortschritt: Callable[[int, int], None] | None = None,
+                           dokument_metadaten: dict[str, str] | None = None) -> tuple[int, int]:
     """
     DE: Seiten wie combine.export_pdf zusammensetzen, dabei aber jede
         Seite als JPEG mit `jpeg_qualitaet` (1-95) kodieren und optional
@@ -131,16 +132,19 @@ def export_pdf_komprimiert(seiten: list[WorkingPage], ziel: Path, jpeg_qualitaet
         unveraenderte PDF-Seiten, die bereits mit einem Schwarzweiss-/
         Strich-Codec (JBIG2/CCITT) gespeichert sind, werden unveraendert
         durchgereicht -- JPEG waere hier so gut wie immer groesser UND
-        schlechter (siehe _bereits_bilevel_komprimiert). Liefert
-        (Anzahl_Ausgabeseiten, Dateigroesse_in_Bytes).
+        schlechter (siehe _bereits_bilevel_komprimiert). `dokument_metadaten`
+        (optional, siehe core/metadaten.py's pdf_felder()) ergaenzt Titel/
+        Autor/Thema/Stichwoerter. Liefert (Anzahl_Ausgabeseiten,
+        Dateigroesse_in_Bytes).
 
     EN: Assemble pages like combine.export_pdf, but encode every page as
         JPEG at `jpeg_qualitaet` (1-95) and optionally downscale to
         `max_dpi` (None = no downscaling). Exception: unmodified PDF pages
         already stored with a black-and-white/line codec (JBIG2/CCITT) are
         passed through unchanged -- JPEG would almost always be bigger AND
-        worse there (see _bereits_bilevel_komprimiert). Returns
-        (output_page_count, file_size_in_bytes).
+        worse there (see _bereits_bilevel_komprimiert). `dokument_metadaten`
+        (optional, see core/metadaten.py's pdf_felder()) adds title/author/
+        subject/keywords. Returns (output_page_count, file_size_in_bytes).
     """
     if not seiten:
         raise ValueError("Keine Seiten zum Exportieren.")
@@ -188,7 +192,7 @@ def export_pdf_komprimiert(seiten: list[WorkingPage], ziel: Path, jpeg_qualitaet
         #     komprimiert die PDF-eigenen Datenstroeme zusaetzlich.
         # EN: garbage=4 drops unused objects, deflate additionally
         #     compresses the PDF's own data streams.
-        ausgabe.set_metadata(pdf_metadaten())
+        ausgabe.set_metadata(pdf_metadaten(dokument_metadaten))
         ausgabe.save(ziel, garbage=4, deflate=True, use_objstms=1)
     finally:
         ausgabe.close()

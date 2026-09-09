@@ -47,12 +47,18 @@ def _srgb_icc_profil() -> bytes:
 def als_pdfa_markieren(quelle: Path, ziel: Path, titel: str = "") -> None:
     """
     DE: `quelle` oeffnen, OutputIntent (sRGB) und PDF/A-2b-XMP-Metadaten
-        ergaenzen und als `ziel` speichern.
+        ergaenzen und als `ziel` speichern. `quelle` und `ziel` duerfen
+        identisch sein (In-Place-Ueberschreiben, z. B. direkt nach dem
+        Export) -- pikepdf braucht dafuer beim Oeffnen explizit
+        `allow_overwriting_input`, sonst bricht `pdf.save()` ab.
 
     EN: Open `quelle`, add an sRGB OutputIntent and PDF/A-2b XMP metadata,
-        and save as `ziel`.
+        and save as `ziel`. `quelle` and `ziel` may be identical
+        (in-place overwrite, e.g. right after export) -- pikepdf needs
+        `allow_overwriting_input` set when opening for that, otherwise
+        `pdf.save()` aborts.
     """
-    with pikepdf.open(quelle) as pdf:
+    with pikepdf.open(quelle, allow_overwriting_input=(quelle == ziel)) as pdf:
         icc_stream = pdf.make_stream(_srgb_icc_profil())
         icc_stream["/N"] = 3
         icc_stream["/Alternate"] = Name.DeviceRGB
