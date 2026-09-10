@@ -1,15 +1,15 @@
 """
 DE: Einstellungen-Fenster (macOS: "Einstellungen …" im Anwendungsmenü,
-    Cmd+,) -- Sprache, Maßeinheit, Datumsformat und Standard-Anbieter.
-    Änderungen wirken sofort (Maßeinheit, Datumsformat, Anbieter) bzw.
+    Cmd+,) -- Sprache, Maßeinheit, Datumsformat, Standard-Anbieter und
+    Schwärzungsfarbe. Änderungen wirken sofort (alles außer Sprache) bzw.
     nach einem Neustart (Sprache -- ein Neuaufbau aller bereits
     erzeugten Fenster/Werkzeuge mit neuen Texten wäre deutlich
     aufwendiger und fehleranfälliger als ein einfacher Neustart-Hinweis).
 
 EN: Preferences window (macOS: "Preferences …" in the application menu,
-    Cmd+,) -- language, measurement unit, date format, and default
-    provider. Changes take effect immediately (measurement unit, date
-    format, provider) resp. after a restart (language -- rebuilding
+    Cmd+,) -- language, measurement unit, date format, default provider,
+    and redaction color. Changes take effect immediately (everything
+    except language) resp. after a restart (language -- rebuilding
     every already-created window/tool with new text would be
     considerably more complex and error-prone than a simple restart
     notice).
@@ -17,7 +17,8 @@ EN: Preferences window (macOS: "Preferences …" in the application menu,
 
 from __future__ import annotations
 
-from PySide6.QtWidgets import QComboBox, QDialog, QFormLayout, QLabel, QLineEdit, QVBoxLayout
+from PySide6.QtGui import QColor
+from PySide6.QtWidgets import QColorDialog, QComboBox, QDialog, QFormLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout
 
 from pdfkrams.einstellungen import DATUMSFORMATE, MASSEINHEITEN, SPRACHEN, einstellungen
 
@@ -87,6 +88,18 @@ class EinstellungenDialog(QDialog):
         anbieter_hinweis.setWordWrap(True)
         anbieter_hinweis.setStyleSheet("color: gray;")
 
+        self._schwaerzungsfarbe_feld = QPushButton()
+        self._schwaerzungsfarbe_feld.clicked.connect(self._schwaerzungsfarbe_waehlen)
+        self._schwaerzungsfarbe_anzeige_aktualisieren(einstellungen.schwaerzungsfarbe())
+
+        schwaerzungsfarbe_hinweis = QLabel(
+            self.tr("Farbe für neu eingebrannte Schwärzungen im Werkzeug „Schwärzen“ -- deckend, keine "
+                   "Transparenz. Ändert nur die Farbe, nicht, dass darunterliegender Inhalt dauerhaft "
+                   "zerstört wird.")
+        )
+        schwaerzungsfarbe_hinweis.setWordWrap(True)
+        schwaerzungsfarbe_hinweis.setStyleSheet("color: gray;")
+
         formular = QFormLayout()
         formular.addRow(self.tr("Sprache:"), self._sprache_feld)
         formular.addRow("", self._sprache_hinweis)
@@ -96,9 +109,25 @@ class EinstellungenDialog(QDialog):
         formular.addRow("", datumsformat_hinweis)
         formular.addRow(self.tr("Anbieter (Standard):"), self._anbieter_feld)
         formular.addRow("", anbieter_hinweis)
+        formular.addRow(self.tr("Schwärzungsfarbe:"), self._schwaerzungsfarbe_feld)
+        formular.addRow("", schwaerzungsfarbe_hinweis)
 
         layout = QVBoxLayout(self)
         layout.addLayout(formular)
+
+    def _schwaerzungsfarbe_anzeige_aktualisieren(self, hex_code: str) -> None:
+        self._schwaerzungsfarbe_feld.setText(hex_code.upper())
+        self._schwaerzungsfarbe_feld.setStyleSheet(
+            f"background-color: {hex_code}; color: {'white' if QColor(hex_code).lightness() < 128 else 'black'};"
+        )
+
+    def _schwaerzungsfarbe_waehlen(self) -> None:
+        farbe = QColorDialog.getColor(QColor(einstellungen.schwaerzungsfarbe()), self, self.tr("Schwärzungsfarbe wählen"))
+        if not farbe.isValid():
+            return
+        hex_code = farbe.name()
+        einstellungen.schwaerzungsfarbe_setzen(hex_code)
+        self._schwaerzungsfarbe_anzeige_aktualisieren(hex_code)
 
     def _datumsformat_geaendert(self, _index: int) -> None:
         einstellungen.datumsformat_setzen(self._datumsformat_feld.currentData())

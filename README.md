@@ -53,6 +53,11 @@ internet connection and no additional software required.*
   (threshold, optionally auto-suggested via Otsu's method) and
   despeckling (removing small dark specks/dust), both steps
   independently toggleable, with a live preview.*
+- **Leerseiten entfernen** -- sucht wahrscheinlich leere Seiten (typisch
+  bei automatisiertem Scannen mit Einzug), zeigt sie als Vorschläge zum
+  Abwählen statt automatisch zu löschen.
+  *Finds likely blank pages (typical with automated ADF scanning), shows
+  them as suggestions to deselect instead of deleting automatically.*
 - **Seiten teilen** -- beliebiges Raster aus Zeilen × Spalten, Schnittlinien
   mit der Maus ziehen, automatische Ausrichtung auf ruhige Bildbereiche.
   *Split a page into an arbitrary row × column grid, drag the cut lines by
@@ -89,6 +94,15 @@ internet connection and no additional software required.*
   a punch-hole strip or binding margin), with draggable lines in the
   preview and a live display of the resulting size including a format
   suggestion.*
+- **Schwärzen** -- beliebig viele Bereiche einer Seite dauerhaft
+  unkenntlich machen (frei gezeichnete, verschiebbare Rechtecke, die
+  beim Speichern wirklich in die Bildpixel eingebrannt werden, nicht nur
+  optisch überdeckt), mit wählbarer Farbe und einem Knopf zum Übertragen
+  auf weitere Seiten.
+  *Permanently obscure any number of areas on a page (freely drawn,
+  movable rectangles that are actually burned into the image pixels on
+  save, not just visually covered), with a selectable color and a button
+  to transfer them onto further pages.*
 - **PDF in Bilder teilen** -- als einzelne durchnummerierte Bilddateien oder
   als eine mehrseitige TIFF-Datei exportieren.
   *Export as individually numbered image files or as one multi-page TIFF.*

@@ -46,11 +46,13 @@ from pdfkrams.gui.einstellungen_dialog import EinstellungenDialog
 from pdfkrams.gui.tools.bildbereinigung_tool import BildbereinigungToolWidget
 from pdfkrams.gui.tools.combine_tool import CombineToolWidget
 from pdfkrams.gui.tools.heftseiten_tool import HeftseitenToolWidget
+from pdfkrams.gui.tools.leerseiten_tool import LeerseitenToolWidget
 from pdfkrams.gui.tools.lesezeichen_tool import LesezeichenToolWidget
 from pdfkrams.gui.tools.metadaten_tool import MetadatenToolWidget
 from pdfkrams.gui.tools.nummerieren_tool import NummerierenToolWidget
 from pdfkrams.gui.tools.pdf_zu_bildern_tool import PdfZuBildernToolWidget
 from pdfkrams.gui.tools.rotate_tool import RotateToolWidget
+from pdfkrams.gui.tools.schwaerzung_tool import SchwaerzungToolWidget
 from pdfkrams.gui.tools.seitenmass_tool import SeitenmassToolWidget
 from pdfkrams.gui.tools.split_tool import SplitToolWidget
 from pdfkrams.gui.tools.verkleinern_tool import VerkleinernToolWidget
@@ -71,6 +73,7 @@ _WERKZEUGE: list[tuple[str, type[QWidget] | None]] = [
     ("PDF erstellen", CombineToolWidget),
     ("Seiten drehen", RotateToolWidget),
     ("Bildbereinigung", BildbereinigungToolWidget),
+    ("Leerseiten entfernen", LeerseitenToolWidget),
     ("Seiten teilen", SplitToolWidget),
     ("Seiten zusammenfügen", ZusammenfuegenToolWidget),
     ("Heftseiten teilen", HeftseitenToolWidget),
@@ -78,6 +81,7 @@ _WERKZEUGE: list[tuple[str, type[QWidget] | None]] = [
     ("Lesezeichen setzen", LesezeichenToolWidget),
     ("Seitenmaß normieren", SeitenmassToolWidget),
     ("Seiten zuschneiden", ZuschneidenToolWidget),
+    ("Schwärzen", SchwaerzungToolWidget),
     ("PDF in Bilder teilen", PdfZuBildernToolWidget),
     ("PDF verkleinern & PDF/A", VerkleinernToolWidget),
     ("Metadaten bearbeiten", MetadatenToolWidget),

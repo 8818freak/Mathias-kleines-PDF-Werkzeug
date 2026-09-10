@@ -35,6 +35,7 @@ from ..info import pdf_metadaten
 from .document import WorkingPage, seitengroesse_pt
 from .lesezeichen import toc_erzeugen
 from .rotate import ist_rechter_winkel, normalisiert, rotiertes_bild
+from .schwaerzung import schwaerzungen_anwenden
 from .split import teile_bild
 
 
@@ -95,18 +96,33 @@ def export_pdf(seiten: list[WorkingPage], ziel: Path,
                 #     Bild -- dafuer wird immer gerastert.
                 # EN: Splitting acts on the already rotated/mirrored image
                 #     -- this always requires rasterizing.
+                # DE: Schwaerzung VOR dem Zerschneiden auf das Gesamtbild
+                #     anwenden -- die Rechtecke sind als Anteile der
+                #     GANZEN Seite definiert, nicht je Teilstueck.
+                # EN: Apply redaction to the WHOLE image before splitting
+                #     -- the rectangles are defined as fractions of the
+                #     ENTIRE page, not per split part.
                 bild, dpi = rotiertes_bild(source, wp.rotation, wp.spiegel_h, wp.spiegel_v)
+                bild = schwaerzungen_anwenden(bild, wp.schwaerzungen)
                 for teilbild in teile_bild(bild, wp.split):
                     _bild_einfuegen(ausgabe, teilbild, dpi)
 
-            elif source.kind == "pdf" and not wp.spiegel_h and not wp.spiegel_v and ist_rechter_winkel(grad):
+            elif (not wp.schwaerzungen and source.kind == "pdf"
+                  and not wp.spiegel_h and not wp.spiegel_v and ist_rechter_winkel(grad)):
+                # DE: Nur OHNE Schwaerzungen als Vektorseite uebernehmbar --
+                #     sonst bliebe der Original-Text/-Vektorinhalt unter der
+                #     schwarzen Flaeche bestehen (siehe core/schwaerzung.py).
+                # EN: Only takeable as a vector page WITHOUT redactions --
+                #     otherwise the original text/vector content would
+                #     remain intact underneath the black shape (see
+                #     core/schwaerzung.py).
                 quelle = offene_pdfs.setdefault(source.path, fitz.open(source.path))
                 neue_seite_nr = ausgabe.page_count
                 ausgabe.insert_pdf(quelle, from_page=source.index, to_page=source.index)
                 if abs(grad) > 1e-6:
                     ausgabe[neue_seite_nr].set_rotation(round(grad) % 360)
 
-            elif wp.unveraendert and source.kind == "image":
+            elif not wp.schwaerzungen and wp.unveraendert and source.kind == "image":
                 # DE: Unveraendertes Bild -- einfache Platzierung ohne Umweg
                 #     ueber Rasterung/Neucodierung.
                 # EN: Unmodified image -- simple placement without a detour
@@ -122,10 +138,12 @@ def export_pdf(seiten: list[WorkingPage], ziel: Path,
 
             else:
                 # DE: Allgemeiner Fall -- freier Winkel und/oder Spiegelung
-                #     und/oder ein Bild, das veraendert wurde: rastern.
+                #     und/oder ein Bild, das veraendert wurde, und/oder
+                #     Schwaerzungen: rastern.
                 # EN: General case -- free angle and/or mirroring and/or a
-                #     modified image: rasterize.
+                #     modified image, and/or redactions: rasterize.
                 bild, dpi = rotiertes_bild(source, wp.rotation, wp.spiegel_h, wp.spiegel_v)
+                bild = schwaerzungen_anwenden(bild, wp.schwaerzungen)
                 _bild_einfuegen(ausgabe, bild, dpi)
 
             if wp.lesezeichen_titel:

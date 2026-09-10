@@ -22,6 +22,7 @@ from PIL import Image
 
 from .document import WorkingPage
 from .rotate import rotiertes_bild
+from .schwaerzung import schwaerzungen_anwenden
 
 # DE: Die wichtigsten Papierformate weltweit -- (kurze Kante, lange
 #     Kante) in mm, unabhaengig davon geschrieben, in welcher Masseinheit
@@ -185,7 +186,12 @@ def seite_normieren(wp: WorkingPage, ziel_breite_mm: float, ziel_hoehe_mm: float
         (a portrait target on a landscape page is interpreted rotated,
         without rotating the page itself). Returns (image, dpi).
     """
+    # DE: Schwaerzung VOR Randbeschnitt/Skalierung anwenden -- die
+    #     Rechtecke sind als Anteile der urspruenglichen Seite definiert.
+    # EN: Apply redaction before border cropping/scaling -- the
+    #     rectangles are defined as fractions of the original page.
     bild, _dpi = rotiertes_bild(wp.source, wp.rotation, wp.spiegel_h, wp.spiegel_v)
+    bild = schwaerzungen_anwenden(bild, wp.schwaerzungen)
 
     if (bild.width > bild.height) != (ziel_breite_mm > ziel_hoehe_mm):
         ziel_breite_mm, ziel_hoehe_mm = ziel_hoehe_mm, ziel_breite_mm

@@ -36,6 +36,7 @@ from PIL import Image
 
 from .document import WorkingPage
 from .rotate import rotiertes_bild
+from .schwaerzung import schwaerzungen_anwenden
 
 # DE: Maximaler Beschnitt je Rand, als Anteil der Kachelbreite/-hoehe --
 #     verhindert, dass sich gegenueberliegende Raender ueberschneiden.
@@ -81,7 +82,14 @@ def kachel_bild(wp: WorkingPage, kachel: Kachel) -> tuple[Image.Image, float]:
         actual dpi. Base rotation and fine rotation are applied in one
         step (one resample instead of two), for maximum image quality.
     """
+    # DE: Schwaerzung VOR dem Beschnitt auf das volle Kachelbild anwenden
+    #     -- die Rechtecke sind als Anteile der GANZEN Quellseite
+    #     definiert, nicht des beschnittenen Ergebnisses.
+    # EN: Apply redaction to the full tile image before cropping -- the
+    #     rectangles are defined as fractions of the ENTIRE source page,
+    #     not of the cropped result.
     bild, dpi = rotiertes_bild(wp.source, wp.rotation + kachel.rotation, wp.spiegel_h, wp.spiegel_v)
+    bild = schwaerzungen_anwenden(bild, wp.schwaerzungen)
     breite, hoehe = bild.size
     links = round(min(kachel.beschnitt_links, _BESCHNITT_MAX) * breite)
     rechts = round(min(kachel.beschnitt_rechts, _BESCHNITT_MAX) * breite)

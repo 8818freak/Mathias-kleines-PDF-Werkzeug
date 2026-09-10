@@ -40,6 +40,7 @@ from PIL import Image
 
 from .document import WorkingPage
 from .rotate import rotiertes_bild
+from .schwaerzung import schwaerzungen_anwenden
 
 
 def otsu_schwellwert(bild: Image.Image) -> int:
@@ -143,7 +144,16 @@ def seite_bereinigen(
         white; otherwise gray/color values are preserved, only the specks
         removed by despeckle are lightened. Returns (image, dpi).
     """
+    # DE: Schwaerzung VOR der Bereinigung anwenden -- ein bereits
+    #     eingebranntes, deckend schwarzes Rechteck uebersteht
+    #     Binarisieren/Despeckle unveraendert (bleibt durchgehend
+    #     "Tinte"), sodass nichts vom urspruenglichen Inhalt durchscheint.
+    # EN: Apply redaction before cleanup -- an already-burned-in, fully
+    #     opaque black rectangle survives binarizing/despeckling
+    #     unchanged (stays "ink" throughout), so nothing of the original
+    #     content shows through.
     bild, dpi = rotiertes_bild(wp.source, wp.rotation, wp.spiegel_h, wp.spiegel_v)
+    bild = schwaerzungen_anwenden(bild, wp.schwaerzungen)
     grau = np.asarray(bild.convert("L"), dtype=np.uint8)
     tinte_vorher = grau < schwellwert
 

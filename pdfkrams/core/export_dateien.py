@@ -29,20 +29,28 @@ from . import arbeitsordner
 from .combine import export_pdf
 from .document import PageSource, WorkingPage
 from .rotate import rotiertes_bild
+from .schwaerzung import schwaerzungen_anwenden
 from .split import teile_bild
 
 
 def gerenderte_teile(wp: WorkingPage, dpi: float = 300.0) -> list[tuple[Image.Image, float]]:
     """
     DE: Die finalen Bild-Teile einer Arbeitsseite liefern -- nach Drehung,
-        Spiegelung und (falls vorhanden) Teilung. Ohne Teilung liefert das
-        genau ein Bild, mit Teilung eines pro Rasterzelle.
+        Spiegelung, Schwaerzung und (falls vorhanden) Teilung. Ohne
+        Teilung liefert das genau ein Bild, mit Teilung eines pro
+        Rasterzelle. Schwaerzung wird VOR dem Zerschneiden auf das
+        Gesamtbild angewendet -- die Rechtecke sind als Anteile der
+        GANZEN Seite definiert, nicht je Teilstueck.
 
     EN: Return the final image parts of a working page -- after rotation,
-        mirroring, and (if present) splitting. Without splitting this
-        returns exactly one image, with splitting one per grid cell.
+        mirroring, redaction, and (if present) splitting. Without
+        splitting this returns exactly one image, with splitting one per
+        grid cell. Redaction is applied to the WHOLE image before
+        splitting -- the rectangles are defined as fractions of the
+        ENTIRE page, not per split part.
     """
     bild, tatsaechliche_dpi = rotiertes_bild(wp.source, wp.rotation, wp.spiegel_h, wp.spiegel_v, dpi)
+    bild = schwaerzungen_anwenden(bild, wp.schwaerzungen)
     teile = teile_bild(bild, wp.split) if wp.split is not None else [bild]
     return [(teil, tatsaechliche_dpi) for teil in teile]
 

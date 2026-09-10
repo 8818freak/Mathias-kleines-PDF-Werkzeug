@@ -31,6 +31,7 @@ from ..info import pdf_metadaten
 from .document import WorkingPage
 from .lesezeichen import toc_erzeugen
 from .rotate import ist_rechter_winkel, normalisiert, rotiertes_bild
+from .schwaerzung import schwaerzungen_anwenden
 from .split import teile_bild
 
 # DE: Filter, die Bilder bereits fuer reinen Schwarzweiss-/Strichinhalt
@@ -163,7 +164,7 @@ def export_pdf_komprimiert(seiten: list[WorkingPage], ziel: Path, jpeg_qualitaet
             grad = normalisiert(wp.rotation)
             erste_ausgabeseite = ausgabe.page_count
             unveraendert_pdf_seite = (
-                wp.split is None and not wp.spiegel_h and not wp.spiegel_v
+                not wp.schwaerzungen and wp.split is None and not wp.spiegel_h and not wp.spiegel_v
                 and source.kind == "pdf" and ist_rechter_winkel(grad)
             )
             if unveraendert_pdf_seite:
@@ -180,7 +181,14 @@ def export_pdf_komprimiert(seiten: list[WorkingPage], ziel: Path, jpeg_qualitaet
                         fortschritt(i, len(seiten))
                     continue
 
+            # DE: Schwaerzung VOR dem Zerschneiden auf das Gesamtbild
+            #     anwenden -- die Rechtecke sind als Anteile der GANZEN
+            #     Seite definiert, nicht je Teilstueck.
+            # EN: Apply redaction to the WHOLE image before splitting --
+            #     the rectangles are defined as fractions of the ENTIRE
+            #     page, not per split part.
             bild, dpi = rotiertes_bild(source, wp.rotation, wp.spiegel_h, wp.spiegel_v)
+            bild = schwaerzungen_anwenden(bild, wp.schwaerzungen)
             teile = teile_bild(bild, wp.split) if wp.split is not None else [bild]
 
             for teil in teile:

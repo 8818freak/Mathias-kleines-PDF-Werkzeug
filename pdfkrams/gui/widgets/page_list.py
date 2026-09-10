@@ -34,8 +34,8 @@ from contextlib import contextmanager
 from datetime import date
 from typing import Callable
 
-from PySide6.QtCore import QCoreApplication, QSize, Qt, Signal
-from PySide6.QtGui import QIcon, QImage, QPixmap, QTransform
+from PySide6.QtCore import QCoreApplication, QRectF, QSize, Qt, Signal
+from PySide6.QtGui import QColor, QIcon, QImage, QPainter, QPixmap, QTransform
 from PySide6.QtWidgets import QListWidget, QListWidgetItem
 
 from pdfkrams.core.document import PageSource, WorkingPage, render_rgb
@@ -85,7 +85,30 @@ def vorschau_pixmap(wp: WorkingPage, max_dim: int) -> QPixmap:
         transform.scale(1, -1)
     if wp.rotation:
         transform.rotate(wp.rotation)
-    return pixmap.transformed(transform, Qt.TransformationMode.SmoothTransformation)
+    pixmap = pixmap.transformed(transform, Qt.TransformationMode.SmoothTransformation)
+    return _schwaerzungen_zeichnen(pixmap, wp.schwaerzungen)
+
+
+def _schwaerzungen_zeichnen(pixmap: QPixmap, schwaerzungen: list[tuple[float, float, float, float]]) -> QPixmap:
+    """DE: Schwaerzungs-Rechtecke deckend schwarz auf eine Kopie von
+        `pixmap` zeichnen -- damit Miniaturen UND die Vorschau anderer
+        Werkzeuge immer zeigen, was beim Export tatsaechlich unkenntlich
+        gemacht wird (siehe core/schwaerzung.py fuer die eigentliche,
+        dauerhafte Anwendung beim Export).
+    EN: Draw redaction rectangles fully opaque black onto a copy of
+        `pixmap` -- so thumbnails AND other tools' previews always show
+        what actually gets redacted on export (see core/schwaerzung.py
+        for the actual, permanent application on export)."""
+    if not schwaerzungen:
+        return pixmap
+    ergebnis = QPixmap(pixmap)
+    painter = QPainter(ergebnis)
+    breite, hoehe = ergebnis.width(), ergebnis.height()
+    farbe = QColor(einstellungen.schwaerzungsfarbe())
+    for x0, y0, x1, y1 in schwaerzungen:
+        painter.fillRect(QRectF(x0 * breite, y0 * hoehe, (x1 - x0) * breite, (y1 - y0) * hoehe), farbe)
+    painter.end()
+    return ergebnis
 
 
 def _thumbnail(wp: WorkingPage) -> QPixmap:
@@ -124,6 +147,11 @@ def _text(wp: WorkingPage) -> str:
             zusatz.append(t("{0}×{1} Raster").format(zeilen, spalten))
     if wp.ziel_nummer is not None:
         zusatz.append(t("→ Ziel {0}").format(wp.ziel_nummer))
+    if wp.schwaerzungen:
+        zusatz.append(
+            t("1 Schwärzung") if len(wp.schwaerzungen) == 1
+            else t("{0} Schwärzungen").format(len(wp.schwaerzungen))
+        )
     if not zusatz:
         return wp.source.label
     return f"{wp.source.label} ({', '.join(zusatz)})"

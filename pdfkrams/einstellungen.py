@@ -1,6 +1,6 @@
 """
 DE: Persistente Anwendungseinstellungen (Sprache, Maßeinheit,
-    Datumsformat, Standard-Anbieter) -- über
+    Datumsformat, Standard-Anbieter, Schwärzungsfarbe) -- über
     QSettings gespeichert (landet automatisch am für macOS/Windows
     jeweils üblichen Ort), an genau dieser Stelle zentral gebündelt.
 
@@ -12,7 +12,7 @@ DE: Persistente Anwendungseinstellungen (Sprache, Maßeinheit,
     automatisch anhand der Systemsprache vorbelegt.
 
 EN: Persistent application settings (language, measurement unit, date
-    format, default provider) --
+    format, default provider, redaction color) --
     stored via QSettings (lands automatically wherever macOS/Windows
     conventionally keep such data), bundled centrally in exactly this
     place.
@@ -31,6 +31,7 @@ from datetime import date
 
 from PySide6.QtCore import QObject, QSettings, Signal
 
+from pdfkrams.core import schwaerzung as _schwaerzung
 from pdfkrams.info import ANBIETER
 
 _ORGANISATION = "Telefonanleitungen.de"
@@ -74,6 +75,17 @@ _DATUMSFORMAT_MUSTER: dict[str, str] = {
 }
 STANDARD_DATUMSFORMAT = "jj-mm"
 
+# DE: Farbe fuers Schwaerzen-Werkzeug, als "#RRGGBB"-Hexcode -- Standard
+#     Schwarz, wie in Akten/Verwaltungsschriftgut ueblich.
+# EN: Color for the redaction tool, as a "#RRGGBB" hex code -- defaults
+#     to black, as customary in case files/administrative records.
+STANDARD_SCHWAERZUNGSFARBE = "#000000"
+
+
+def _hex_zu_rgb(hex_code: str) -> tuple[int, int, int]:
+    hex_code = hex_code.lstrip("#")
+    return int(hex_code[0:2], 16), int(hex_code[2:4], 16), int(hex_code[4:6], 16)
+
 
 class _Einstellungen(QObject):
     """
@@ -92,10 +104,16 @@ class _Einstellungen(QObject):
     masseinheitGeaendert = Signal(str)
     datumsformatGeaendert = Signal(str)
     anbieterStandardGeaendert = Signal(str)
+    schwaerzungsfarbeGeaendert = Signal(str)
 
     def __init__(self) -> None:
         super().__init__()
         self._settings = QSettings(_ORGANISATION, _ANWENDUNG)
+        # DE: core/schwaerzung.py bei Start auf die zuletzt gespeicherte
+        #     Farbe bringen (das core-Modul selbst kennt QSettings nicht).
+        # EN: Bring core/schwaerzung.py up to the last saved color on
+        #     startup (the core module itself doesn't know about QSettings).
+        _schwaerzung.farbe_setzen(_hex_zu_rgb(self.schwaerzungsfarbe()))
 
     def sprache(self) -> str:
         wert = self._settings.value("sprache", STANDARD_SPRACHE)
@@ -165,6 +183,18 @@ class _Einstellungen(QObject):
 
     def anbieter_letzter_setzen(self, text: str) -> None:
         self._settings.setValue("anbieterLetzter", text)
+
+    def schwaerzungsfarbe(self) -> str:
+        """DE: Aktuelle Schwaerzungsfarbe als "#RRGGBB"-Hexcode.
+        EN: Current redaction color as a "#RRGGBB" hex code."""
+        return self._settings.value("schwaerzungsfarbe", STANDARD_SCHWAERZUNGSFARBE)
+
+    def schwaerzungsfarbe_setzen(self, hex_code: str) -> None:
+        if hex_code == self.schwaerzungsfarbe():
+            return
+        self._settings.setValue("schwaerzungsfarbe", hex_code)
+        _schwaerzung.farbe_setzen(_hex_zu_rgb(hex_code))
+        self.schwaerzungsfarbeGeaendert.emit(hex_code)
 
 
 # DE: Eine einzige, geteilte Instanz fuer die ganze App -- wie bei

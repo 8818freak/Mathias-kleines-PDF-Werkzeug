@@ -117,6 +117,15 @@ class WorkingPage:
     #     (see the bookmarks tool, core/lesezeichen.py).
     lesezeichen_titel: str = ""
     lesezeichen_ebene: int = 1
+    # DE: Schwaerzungs-Rechtecke (x0, y0, x1, y1) als Anteile 0..1 der
+    #     Seite (nach Drehung/Spiegelung) -- siehe core/schwaerzung.py.
+    #     Deckend schwarz, WIRD beim Export dauerhaft in die Pixel
+    #     eingebrannt (nicht nur optisch ueberdeckt), siehe dort.
+    # EN: Redaction rectangles (x0, y0, x1, y1) as fractions 0..1 of the
+    #     page (after rotation/mirroring) -- see core/schwaerzung.py.
+    #     Fully opaque black, PERMANENTLY burned into the pixels on
+    #     export (not just visually covered), see there.
+    schwaerzungen: list[tuple[float, float, float, float]] = field(default_factory=list)
 
     @property
     def unveraendert(self) -> bool:

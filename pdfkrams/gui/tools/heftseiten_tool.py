@@ -52,6 +52,7 @@ from pdfkrams.core.document import SplitSpec, WorkingPage
 from pdfkrams.core.export_dateien import bild_materialisieren
 from pdfkrams.core.heftseiten import lesereihenfolge
 from pdfkrams.core.rotate import normalisiert, rotiertes_bild
+from pdfkrams.core.schwaerzung import schwaerzungen_anwenden
 from pdfkrams.core.split import teile_bild
 from pdfkrams.gui.bildkonvertierung import pil_zu_qpixmap as _als_qpixmap
 from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
@@ -134,7 +135,23 @@ class HeftseitenToolWidget(QWidget):
                 wp: WorkingPage = item.data(Qt.ItemDataRole.UserRole)
                 zusatz = (270.0 if idx % 2 == 0 else 90.0) if abwechselnd else 0.0
                 gedreht_winkel = normalisiert(wp.rotation + zusatz)
-                gerendert.append(rotiertes_bild(wp.source, gedreht_winkel, wp.spiegel_h, wp.spiegel_v))
+                bild, dpi = rotiertes_bild(wp.source, gedreht_winkel, wp.spiegel_h, wp.spiegel_v)
+                # DE: Schwaerzung VOR dem Teilen anwenden. Die Rechtecke
+                #     sind relativ zur Ansicht im Schwaerzen-Werkzeug
+                #     definiert (wp.rotation, ohne den hier zusaetzlichen
+                #     "abwechselnd"-Winkel) -- bei aktivem "quer
+                #     eingescannt" landen sie deshalb mitgedreht nicht
+                #     zwingend exakt an derselben Stelle, bleiben aber in
+                #     jedem Fall vollstaendig deckend schwarz.
+                # EN: Apply redaction before splitting. The rectangles are
+                #     defined relative to the view in the redaction tool
+                #     (wp.rotation, without this tool's extra "alternate"
+                #     angle) -- with "scanned sideways" active they
+                #     therefore don't necessarily end up in exactly the
+                #     same spot once rotated along, but remain fully
+                #     opaque black in any case.
+                bild = schwaerzungen_anwenden(bild, wp.schwaerzungen)
+                gerendert.append((bild, dpi))
                 anzeige.callback(idx + 1, len(items))
         finally:
             anzeige.schliessen()

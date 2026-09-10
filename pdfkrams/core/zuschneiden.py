@@ -21,6 +21,7 @@ from PIL import Image
 
 from .document import WorkingPage
 from .rotate import rotiertes_bild
+from .schwaerzung import schwaerzungen_anwenden
 
 _MM_PRO_ZOLL = 25.4
 
@@ -43,7 +44,12 @@ def seite_zuschneiden(
         safely be applied to several pages that aren't all exactly the
         same size.
     """
+    # DE: Schwaerzung VOR dem Beschnitt anwenden -- die Rechtecke sind
+    #     als Anteile der urspruenglichen (unbeschnittenen) Seite definiert.
+    # EN: Apply redaction before cropping -- the rectangles are defined
+    #     as fractions of the original (uncropped) page.
     bild, dpi = rotiertes_bild(wp.source, wp.rotation, wp.spiegel_h, wp.spiegel_v)
+    bild = schwaerzungen_anwenden(bild, wp.schwaerzungen)
     breite_px, hoehe_px = bild.size
     px_pro_mm = dpi / _MM_PRO_ZOLL
 

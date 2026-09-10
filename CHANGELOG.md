@@ -4,6 +4,38 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 
 *All notable changes to this project are documented here.*
 
+## [1.9] – 2026-09-11
+
+### Hinzugefügt / Added
+
+- Neues Werkzeug „Leerseiten entfernen“: sucht im gewählten Bereich nach
+  wahrscheinlich leeren Seiten (per Tinte-Anteil) -- typisch beim
+  automatisierten Scannen mit Einzug (unbedruckte Rückseiten, leere
+  Trennblätter). Findet nur Vorschläge mit Häkchen zum Abwählen, löscht
+  nichts automatisch.
+  *New "Remove blank pages" tool: searches the selected scope for likely
+  blank pages (via ink share) -- typical with automated ADF scanning
+  (unprinted back sides, blank separator sheets). Only finds suggestions
+  with checkboxes to deselect, doesn't delete anything automatically.*
+- Neues Werkzeug „Schwärzen“: beliebig viele Bereiche einer Seite
+  dauerhaft unkenntlich machen -- deckend gefüllte Rechtecke, frei mit
+  der Maus gezeichnet, verschoben und in der Größe verändert, die beim
+  Speichern wirklich in die Bildpixel eingebrannt werden (nicht nur
+  optisch überdeckt). Betroffene Seiten werden dafür automatisch
+  gerastert, auch wenn sie sonst verlustfrei als Vektorseite exportiert
+  würden. Ein „Übertragen“-Knopf kopiert die Rechtecke einer Seite auf
+  weitere -- praktisch für wiederkehrende Angaben (z. B. eine
+  Aktennummer oben auf jeder Seite). Die Farbe ist in den Einstellungen
+  wählbar (Standard: Schwarz).
+  *New "Redact" tool: permanently obscure any number of areas on a page
+  -- fully filled rectangles, freely drawn, moved, and resized with the
+  mouse, which are actually burned into the image pixels on save (not
+  just visually covered). Affected pages are automatically rasterized
+  for this, even if they'd otherwise export losslessly as a vector page.
+  A "Transfer" button copies one page's rectangles onto further pages --
+  handy for recurring information (e.g. a case number at the top of
+  every page). The color is selectable in Preferences (default: black).*
+
 ## [1.8] – 2026-09-11
 
 ### Hinzugefügt / Added
