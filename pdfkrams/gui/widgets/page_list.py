@@ -312,6 +312,24 @@ class PageListWidget(QListWidget):
                 fortschritt(i, len(sources))
         self.geaendert.emit()
 
+    def seiten_einfuegen(
+        self, sources: list[PageSource], index: int,
+        fortschritt: Callable[[int, int], None] | None = None,
+    ) -> None:
+        """DE: Seiten an einer bestimmten Stelle einfuegen (statt am Ende
+            anzuhaengen, siehe seiten_anhaengen) -- fuer per Drag&Drop an
+            eine konkrete Position in der bereits geoeffneten Liste
+            gezogene Dateien.
+        EN: Insert pages at a specific position (instead of appending at
+            the end, see seiten_anhaengen) -- for files dragged & dropped
+            at a specific position within the already-open list."""
+        self.vor_aenderung_sichern()
+        for i, source in enumerate(sources):
+            self.insertItem(index + i, self._erzeuge_item(source))
+            if fortschritt is not None:
+                fortschritt(i + 1, len(sources))
+        self.geaendert.emit()
+
     def ersetzen(self, item: QListWidgetItem, sources: list[PageSource]) -> None:
         """DE: Einen Eintrag durch eine oder mehrere neue Seiten an derselben
         Stelle ersetzen -- z. B. um eine konfigurierte Teilung tatsaechlich
@@ -402,6 +420,28 @@ class PageListWidget(QListWidget):
         self.vor_aenderung_sichern()
         self.clear()
         self.geaendert.emit()
+
+    def dokument_schliessen(self) -> None:
+        """
+        DE: Wie alle_entfernen(), zusaetzlich aber auch der Rueckgaengig-
+            Verlauf und die dokumentweiten Metadaten (Titel, Autor, ...)
+            werden zurueckgesetzt -- fuer "Datei schliessen", wo ein
+            wirklich frischer Start gewuenscht ist (sonst koennte "Rueck-
+            gaengig" die alte Datei zurueckholen, oder ihr Titel/Autor in
+            das naechste, eigentlich neue Dokument durchsickern).
+        EN: Like alle_entfernen(), but also resets the undo/redo history
+            and the document-wide metadata (title, author, ...) -- for
+            "Close file", where a genuinely fresh start is wanted
+            (otherwise "Undo" could bring the old file back, or its
+            title/author could leak into the next, supposedly new
+            document).
+        """
+        self.clear()
+        self._rueckgaengig_verlauf.clear()
+        self._wiederholen_verlauf.clear()
+        self.dokument_metadaten = leere_rohdaten()
+        self.geaendert.emit()
+        self.verlaufGeaendert.emit()
 
     def seiten(self) -> list[WorkingPage]:
         """DE: Aktuelle Seitenreihenfolge als Liste liefern.

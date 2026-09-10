@@ -9,12 +9,20 @@ nachträglich in Ordnung zu bringen:
 
 - Fügt Seiten aus verschiedenen Dateien zu einer PDF zusammen
 - Dreht schief gescannte Seiten gerade (jede einzeln in kleinstens 0,1° Schritten, auch mit der Maus drehbar)
+- Erkennt Schräglagen jetzt auch automatisch (schlägt den Winkel vor, statt nur von Hand zu ziehen)
 - Trennt mehrere Seiten aus einem einzelnen Scan
+- Fügt umgekehrt mehrere Teile (z. B. A4-Scans einer großen Zeichnung oder eines Schaltplans) zu einer Seite zusammen
 - Bringt gescannte Doppelseiten aus gehefteten Broschüren automatisch
   in die richtige Lesereihenfolge, nachdem es sie teilte
 - Ordnet eine durcheinandergeratene Seitenfolge neu
+- Bringt Seiten auf ein exaktes DIN-Format oder Maß in mm, schneidet dabei automatisch schwarze Scan-Ränder ab (jetzt auch ausländische Normen und nicht metrische Maße)
+- Schneidet Seiten an allen vier Rändern frei wählbar zu (z. B. um einen Lochrandstreifen zu entfernen)
 - Zerlegt eine PDF in einzelne Bilddateien
 - Verkleinert die Dateigröße großer Scans deutlich
+- Bereinigt gescannte Schwarzweißseiten (wandelt in reines Schwarzweiß um, entfernt Flecken/Staub)
+- Setzt Kapitel-Lesezeichen/Inhaltsverzeichnis
+- Trägt PDF-Metadaten ein (Titel, Autor, Produkt, Version, Datum)
+- Kann nun auch Englisch
 
 Alle Funktionen arbeiten in einer einzigen App: Dateien einmal laden
 und mit mehreren Werkzeugen nacheinander bearbeiten, ohne

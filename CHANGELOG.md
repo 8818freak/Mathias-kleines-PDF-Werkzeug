@@ -4,6 +4,29 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 
 *All notable changes to this project are documented here.*
 
+## [1.8] – 2026-09-11
+
+### Hinzugefügt / Added
+
+- „Datei → Datei schließen“ (Cmd+W bzw. Strg+W): leert die Dateiliste,
+  ohne das Programm zu beenden -- fragt nach, falls es ungespeicherte
+  Änderungen gibt. Dieselbe Rückfrage erscheint jetzt auch beim Beenden
+  des Programms, falls ungespeicherte Änderungen vorliegen (gab es
+  bisher gar nicht).
+  *"File → Close file" (Cmd+W resp. Ctrl+W): clears the file list
+  without quitting the program -- asks for confirmation if there are
+  unsaved changes. The same confirmation now also appears when quitting
+  the program if there are unsaved changes (didn't exist before at
+  all).*
+- Per Drag & Drop hinzugefügte Dateien lassen sich jetzt an einer
+  bestimmten Stelle in die bereits geöffnete Dateiliste einfügen, statt
+  immer nur ans Ende angehängt zu werden -- eine blaue Markierungslinie
+  zeigt während des Ziehens, wo genau eingefügt würde.
+  *Files added via drag & drop can now be inserted at a specific spot in
+  the already-open file list, instead of always being appended at the
+  end -- a blue marker line shows exactly where the insertion will land
+  while dragging.*
+
 ## [1.7] – 2026-09-10
 
 ### Hinzugefügt / Added

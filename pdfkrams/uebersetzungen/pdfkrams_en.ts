@@ -150,42 +150,42 @@
         <translation>Supported files</translation>
     </message>
     <message>
-        <location filename="../gui/widgets/file_tool_base.py" line="79"/>
+        <location filename="../gui/widgets/file_tool_base.py" line="94"/>
         <source>Dateien (gilt für alle Werkzeuge -- einmal laden, nacheinander bearbeiten): per Drag&amp;Drop hierher ziehen oder auswählen.</source>
         <translation>Files (applies to all tools -- load once, edit one after another): drag &amp; drop here or select.</translation>
     </message>
     <message>
-        <location filename="../gui/widgets/file_tool_base.py" line="84"/>
+        <location filename="../gui/widgets/file_tool_base.py" line="99"/>
         <source>Dateien hinzufügen …</source>
         <translation>Add files …</translation>
     </message>
     <message>
-        <location filename="../gui/widgets/file_tool_base.py" line="86"/>
+        <location filename="../gui/widgets/file_tool_base.py" line="101"/>
         <source>Auswahl entfernen</source>
         <translation>Remove selection</translation>
     </message>
     <message>
-        <location filename="../gui/widgets/file_tool_base.py" line="88"/>
+        <location filename="../gui/widgets/file_tool_base.py" line="103"/>
         <source>Liste leeren</source>
         <translation>Clear list</translation>
     </message>
     <message>
-        <location filename="../gui/widgets/file_tool_base.py" line="102"/>
+        <location filename="../gui/widgets/file_tool_base.py" line="117"/>
         <source>Dateien auswählen</source>
         <translation>Select files</translation>
     </message>
     <message>
-        <location filename="../gui/widgets/file_tool_base.py" line="132"/>
+        <location filename="../gui/widgets/file_tool_base.py" line="152"/>
         <source>Dateien werden geladen …</source>
         <translation>Loading files …</translation>
     </message>
     <message>
-        <location filename="../gui/widgets/file_tool_base.py" line="152"/>
+        <location filename="../gui/widgets/file_tool_base.py" line="180"/>
         <source>Nicht unterstütztes Format</source>
         <translation>Unsupported format</translation>
     </message>
     <message>
-        <location filename="../gui/widgets/file_tool_base.py" line="153"/>
+        <location filename="../gui/widgets/file_tool_base.py" line="181"/>
         <source>Diese Dateien wurden übersprungen:
 {0}</source>
         <translation>These files were skipped:
@@ -359,7 +359,7 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
     <message>
         <location filename="../gui/tools/lesezeichen_tool.py" line="70"/>
         <source>Titel, z. B. „Kapitel 3 – Anschlüsse“</source>
-        <translation>Title, e.g. "Chapter 3 – Connections"</translation>
+        <translation>Title, e.g. &quot;Chapter 3 – Connections&quot;</translation>
     </message>
     <message>
         <location filename="../gui/tools/lesezeichen_tool.py" line="72"/>
@@ -400,62 +400,67 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
         <translation>“{0}” is coming in one of the next steps.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="145"/>
+        <location filename="../gui/main_window.py" line="157"/>
         <source>Datei</source>
         <translation>File</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="147"/>
+        <location filename="../gui/main_window.py" line="159"/>
         <source>Dateien öffnen …</source>
         <translation>Open files …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="154"/>
+        <location filename="../gui/main_window.py" line="164"/>
+        <source>Datei schließen</source>
+        <translation>Close file</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="175"/>
         <source>Speichern</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="159"/>
+        <location filename="../gui/main_window.py" line="180"/>
         <source>Speichern unter …</source>
         <translation>Save as …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="164"/>
+        <location filename="../gui/main_window.py" line="185"/>
         <source>Bearbeiten</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="166"/>
+        <location filename="../gui/main_window.py" line="187"/>
         <source>Rückgängig</source>
         <translation>Undo</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="171"/>
+        <location filename="../gui/main_window.py" line="192"/>
         <source>Wiederholen</source>
         <translation>Redo</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="179"/>
+        <location filename="../gui/main_window.py" line="200"/>
         <source>Einstellungen …</source>
         <translation>Preferences …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="189"/>
+        <location filename="../gui/main_window.py" line="210"/>
         <source>Hilfe</source>
         <translation>Help</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="191"/>
+        <location filename="../gui/main_window.py" line="212"/>
         <source>Über {0} …</source>
         <translation>About {0} …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="212"/>
+        <location filename="../gui/main_window.py" line="233"/>
         <source>Über {0}</source>
         <translation>About {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="215"/>
+        <location filename="../gui/main_window.py" line="236"/>
         <source>Kostenlos bereitgestellt von {0}&lt;br&gt;&lt;a href=&quot;{1}&quot;&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;Dieses Programm kommt OHNE JEDE GEWÄHRLEISTUNG. Es ist freie Software, und Sie dürfen es unter bestimmten Bedingungen weiterverbreiten -- siehe die Lizenz GNU GPL 3.0 (Datei LICENSE) für Details.&lt;br&gt;&lt;br&gt;Entwickelt und getestet wird ausschließlich auf macOS -- die Windows-Version wird nicht selbst getestet, funktioniert aber hoffentlich fehlerfrei. Bei Fehlern bitte mit einer genauen, nachvollziehbaren Beschreibung an &lt;a href=&quot;mailto:telefonmann@telefonanleitungen.de&quot;&gt;telefonmann@telefonanleitungen.de&lt;/a&gt; schreiben, dann wird so schnell wie möglich korrigiert.</source>
         <translation>Provided free of charge by {0}&lt;br&gt;&lt;a href=&quot;{1}&quot;&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;This program comes WITH ABSOLUTELY NO WARRANTY. It is free software, and you are welcome to redistribute it under certain conditions -- see the GNU GPL 3.0 license (file LICENSE) for details.&lt;br&gt;&lt;br&gt;Developed and tested exclusively on macOS -- the Windows version is not tested by the author, but hopefully works correctly. If you run into a bug, please report it with a precise, reproducible description to &lt;a href=&quot;mailto:telefonmann@telefonanleitungen.de&quot;&gt;telefonmann@telefonanleitungen.de&lt;/a&gt;, and it will be fixed as soon as possible.</translation>
     </message>
@@ -464,47 +469,63 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
         <translation>Provided free of charge by {0}&lt;br&gt;&lt;a href=&quot;{1}&quot;&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;This program comes WITH ABSOLUTELY NO WARRANTY. It is free software, and you are welcome to redistribute it under certain conditions -- see the GNU GPL 3.0 license (file LICENSE) for details.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="287"/>
+        <location filename="../gui/main_window.py" line="355"/>
         <source>PDF speichern unter</source>
         <translation>Save PDF as</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="285"/>
+        <location filename="../gui/main_window.py" line="353"/>
         <source>dokument.pdf</source>
         <translation>document.pdf</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="287"/>
+        <location filename="../gui/main_window.py" line="329"/>
+        <location filename="../gui/main_window.py" line="339"/>
+        <source>Ungespeicherte Änderungen</source>
+        <translation>Unsaved changes</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="330"/>
+        <source>Diese Datei hat ungespeicherte Änderungen. Trotzdem schließen?</source>
+        <translation>This file has unsaved changes. Close anyway?</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="340"/>
+        <source>Es gibt ungespeicherte Änderungen. Trotzdem beenden?</source>
+        <translation>There are unsaved changes. Quit anyway?</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="355"/>
         <source>PDF-Datei (*.pdf)</source>
         <translation>PDF file (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="297"/>
+        <location filename="../gui/main_window.py" line="365"/>
         <source>Keine Seiten</source>
         <translation>No pages</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="297"/>
+        <location filename="../gui/main_window.py" line="365"/>
         <source>Die Dateiliste ist leer.</source>
         <translation>The file list is empty.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="299"/>
+        <location filename="../gui/main_window.py" line="367"/>
         <source>PDF wird erstellt …</source>
         <translation>Creating PDF …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="306"/>
+        <location filename="../gui/main_window.py" line="374"/>
         <source>Speichern fehlgeschlagen</source>
         <translation>Save failed</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="310"/>
+        <location filename="../gui/main_window.py" line="379"/>
         <source>Gespeichert</source>
         <translation>Saved</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="310"/>
+        <location filename="../gui/main_window.py" line="379"/>
         <source>PDF gespeichert unter:
 {0}</source>
         <translation>PDF saved to:

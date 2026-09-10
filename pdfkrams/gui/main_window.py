@@ -100,11 +100,23 @@ class MainWindow(QMainWindow):
         self.resize(1300, 750)
 
         self._letzter_pdf_pfad: Path | None = None
+        # DE: Ob es seit dem letzten erfolgreichen Speichern (bzw. seit dem
+        #     Start/letzten "Datei schliessen") Aenderungen an der Liste
+        #     gab -- fuer die Rueckfrage bei "Datei schliessen" und beim
+        #     Beenden der App (siehe _als_ungespeichert_markieren,
+        #     _datei_schliessen, closeEvent).
+        # EN: Whether there have been changes to the list since the last
+        #     successful save (resp. since startup/the last "Close file")
+        #     -- for the confirmation prompt on "Close file" and on
+        #     quitting the app (see _als_ungespeichert_markieren,
+        #     _datei_schliessen, closeEvent).
+        self._ungespeicherte_aenderungen = False
 
         self._dateiliste_panel = DateiListenPanel()
         self._liste: PageListWidget = self._dateiliste_panel.liste
         self._dateiliste_panel.einzelneDateiGeoeffnet.connect(self._dokument_geoeffnet)
         self._dateiliste_panel.andereDateienHinzugefuegt.connect(self._speicherziel_verwerfen)
+        self._liste.geaendert.connect(self._als_ungespeichert_markieren)
 
         self._seitenleiste = QListWidget()
         self._werkzeuge = QStackedWidget()
@@ -148,6 +160,15 @@ class MainWindow(QMainWindow):
         action_oeffnen.setShortcut(QKeySequence.StandardKey.Open)
         action_oeffnen.triggered.connect(self._dateiliste_panel.dateien_hinzufuegen_dialog)
         datei_menu.addAction(action_oeffnen)
+
+        self._action_schliessen = QAction(self.tr("Datei schließen"), self)
+        self._action_schliessen.setShortcut(QKeySequence.StandardKey.Close)
+        self._action_schliessen.triggered.connect(self._datei_schliessen)
+        self._action_schliessen.setEnabled(False)
+        self._liste.geaendert.connect(
+            lambda: self._action_schliessen.setEnabled(self._liste.count() > 0)
+        )
+        datei_menu.addAction(self._action_schliessen)
 
         datei_menu.addSeparator()
 
@@ -269,11 +290,58 @@ class MainWindow(QMainWindow):
             exactly one PDF was loaded into an empty list (see
             DateiListenPanel.einzelneDateiGeoeffnet); once more files are
             added, the list no longer mirrors that one file, and "Save"
-            asks again."""
+            asks again. Ausserdem gilt eine frisch, unveraendert geoeffnete
+            Einzeldatei noch nicht als "ungespeichert" -- ihr Inhalt
+            entspricht ja exakt dem, was schon auf der Platte liegt."""
         self._letzter_pdf_pfad = pfad
+        self._ungespeicherte_aenderungen = False
 
     def _speicherziel_verwerfen(self) -> None:
         self._letzter_pdf_pfad = None
+        # DE: Mehrere Dateien kombiniert (oder zu einer schon offenen Liste
+        #     hinzugefuegt) -- das Ergebnis existiert so noch nirgends
+        #     gespeichert auf der Platte.
+        # EN: Several files combined (or added to an already-open list) --
+        #     the result doesn't exist saved on disk anywhere like this yet.
+        self._ungespeicherte_aenderungen = True
+
+    def _als_ungespeichert_markieren(self) -> None:
+        self._ungespeicherte_aenderungen = True
+
+    def _ungespeicherte_aenderungen_bestaetigen(self, titel: str, frage: str) -> bool:
+        """DE: Fragt nur nach, wenn es tatsaechlich ungespeicherte Aenderungen
+            gibt; liefert True, wenn fortgefahren werden darf (keine
+            Aenderungen, oder Nutzer hat trotzdem bestaetigt).
+        EN: Only asks if there actually are unsaved changes; returns True
+            if it's fine to proceed (no changes, or the user confirmed
+            anyway)."""
+        if not self._ungespeicherte_aenderungen or self._liste.count() == 0:
+            return True
+        antwort = QMessageBox.question(
+            self, titel, frage,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.Cancel,
+            QMessageBox.StandardButton.Cancel,
+        )
+        return antwort == QMessageBox.StandardButton.Yes
+
+    def _datei_schliessen(self) -> None:
+        if not self._ungespeicherte_aenderungen_bestaetigen(
+            self.tr("Ungespeicherte Änderungen"),
+            self.tr("Diese Datei hat ungespeicherte Änderungen. Trotzdem schließen?"),
+        ):
+            return
+        self._liste.dokument_schliessen()
+        self._letzter_pdf_pfad = None
+        self._ungespeicherte_aenderungen = False
+
+    def closeEvent(self, event) -> None:  # noqa: N802 (Qt-Namenskonvention)
+        if not self._ungespeicherte_aenderungen_bestaetigen(
+            self.tr("Ungespeicherte Änderungen"),
+            self.tr("Es gibt ungespeicherte Änderungen. Trotzdem beenden?"),
+        ):
+            event.ignore()
+            return
+        event.accept()
 
     def _speichern(self) -> None:
         if self._letzter_pdf_pfad is None:
@@ -307,4 +375,5 @@ class MainWindow(QMainWindow):
             return
         finally:
             anzeige.schliessen()
+        self._ungespeicherte_aenderungen = False
         QMessageBox.information(self, self.tr("Gespeichert"), self.tr("PDF gespeichert unter:\n{0}").format(ziel))
