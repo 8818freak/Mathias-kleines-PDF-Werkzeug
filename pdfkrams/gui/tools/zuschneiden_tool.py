@@ -171,6 +171,22 @@ class ZuschneidenToolWidget(QWidget):
 
         self._auswahl_geaendert()
 
+    def showEvent(self, event) -> None:  # noqa: N802 (Qt-Namenskonvention)
+        # DE: Vorschau auch beim Werkzeugwechsel aktualisieren, nicht nur
+        #     bei geaenderter Auswahl -- siehe rotate_tool.py fuer die
+        #     ausfuehrliche Begruendung (gleiches Muster ueberall). Genau
+        #     das war der vom Nutzer gemeldete Fehler: nach Drehen+
+        #     Speichern zeigte das Zuschneiden-Werkzeug weiter die alte,
+        #     schiefe Seite, bis eine andere Seite ausgewaehlt wurde.
+        # EN: Also refresh the preview when switching tools, not just on
+        #     selection change -- see rotate_tool.py for the full
+        #     rationale (same pattern everywhere). This was exactly the
+        #     bug the user reported: after rotating+saving, the crop tool
+        #     kept showing the old, skewed page until a different page
+        #     was selected.
+        super().showEvent(event)
+        self._auswahl_geaendert()
+
     def _randfeld(self, beschriftung: str) -> QDoubleSpinBox:
         feld = QDoubleSpinBox()
         feld.setPrefix(beschriftung)

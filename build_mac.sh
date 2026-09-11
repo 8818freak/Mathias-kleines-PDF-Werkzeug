@@ -33,12 +33,70 @@ pip install -r requirements.txt
 pip install pyinstaller
 
 echo
-echo "Baue die App ..."
-pyinstaller --windowed --name "$APPNAME" \
+echo "Erzeuge .spec-Datei ..."
+# DE: Erst nur die .spec-Datei erzeugen (nicht direkt bauen), damit wir
+#     CFBundleDocumentTypes ergaenzen koennen -- dafuer gibt es keine
+#     PyInstaller-Kommandozeilenoption, nur den info_plist-Parameter im
+#     BUNDLE()-Aufruf der .spec-Datei. Damit merkt sich macOS, dass diese
+#     App PDF- und Bilddateien oeffnen kann (taucht in "Öffnen mit" auf
+#     und bleibt dort gemerkt) -- LSHandlerRank "Alternate" beansprucht
+#     dabei NICHT automatisch die Standard-App-Rolle, das bleibt eine
+#     bewusste Entscheidung des Nutzers in den Finder-Einstellungen.
+# EN: First only generate the .spec file (don't build directly yet), so
+#     we can add CFBundleDocumentTypes -- there's no PyInstaller
+#     command-line option for that, only the info_plist parameter in the
+#     .spec file's BUNDLE() call. This makes macOS remember that this
+#     app can open PDF and image files (shows up in "Open With" and
+#     stays remembered there) -- LSHandlerRank "Alternate" deliberately
+#     does NOT claim the default-app role automatically, that stays the
+#     user's own choice in Finder's settings.
+pyi-makespec --windowed --name "$APPNAME" \
   --osx-bundle-identifier de.telefonanleitungen.pdfkrams \
   --add-data "pdfkrams/uebersetzungen:pdfkrams/uebersetzungen" \
-  --noconfirm \
+  --add-data "pdfkrams/hilfe:pdfkrams/hilfe" \
+  --add-data "pdfkrams/logo:pdfkrams/logo" \
   pdfkrams/main.py
+
+python3 - "$APPNAME.spec" <<'PYEOF'
+import sys
+
+pfad = sys.argv[1]
+with open(pfad, encoding="utf-8") as f:
+    inhalt = f.read()
+
+info_plist = """    info_plist={
+        'CFBundleDocumentTypes': [
+            {
+                'CFBundleTypeName': 'PDF-Dokument',
+                'LSItemContentTypes': ['com.adobe.pdf'],
+                'CFBundleTypeRole': 'Editor',
+                'LSHandlerRank': 'Alternate',
+            },
+            {
+                'CFBundleTypeName': 'Bilddatei',
+                'LSItemContentTypes': [
+                    'public.jpeg', 'public.png', 'public.tiff', 'com.microsoft.bmp',
+                ],
+                'CFBundleTypeRole': 'Editor',
+                'LSHandlerRank': 'Alternate',
+            },
+        ],
+    },
+"""
+
+marker = "bundle_identifier='de.telefonanleitungen.pdfkrams',"
+if marker not in inhalt:
+    raise SystemExit(f"Erwartete Zeile nicht gefunden in {pfad} -- PyInstaller-Spec-Format geaendert?")
+inhalt = inhalt.replace(marker, marker + "\n" + info_plist)
+
+with open(pfad, "w", encoding="utf-8") as f:
+    f.write(inhalt)
+print(f"CFBundleDocumentTypes in {pfad} ergaenzt.")
+PYEOF
+
+echo
+echo "Baue die App ..."
+pyinstaller --noconfirm "$APPNAME.spec"
 
 echo
 echo "Baue das .dmg ..."

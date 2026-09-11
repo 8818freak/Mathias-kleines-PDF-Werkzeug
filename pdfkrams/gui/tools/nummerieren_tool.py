@@ -136,6 +136,16 @@ class NummerierenToolWidget(QWidget):
 
         self._auswahl_geaendert()
 
+    def showEvent(self, event) -> None:  # noqa: N802 (Qt-Namenskonvention)
+        # DE: Vorschau auch beim Werkzeugwechsel aktualisieren, nicht nur
+        #     bei geaenderter Auswahl -- siehe rotate_tool.py fuer die
+        #     ausfuehrliche Begruendung (gleiches Muster ueberall).
+        # EN: Also refresh the preview when switching tools, not just on
+        #     selection change -- see rotate_tool.py for the full
+        #     rationale (same pattern everywhere).
+        super().showEvent(event)
+        self._auswahl_geaendert()
+
     def _auswahl_geaendert(self) -> None:
         wp = self.liste.aktuelle_seite()
         if wp is None:

@@ -17,7 +17,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QImage, QPixmap
+from PySide6.QtGui import QKeySequence
 from PySide6.QtWidgets import (
     QComboBox,
     QFileDialog,
@@ -33,10 +33,9 @@ from PySide6.QtWidgets import (
 )
 
 from pdfkrams.core.combine import export_pdf
-from pdfkrams.core.document import render_rgb
 from pdfkrams.core.rotate import normalisiert, rotiertes_bild, schraeglagen_korrektur_erkennen
 from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
-from pdfkrams.gui.widgets.page_list import PageListWidget
+from pdfkrams.gui.widgets.page_list import PageListWidget, basis_pixmap
 from pdfkrams.gui.widgets.rotate_canvas import RotateCanvas
 
 # DE: Groesse, in der die aktuelle Seite in der grossen Vorschau gerendert wird.
@@ -87,6 +86,27 @@ class RotateToolWidget(QWidget):
         )
         hinweis.setWordWrap(True)
 
+        zoom_zeile = QHBoxLayout()
+        btn_zoom_aus = QPushButton("−")
+        btn_zoom_aus.setFixedWidth(32)
+        btn_zoom_aus.setToolTip(self.tr("Verkleinern"))
+        btn_zoom_aus.clicked.connect(lambda: self._canvas.zoom_schritt(1 / 1.4))
+        self._zoom_label = QLabel(self.tr("100 %"))
+        self._zoom_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._zoom_label.setFixedWidth(56)
+        btn_zoom_ein = QPushButton("+")
+        btn_zoom_ein.setFixedWidth(32)
+        btn_zoom_ein.setToolTip(self.tr("Vergrößern"))
+        btn_zoom_ein.clicked.connect(lambda: self._canvas.zoom_schritt(1.4))
+        btn_einpassen = QPushButton(self.tr("Einpassen"))
+        btn_einpassen.clicked.connect(lambda: self._canvas.einpassen())
+        zoom_zeile.addWidget(btn_zoom_aus)
+        zoom_zeile.addWidget(self._zoom_label)
+        zoom_zeile.addWidget(btn_zoom_ein)
+        zoom_zeile.addWidget(btn_einpassen)
+        zoom_zeile.addStretch(1)
+        self._canvas.zoomGeaendert.connect(self._zoom_anzeige_aktualisieren)
+
         self._geltungsbereich = QComboBox()
         self._geltungsbereich.addItem(self.tr(_AKTUELLE_SEITE), _AKTUELLE_SEITE)
         self._geltungsbereich.addItem(self.tr(_AUSGEWAEHLTE_SEITEN), _AUSGEWAEHLTE_SEITEN)
@@ -97,9 +117,22 @@ class RotateToolWidget(QWidget):
         gruppe_layout.addWidget(self._geltungsbereich)
 
         drehen_zeile = QHBoxLayout()
-        for text, delta in ((self.tr("↺ 90°"), -90.0), (self.tr("↻ 90°"), 90.0), (self.tr("180°"), 180.0)):
+        for text, delta, taste in (
+            (self.tr("↺ 90°"), -90.0, "Ctrl+L"),
+            (self.tr("↻ 90°"), 90.0, "Ctrl+R"),
+            (self.tr("180°"), 180.0, None),
+        ):
             btn = QPushButton(text)
             btn.clicked.connect(lambda _checked=False, d=delta: self._schnelldrehung(d))
+            if taste is not None:
+                # DE: "Ctrl" wird von Qt auf macOS automatisch zu Cmd --
+                #     dieselbe Konvention wie bei den Standard-Kuerzeln
+                #     (z. B. QKeySequence.StandardKey.Save).
+                # EN: Qt automatically maps "Ctrl" to Cmd on macOS -- the
+                #     same convention as the standard shortcuts (e.g.
+                #     QKeySequence.StandardKey.Save).
+                btn.setShortcut(QKeySequence(taste))
+                btn.setShortcutEnabled(True)
             drehen_zeile.addWidget(btn)
         gruppe_layout.addLayout(drehen_zeile)
 
@@ -154,6 +187,7 @@ class RotateToolWidget(QWidget):
 
         aussen = QVBoxLayout(self)
         aussen.addWidget(hinweis)
+        aussen.addLayout(zoom_zeile)
         aussen.addWidget(self._canvas, 1)
         aussen.addWidget(self._winkel_feld)
         aussen.addWidget(gruppe)
@@ -161,6 +195,23 @@ class RotateToolWidget(QWidget):
         aussen.addWidget(self._btn_export)
 
         self._steuerung_aktivieren(self.liste.aktuelle_seite() is not None)
+        self._auswahl_geaendert()
+
+    def showEvent(self, event) -> None:  # noqa: N802 (Qt-Namenskonvention)
+        # DE: Wird auch beim Wechsel zu diesem Werkzeug ueber die
+        #     Seitenleiste ausgeloest (QStackedWidget zeigt/versteckt
+        #     Seiten per show()/hide()) -- ohne das wuerde die Vorschau
+        #     hier stehen bleiben, wenn sich die Seite in einem ANDEREN
+        #     Werkzeug geaendert hat, waehrend dieses im Hintergrund war
+        #     (die Auswahl in der Liste aendert sich dabei ja nicht, nur
+        #     der Inhalt der Seite selbst).
+        # EN: Also fires when switching to this tool via the sidebar
+        #     (QStackedWidget shows/hides pages via show()/hide()) --
+        #     without this, the preview here would stay stale if the page
+        #     changed in a DIFFERENT tool while this one was in the
+        #     background (the list selection itself doesn't change, only
+        #     the page's own content).
+        super().showEvent(event)
         self._auswahl_geaendert()
 
     # -- Geltungsbereich / scope resolution --------------------------------
@@ -186,14 +237,21 @@ class RotateToolWidget(QWidget):
         if wp is None:
             self._canvas.seite_setzen(None, 0.0, False, False)
             return
-        rgb_bytes, breite, hoehe = render_rgb(wp.source, _VORSCHAU_GROESSE)
-        bild = QImage(rgb_bytes, breite, hoehe, breite * 3, QImage.Format.Format_RGB888)
-        pixmap = QPixmap.fromImage(bild.copy())
+        # DE: Bewusst basis_pixmap (ungedreht, gecacht) statt vorschau_pixmap
+        #     -- die Canvas dreht/spiegelt selbst per painter.rotate(),
+        #     braucht also das UNveraenderte Bild.
+        # EN: Deliberately basis_pixmap (unrotated, cached) instead of
+        #     vorschau_pixmap -- the canvas rotates/mirrors itself via
+        #     painter.rotate(), so it needs the UNmodified image.
+        pixmap = basis_pixmap(wp.source, _VORSCHAU_GROESSE)
 
         self._synchronisiere = True
         self._canvas.seite_setzen(pixmap, wp.rotation, wp.spiegel_h, wp.spiegel_v)
         self._winkel_feld.setValue(wp.rotation)
         self._synchronisiere = False
+
+    def _zoom_anzeige_aktualisieren(self, zoom: float) -> None:
+        self._zoom_label.setText(self.tr("{0} %").format(round(zoom * 100)))
 
     def _steuerung_aktivieren(self, an: bool) -> None:
         self._canvas.setEnabled(an)

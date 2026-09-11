@@ -7,22 +7,21 @@ Was das Programm kann
 Mathias' kleines PDF-Werkzeug hilft dabei, gescannte Dokumente
 nachträglich in Ordnung zu bringen:
 
-- Fügt Seiten aus verschiedenen Dateien zu einer PDF zusammen
-- Dreht schief gescannte Seiten gerade (jede einzeln in kleinstens 0,1° Schritten, auch mit der Maus drehbar)
-- Erkennt Schräglagen jetzt auch automatisch (schlägt den Winkel vor, statt nur von Hand zu ziehen)
-- Trennt mehrere Seiten aus einem einzelnen Scan
-- Fügt umgekehrt mehrere Teile (z. B. A4-Scans einer großen Zeichnung oder eines Schaltplans) zu einer Seite zusammen
-- Bringt gescannte Doppelseiten aus gehefteten Broschüren automatisch
-  in die richtige Lesereihenfolge, nachdem es sie teilte
-- Ordnet eine durcheinandergeratene Seitenfolge neu
-- Bringt Seiten auf ein exaktes DIN-Format oder Maß in mm, schneidet dabei automatisch schwarze Scan-Ränder ab (jetzt auch ausländische Normen und nicht metrische Maße)
-- Schneidet Seiten an allen vier Rändern frei wählbar zu (z. B. um einen Lochrandstreifen zu entfernen)
-- Zerlegt eine PDF in einzelne Bilddateien
-- Verkleinert die Dateigröße großer Scans deutlich
-- Bereinigt gescannte Schwarzweißseiten (wandelt in reines Schwarzweiß um, entfernt Flecken/Staub)
-- Setzt Kapitel-Lesezeichen/Inhaltsverzeichnis
-- Trägt PDF-Metadaten ein (Titel, Autor, Produkt, Version, Datum)
-- Kann nun auch Englisch
+- PDF erstellen - PDF/JPG/BMP/TIF(F) (auch mehrseitige TIFFs) zu einer PDF-Datei zusammenfügen.
+- Seiten drehen - frei mit der Maus gerade ziehen, oder 90°/180°, Spiegeln, "abwechselnd drehen" für gescannte Doppelseiten; Schräglage lässt sich auch automatisch per Textzeilen-Erkennung vorschlagen.
+- Bildbereinigung - für gescannte Schwarzweiß-/Textvorlagen: Binarisieren (Schwellwert, auf Wunsch automatisch per Otsu-Verfahren vorgeschlagen) und Despeckle (kleine dunkle Flecken/Staub entfernen), beide Schritte unabhängig voneinander zuschaltbar, mit Live-Vorschau.
+- Leerseiten entfernen - sucht Seiten, die wahrscheinlich leer sind (Tinte-Anteil), typisch beim automatisierten Scannen mit Einzug (unbedruckte Rückseiten, leere Trennblätter) - findet nur Vorschläge zum Abwählen, löscht nichts automatisch.
+- Seiten teilen - beliebiges Raster aus Zeilen x Spalten, Schnittlinien mit der Maus ziehen, automatische Ausrichtung auf ruhige Bildbereiche.
+- Seiten zusammenfügen - mehrere Teile (z. B. A4-Scans einer großen Zeichnung) zu einer Seite verbinden: Raster-Anordnung, frei verschiebbar, Feindrehung und Randbeschnitt je Teil.
+- Heftseiten teilen - gescannte Doppelseiten aus gehefteten Broschüren automatisch in die richtige Reihenfolge bringen (inkl. überbreiter Umschlag-/Aufklappseiten).
+- Seiten nummerieren - eine durcheinandergeratene Seitenfolge per Zielnummer neu anordnen, plus automatische Sortierung/Umbenennung nach Aufnahmedatum.
+- Lesezeichen setzen - für Broschüren und Bücher jeder Seite optional einen Kapitel- oder Unterkapitel-Titel geben; wird beim Speichern automatisch zu einem Lesezeichen/Inhaltsverzeichnis in der PDF-Datei.
+- Seitenmaß normieren - Seiten auf ein exaktes DIN-A-Format, ein US-Format (Letter, Legal, ...) oder ein freies Maß bringen (Millimeter oder Zoll, umstellbar in den Einstellungen); schwarze Scan-Ränder werden dabei automatisch erkannt und abgeschnitten, inkl. Größenvorschlag je Seite.
+- Seiten zuschneiden - Seiten von allen vier Rändern aus um ein frei wählbares Maß beschneiden (z. B. einen Lochrandstreifen oder Heftrand entfernen), mit ziehbaren Linien in der Vorschau und Live-Anzeige der Ergebnisgröße inkl. Formatvorschlag.
+- Schwärzen - beliebig viele Bereiche einer Seite dauerhaft unkenntlich machen (frei gezeichnete, verschiebbare Rechtecke, die beim Speichern wirklich in die Bildpixel eingebrannt werden, nicht nur optisch überdeckt), mit wählbarer Farbe und einem Knopf zum Übertragen auf weitere Seiten.
+- PDF in Bilder teilen - als einzelne durchnummerierte Bilddateien oder als eine mehrseitige TIFF-Datei exportieren.
+- PDF verkleinern & PDF/A - Dateigröße durch JPEG-Kodierung deutlich verringern (erkennt bereits effizient komprimierte Schwarzweißseiten und lässt sie unverändert), verlustfreie Struktur-Komprimierung, sowie PDF/A-2b-Kennzeichnung für die Archivierung.
+- Metadaten bearbeiten - dokumentweite PDF-Metadaten (Titel, Autor, Anbieter, Produkt, Version, Releasedatum, Stichwörter) statt pro Seite; wird beim Speichern automatisch übernommen, inkl. automatischem Dateinamen-Vorschlag beim Speichern unter.
 
 Alle Funktionen arbeiten in einer einzigen App: Dateien einmal laden
 und mit mehreren Werkzeugen nacheinander bearbeiten, ohne

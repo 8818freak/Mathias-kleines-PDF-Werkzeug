@@ -197,6 +197,16 @@ class SplitToolWidget(QWidget):
         self._export_aktivierung_aktualisieren()
         self._auswahl_geaendert()
 
+    def showEvent(self, event) -> None:  # noqa: N802 (Qt-Namenskonvention)
+        # DE: Vorschau auch beim Werkzeugwechsel aktualisieren, nicht nur
+        #     bei geaenderter Auswahl -- siehe rotate_tool.py fuer die
+        #     ausfuehrliche Begruendung (gleiches Muster ueberall).
+        # EN: Also refresh the preview when switching tools, not just on
+        #     selection change -- see rotate_tool.py for the full
+        #     rationale (same pattern everywhere).
+        super().showEvent(event)
+        self._auswahl_geaendert()
+
     # -- Geltungsbereich / scope resolution --------------------------------
 
     def _ziel_elemente(self) -> list[QListWidgetItem]:

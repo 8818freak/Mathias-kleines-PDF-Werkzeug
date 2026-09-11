@@ -4,6 +4,65 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 
 *All notable changes to this project are documented here.*
 
+## [1.9.1] – 2026-09-11
+
+### Behoben / Fixed
+
+- Wichtiger Fehler: Werkzeuge mit eigener Vorschau (Seiten zuschneiden,
+  Bildbereinigung, Schwärzen, Seiten teilen, Seitenmaß normieren,
+  Lesezeichen setzen, Seiten nummerieren, Seiten drehen) aktualisierten
+  ihre Vorschau nur bei geänderter Seitenauswahl, nicht beim bloßen
+  Wechsel zwischen Werkzeugen. Wer z. B. in „Seiten drehen“ geradezog und
+  dann zu „Seiten zuschneiden“ wechselte, sah dort weiterhin die alte,
+  schiefe Seite, bis eine andere Seite ausgewählt wurde.
+  *Important bug: tools with their own preview (Crop pages, Image
+  cleanup, Redact, Split pages, Normalize page size, Set bookmarks,
+  Number pages, Rotate pages) only refreshed their preview when the page
+  selection changed, not on a plain switch between tools. E.g. after
+  straightening a page in "Rotate pages" and switching to "Crop pages",
+  the old, skewed page kept showing there until a different page was
+  selected.*
+
+### Hinzugefügt / Added
+
+- Seiten-Vorschau (Miniaturen und alle Werkzeug-Vorschauen) wird jetzt
+  zwischengespeichert -- spürbar schnelleres Laden beim Wechseln
+  zwischen Werkzeugen und Seiten, besonders bei vielseitigen Dokumenten.
+  *Page previews (thumbnails and every tool's preview) are now cached --
+  noticeably faster when switching between tools and pages, especially
+  for many-page documents.*
+- „Seiten drehen“: Zoom/Verschieben wie bei den anderen Werkzeugen
+  (Strg/Cmd+Scrollen, Pinch-Geste), dichteres Referenzraster, jetzt auch
+  mit senkrechten Linien (vorher nur waagerecht).
+  *"Rotate pages": zoom/pan like the other tools (Ctrl/Cmd+scroll, pinch
+  gesture), a tighter reference grid, now also with vertical lines
+  (previously only horizontal).*
+- „Seiten drehen“: die 90°-Schnelldrehung lässt sich jetzt auch per
+  Cmd+L (linksherum) und Cmd+R (rechtsherum) auslösen.
+  *"Rotate pages": the 90° quick rotation can now also be triggered via
+  Cmd+L (counterclockwise) and Cmd+R (clockwise).*
+- macOS merkt sich jetzt, dass das Programm PDF- und Bilddateien öffnen
+  kann (taucht im Finder unter „Öffnen mit“ auf und bleibt dort
+  gemerkt) -- unter Windows entsprechend über die Registry (nur für den
+  aktuellen Nutzer, ungetestet auf echtem Windows).
+  *macOS now remembers that the program can open PDF and image files
+  (shows up in Finder's "Open With" and stays remembered there) --
+  correspondingly via the registry on Windows (current user only,
+  untested on real Windows).*
+- Neuer Menüpunkt „Hilfe → Bedienungsanleitung“ (Cmd+? bzw. F1): öffnet
+  die Anleitung in einem eigenen, durchsuchbaren Fenster (Cmd/Strg+F) --
+  ohne externen PDF-Betrachter oder Browser, funktioniert identisch auf
+  macOS und Windows.
+  *New "Help → User Manual" menu item (Cmd+? resp. F1): opens the manual
+  in its own searchable window (Cmd/Ctrl+F) -- no external PDF viewer or
+  browser needed, works identically on macOS and Windows.*
+- Logo von Telefonanleitungen.de im Über-Dialog, im Hilfe-Fenster und in
+  den PDF-Anleitungen (nicht auf der Website-Fassung, dort ohnehin
+  eindeutig).
+  *Telefonanleitungen.de logo in the About dialog, the help window, and
+  the PDF manuals (not on the website version, unambiguous there
+  anyway).*
+
 ## [1.9] – 2026-09-11
 
 ### Hinzugefügt / Added

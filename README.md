@@ -133,13 +133,21 @@ laden, mit mehreren Werkzeugen nacheinander bearbeiten, ohne zwischendurch
 exportieren zu müssen. Dazu: natives Menü mit Datei schließen/Speichern/
 Speichern unter/Rückgängig/Wiederholen (fragt bei ungespeicherten
 Änderungen nach), Drag & Drop an eine bestimmte Stelle in der Dateiliste,
-Fortschrittsanzeigen bei allen längeren Vorgängen.
+eine durchsuchbare Bedienungsanleitung im Programm selbst (Hilfe-Menü
+bzw. Cmd+?/F1), Fortschrittsanzeigen bei allen längeren Vorgängen. macOS
+merkt sich außerdem, dass das Programm PDF- und Bilddateien öffnen kann
+(Finder-Menü „Öffnen mit“) -- unter Windows entsprechend über die
+Registry.
 
 *All tools operate on the same shared file list -- load once, work through
 several tools one after another without exporting in between. Plus: a
 native menu with Close file/Save/Save As/Undo/Redo (asks for confirmation
 on unsaved changes), drag & drop insertion at a specific spot in the file
-list, and progress indicators for every longer-running operation.*
+list, a searchable user manual built right into the app (Help menu resp.
+Cmd+?/F1), and progress indicators for every longer-running operation.
+macOS also remembers that the program can open PDF and image files
+(Finder's "Open With" menu) -- correspondingly via the registry on
+Windows.*
 
 Die Oberfläche ist auf Deutsch und Englisch verfügbar (in den
 Einstellungen umstellbar, Deutsch bleibt die Voreinstellung), dazu eine

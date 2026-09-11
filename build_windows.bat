@@ -104,7 +104,7 @@ if errorlevel 1 (
 
 echo.
 echo Baue die exe ...
-pyinstaller --onefile --windowed --name "%APPNAME%" --add-data "pdfkrams\uebersetzungen;pdfkrams\uebersetzungen" --noconfirm pdfkrams\main.py
+pyinstaller --onefile --windowed --name "%APPNAME%" --add-data "pdfkrams\uebersetzungen;pdfkrams\uebersetzungen" --add-data "pdfkrams\hilfe;pdfkrams\hilfe" --add-data "pdfkrams\logo;pdfkrams\logo" --noconfirm pdfkrams\main.py
 if errorlevel 1 (
     echo.
     echo FEHLER: PyInstaller-Build fehlgeschlagen -- siehe Meldungen oben.

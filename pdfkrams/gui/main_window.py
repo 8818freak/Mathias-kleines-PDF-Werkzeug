@@ -28,8 +28,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PySide6.QtCore import QCoreApplication
-from PySide6.QtGui import QAction, QKeySequence
+from PySide6.QtCore import QCoreApplication, Qt
+from PySide6.QtGui import QAction, QKeySequence, QPixmap
 from PySide6.QtWidgets import (
     QFileDialog,
     QLabel,
@@ -42,7 +42,9 @@ from PySide6.QtWidgets import (
 )
 
 from pdfkrams.core.combine import export_pdf
+from pdfkrams.einstellungen import einstellungen
 from pdfkrams.gui.einstellungen_dialog import EinstellungenDialog
+from pdfkrams.gui.hilfe_fenster import HilfeFenster
 from pdfkrams.gui.tools.bildbereinigung_tool import BildbereinigungToolWidget
 from pdfkrams.gui.tools.combine_tool import CombineToolWidget
 from pdfkrams.gui.tools.heftseiten_tool import HeftseitenToolWidget
@@ -62,6 +64,16 @@ from pdfkrams.gui.widgets.file_tool_base import DateiListenPanel
 from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
 from pdfkrams.gui.widgets.page_list import PageListWidget
 from pdfkrams.info import ANBIETER, WEBSITE, copyright_zeile, voller_programmname
+
+# DE: Logo des Anbieters (Telefonanleitungen.de) -- im Ueber-Dialog
+#     gezeigt, damit direkt erkennbar ist, wer dieses Programm
+#     bereitstellt. Gebuendelter Pfad, siehe build_mac.sh/
+#     build_windows.bat (--add-data fuer pdfkrams/logo).
+# EN: Provider's logo (Telefonanleitungen.de) -- shown in the About
+#     dialog, so it's immediately visible who provides this program.
+#     Bundled path, see build_mac.sh/build_windows.bat (--add-data for
+#     pdfkrams/logo).
+_LOGO_PFAD = Path(__file__).parent.parent / "logo" / "telefonanleitungen.png"
 
 # DE: Reihenfolge und Beschriftung der Werkzeuge in der Seitenleiste.
 #     None = noch nicht implementiert, wird als Platzhalter angezeigt.
@@ -104,6 +116,7 @@ class MainWindow(QMainWindow):
         self.resize(1300, 750)
 
         self._letzter_pdf_pfad: Path | None = None
+        self._hilfe_fenster: HilfeFenster | None = None
         # DE: Ob es seit dem letzten erfolgreichen Speichern (bzw. seit dem
         #     Start/letzten "Datei schliessen") Aenderungen an der Liste
         #     gab -- fuer die Rueckfrage bei "Datei schliessen" und beim
@@ -213,6 +226,18 @@ class MainWindow(QMainWindow):
 
         hilfe_menu = menu.addMenu(self.tr("Hilfe"))
 
+        action_anleitung = QAction(self.tr("Bedienungsanleitung"), self)
+        # DE: StandardKey.HelpContents -- auf macOS automatisch Cmd+?,
+        #     unter Windows automatisch F1 (Qt kennt die jeweils
+        #     uebliche Systemtaste fuer "Hilfe anzeigen").
+        # EN: StandardKey.HelpContents -- automatically Cmd+? on macOS,
+        #     F1 on Windows (Qt knows each platform's conventional
+        #     "show help" key).
+        action_anleitung.setShortcut(QKeySequence.StandardKey.HelpContents)
+        action_anleitung.triggered.connect(self._anleitung_anzeigen)
+        hilfe_menu.addAction(action_anleitung)
+        hilfe_menu.addSeparator()
+
         action_ueber = QAction(self.tr("Über {0} …").format(voller_programmname()), self)
         # DE: AboutRole -- macOS verschiebt diesen Eintrag automatisch in
         #     das native Anwendungsmenü ("Über Mathias' kleines ...").
@@ -235,6 +260,9 @@ class MainWindow(QMainWindow):
         #     the rest normal, matching a native macOS info window.
         box = QMessageBox(self)
         box.setWindowTitle(self.tr("Über {0}").format(voller_programmname()))
+        logo = QPixmap(str(_LOGO_PFAD))
+        if not logo.isNull():
+            box.setIconPixmap(logo.scaledToWidth(280, Qt.TransformationMode.SmoothTransformation))
         box.setText(voller_programmname())
         box.setInformativeText(
             self.tr("Kostenlos bereitgestellt von {0}<br>"
@@ -257,6 +285,21 @@ class MainWindow(QMainWindow):
 
     def _einstellungen_anzeigen(self) -> None:
         EinstellungenDialog(self).exec()
+
+    def _anleitung_anzeigen(self) -> None:
+        # DE: Dasselbe Fenster wiederverwenden statt bei jedem Aufruf ein
+        #     neues zu erzeugen -- sonst haeufen sich bei mehrfachem
+        #     Cmd+?/F1 unnoetig viele Fenster an. Referenz auf self
+        #     noetig, sonst raeumt Python das Fenster sofort wieder weg.
+        # EN: Reuse the same window instead of creating a new one on
+        #     every call -- otherwise pressing Cmd+?/F1 repeatedly piles
+        #     up needless windows. Reference on self needed, otherwise
+        #     Python garbage-collects the window immediately.
+        if self._hilfe_fenster is None:
+            self._hilfe_fenster = HilfeFenster(einstellungen.sprache())
+        self._hilfe_fenster.show()
+        self._hilfe_fenster.raise_()
+        self._hilfe_fenster.activateWindow()
 
     def dateien_oeffnen(self, pfade: list[Path]) -> None:
         """DE: Von aussen uebergebene Dateien in die Dateiliste laden --

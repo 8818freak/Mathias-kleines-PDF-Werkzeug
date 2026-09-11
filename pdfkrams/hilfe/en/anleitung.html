@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PDF Tool Manual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #EDEFEA;
+    --surface: #F8F9F6;
+    --surface-raised: #FFFFFF;
+    --ink: #1C2430;
+    --ink-soft: #52606D;
+    --ink-faint: #7C8791;
+    --accent: #2E5FA3;
+    --accent-strong: #234A85;
+    --accent-soft: #DCE6F2;
+    --warn: #A6362A;
+    --warn-soft: #F1E0DA;
+    --line: #C9CFC7;
+    --line-strong: #A9B1A6;
+    --radius: 3px;
+    --serif-tab: "IBM Plex Mono", ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+    font-size: 16.5px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .schema {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    max-width: 1180px;
+    margin: 0 auto;
+    align-items: start;
+  }
+
+  nav.werkzeugliste {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 2.6rem 1.4rem 2rem 1.6rem;
+    border-right: 1px solid var(--line);
+  }
+  .marke {
+    font-family: "Archivo", sans-serif;
+    font-weight: 800;
+    font-size: 1.02rem;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    margin: 0 0 0.15rem;
+  }
+  .marke small {
+    display: block;
+    font-family: var(--serif-tab);
+    font-weight: 500;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    margin-top: 0.35rem;
+    text-transform: uppercase;
+  }
+  nav.werkzeugliste ol {
+    list-style: none;
+    margin: 2.1rem 0 0;
+    padding: 0;
+    counter-reset: werkzeug;
+  }
+  nav.werkzeugliste li { counter-increment: werkzeug; margin-bottom: 0.3rem; }
+  nav.werkzeugliste a {
+    display: flex;
+    gap: 0.65rem;
+    align-items: flex-start;
+    padding: 0.4rem 0.5rem;
+    border-radius: var(--radius);
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 0.87rem;
+    line-height: 1.4;
+  }
+  nav.werkzeugliste a:hover { background: var(--surface); color: var(--ink); }
+  nav.werkzeugliste a::before {
+    content: counter(werkzeug, decimal-leading-zero);
+    font-family: var(--serif-tab);
+    font-weight: 600;
+    font-size: 0.72rem;
+    color: var(--accent);
+    flex: 0 0 1.3rem;
+    padding-top: 0.15rem;
+  }
+  nav.werkzeugliste .stufe {
+    margin-top: 2.4rem;
+    padding-top: 1.3rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+  }
+  nav.werkzeugliste .stufe a { display: block; padding: 0.25rem 0.5rem; font-size: 0.82rem; }
+  nav.werkzeugliste .stufe a::before { content: none; }
+
+  main { padding: 3.4rem 3.2rem 5rem; min-width: 0; }
+
+  .deckblatt { margin-bottom: 3.6rem; }
+  .eyebrow {
+    font-family: var(--serif-tab);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 0.9rem;
+  }
+  h1.titel {
+    font-family: "Archivo", sans-serif;
+    font-weight: 800;
+    font-size: 2.5rem;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    margin: 0 0 0.9rem;
+    text-wrap: balance;
+    max-width: 15ch;
+  }
+  .deckblatt .lead {
+    font-size: 1.1rem;
+    color: var(--ink-soft);
+    max-width: 62ch;
+    margin: 0 0 1.6rem;
+  }
+  .kennzahlen {
+    display: flex;
+    gap: 2.2rem;
+    flex-wrap: wrap;
+    margin-top: 1.8rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid var(--line);
+  }
+  .kennzahlen div strong {
+    display: block;
+    font-family: "Archivo", sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--accent-strong);
+  }
+  .kennzahlen div span {
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  section.werkzeug {
+    margin-bottom: 4.6rem;
+    padding-top: 0.2rem;
+    scroll-margin-top: 1.5rem;
+  }
+  section.werkzeug .nr {
+    font-family: var(--serif-tab);
+    font-size: 0.8rem;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+  }
+  section.werkzeug h2 {
+    font-family: "Archivo", sans-serif;
+    font-weight: 800;
+    font-size: 1.72rem;
+    letter-spacing: -0.01em;
+    margin: 0.35rem 0 1rem;
+    text-wrap: balance;
+  }
+  section.werkzeug .intro {
+    max-width: 66ch;
+    color: var(--ink-soft);
+    margin: 0 0 1.6rem;
+  }
+  section.werkzeug .intro strong { color: var(--ink); }
+
+  figure.platte {
+    margin: 0 0 1.7rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.6rem 0.6rem 0;
+    overflow: hidden;
+  }
+  figure.platte img {
+    display: block;
+    width: 100%;
+    border-radius: 2px;
+    border: 1px solid var(--line);
+  }
+  figure.platte figcaption {
+    font-family: var(--serif-tab);
+    font-size: 0.76rem;
+    color: var(--ink-faint);
+    padding: 0.6rem 0.3rem 0.75rem;
+  }
+  figure.platte figcaption b { color: var(--ink-soft); font-weight: 600; }
+
+  ol.schritte {
+    list-style: none;
+    counter-reset: schritt;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    max-width: 66ch;
+  }
+  ol.schritte li {
+    counter-increment: schritt;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 0.55rem 0;
+    border-top: 1px solid var(--line);
+  }
+  ol.schritte li:first-child { border-top: none; }
+  ol.schritte li::before {
+    content: counter(schritt);
+    flex: 0 0 1.7rem;
+    font-family: var(--serif-tab);
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--accent);
+    padding-top: 0.1rem;
+  }
+  ol.schritte li .txt { flex: 1 1 auto; min-width: 0; }
+  b.ui { font-weight: 700; color: var(--accent-strong); }
+
+  .hinweis {
+    max-width: 66ch;
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 3px 3px 0;
+    padding: 0.85rem 1.1rem;
+    margin: 0 0 1.2rem;
+    font-size: 0.94rem;
+    color: var(--ink-soft);
+  }
+  .hinweis .label {
+    display: block;
+    font-family: var(--serif-tab);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+  .warnung {
+    border-left-color: var(--warn);
+    background: var(--warn-soft);
+  }
+  .warnung .label { color: var(--warn); }
+
+  .abschnitt-titel {
+    font-family: "Archivo", sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    margin: 0 0 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  table.masse {
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    margin: 0 0 1.6rem;
+    max-width: 66ch;
+  }
+  table.masse th, table.masse td {
+    text-align: left;
+    padding: 0.45rem 1.1rem 0.45rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  table.masse th {
+    font-family: var(--serif-tab);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  table.masse td.num { font-family: var(--serif-tab); font-variant-numeric: tabular-nums; }
+
+  .fussleiste {
+    margin-top: 4rem;
+    padding-top: 1.8rem;
+    border-top: 1px solid var(--line);
+    color: var(--ink-faint);
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .fussleiste a { color: var(--accent); text-decoration: none; }
+
+  @media print {
+    .schema { display: block; max-width: none; }
+    nav.werkzeugliste {
+      position: static; height: auto; overflow: visible;
+      border-right: none; border-bottom: 1px solid var(--line);
+      padding: 1rem 0 1.5rem;
+    }
+    main { padding: 1.5rem 0; }
+    figure.platte, .hinweis { page-break-inside: avoid; }
+    section.werkzeug h2 { page-break-after: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="schema" lang="en">
+  <nav class="werkzeugliste">
+    <p class="marke">Mathias' kleines<br>PDF-Werkzeug
+      <small>Manual · Version 1.9</small>
+    </p>
+    <ol>
+      <li><a href="#pdf-erstellen">Create PDF</a></li>
+      <li><a href="#seiten-drehen">Rotate pages</a></li>
+      <li><a href="#bildbereinigung">Image cleanup</a></li>
+      <li><a href="#leerseiten-entfernen">Remove blank pages</a></li>
+      <li><a href="#seiten-teilen">Split pages</a></li>
+      <li><a href="#seiten-zusammenfuegen">Combine pages</a></li>
+      <li><a href="#heftseiten-teilen">Split booklet pages</a></li>
+      <li><a href="#seiten-nummerieren">Number pages</a></li>
+      <li><a href="#lesezeichen-setzen">Set bookmarks</a></li>
+      <li><a href="#seitenmass-normieren">Normalize page size</a></li>
+      <li><a href="#seiten-zuschneiden">Crop pages</a></li>
+      <li><a href="#schwaerzen">Redact</a></li>
+      <li><a href="#pdf-in-bilder">Split PDF into images</a></li>
+      <li><a href="#pdf-verkleinern">Shrink PDF &amp; PDF/A</a></li>
+      <li><a href="#metadaten-bearbeiten">Edit metadata</a></li>
+    </ol>
+    <div class="stufe">
+      <a href="#einstellungen">Preferences: language &amp; units</a>
+      <a href="#voraussetzungen">System requirements</a>
+      <a href="#bezug">Source &amp; license</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="deckblatt">
+      <p class="eyebrow">User manual · English</p>
+      <h1 class="titel">Mathias' kleines PDF-Werkzeug</h1>
+      <p class="lead">Fifteen tools for one recurring problem: turning scanned documents into a
+        clean, correctly formatted PDF file after the fact — straighten, split apart,
+        reassemble, bring to a standard size, shrink. This manual walks through every tool
+        using a real example.</p>
+      <div class="kennzahlen">
+        <div><strong>15</strong><span>Tools</span></div>
+        <div><strong>1</strong><span>Shared file list</span></div>
+        <div><strong>DE / EN</strong><span>Switchable language</span></div>
+        <div><strong>GPL-3.0</strong><span>Free software</span></div>
+      </div>
+    </div>
+
+    <section class="werkzeug" id="pdf-erstellen">
+      <p class="nr">Tool 01</p>
+      <h2>Create PDF</h2>
+      <p class="intro">The starting point for practically every session: PDF files, JPGs,
+        BMPs, and TIFFs (including multi-page ones) are loaded via drag &amp; drop into a
+        <strong>shared file list</strong> and combined into a single PDF in exactly that
+        order. This list is the hub of the whole app — every other tool keeps working on
+        the same list, without needing to export and reload in between.</p>
+      <figure class="platte">
+        <img src="bilder_en/0_pdf_erstellen.jpg" alt="Create PDF tool window with four loaded scans in the file list">
+        <figcaption><b>Fig. 1</b> — Four scans in the file list, ready to be combined.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Load files via <b class="ui">Add files …</b> or drag &amp; drop into the middle list.</span></li>
+        <li><span class="txt">Change the order by dragging within the list, if needed.</span></li>
+        <li><span class="txt">Optional: prepare with other tools (rotate, split, normalize) — the list is preserved throughout.</span></li>
+        <li><span class="txt">Click <b class="ui">Export as PDF …</b> and choose where to save.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Lossless where possible</span>
+        Unmodified PDF pages rotated by 0/90/180/270° stay vector pages on export — only
+        truly free rotation angles, mirroring, or splits get rasterized.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="seiten-drehen">
+      <p class="nr">Tool 02</p>
+      <h2>Rotate pages</h2>
+      <p class="intro">Straighten crookedly scanned pages directly with the mouse: dragging
+        in the preview rotates the page freely, fixed red lines act as a spirit level. Plus
+        the usual quick actions — 90°, 180°, mirror — as well as a function for double-page
+        spreads that were scanned sideways in alternating directions.</p>
+      <figure class="platte">
+        <img src="bilder_en/1_seiten_drehen.jpg" alt="Rotate pages tool: a crooked page is rotated by 4.5° with yellow reference lines">
+        <figcaption><b>Fig. 2</b> — Free-hand straightening by mouse drag; the field below shows the exact angle (here 4.5°).</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Click a page in the list, then drag with the mouse button held down in the preview until the content lines up with the red lines.</span></li>
+        <li><span class="txt">For exact values: use the number field below the preview, or fine-tune with the arrow keys in <b class="ui">0.1°</b> steps (<b class="ui">Shift</b>+arrow = <b class="ui">1°</b> steps).</span></li>
+        <li><span class="txt">For right angles/mirroring: use the quick-action buttons.</span></li>
+        <li><span class="txt">Set the scope (current page / selection / all) above the list before applying a quick action.</span></li>
+        <li><span class="txt">For sideways-scanned double-page spreads with alternating orientation: apply <b class="ui">Rotate alternately by 90°</b> to the whole selection.</span></li>
+        <li><span class="txt">For large batches: <b class="ui">Detect skew automatically</b> suggests the angle via text-line detection (still adjustable afterward by mouse or number field); pages without a reliably detectable line pattern (photos, graphics-heavy pages) are left unchanged.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Apply fine angle</span>
+        Copies the exact angle of the current page onto the selected scope — handy when
+        several pages from the same stack share the same slight skew.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="bildbereinigung">
+      <p class="nr">Tool 03</p>
+      <h2>Image cleanup</h2>
+      <p class="intro">For scanned black-and-white/text originals: converts to pure black and
+        white (threshold, optionally auto-suggested via Otsu's method) and/or removes small
+        dark specks (dust, print artifacts). Both steps can be toggled independently.</p>
+      <figure class="platte">
+        <img src="bilder_en/11_bildbereinigung.jpg" alt="Image cleanup tool: a scanned page binarized in the preview using an Otsu threshold">
+        <figcaption><b>Fig. 3</b> — Preview of the "Image cleanup" tool: a scanned page with an automatically suggested threshold, shown binarized.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Select a page — the preview immediately shows how threshold, binarizing, and despeckling affect exactly this page.</span></li>
+        <li><span class="txt"><b class="ui">Suggest automatically</b> computes a threshold via Otsu's method that most clearly separates text/lines from the background — or fine-tune it by hand.</span></li>
+        <li><span class="txt">Turn off <b class="ui">Convert to pure black and white (binarize)</b> if needed, to only remove specks while leaving gray/color values otherwise unchanged.</span></li>
+        <li><span class="txt">Choose a scope and click <b class="ui">Apply</b>.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Smaller files as a side effect</span>
+        Binarized pages can often be compressed especially small in "Shrink PDF &amp; PDF/A"
+        — pure black-and-white content needs far less storage than a grayscale or color scan.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="leerseiten-entfernen">
+      <p class="nr">Tool 04</p>
+      <h2>Remove blank pages</h2>
+      <p class="intro">Searches the selected scope for likely blank pages (via ink share) —
+        typical with automated ADF scanning (duplex with an occasionally unprinted back side,
+        blank separator sheets). Only finds suggestions, doesn't delete anything automatically:
+        the pages found appear in an overview with checkboxes (all preselected), so individual
+        pages can be deselected before actually removing them.</p>
+      <figure class="platte">
+        <img src="bilder_en/14_leerseiten_entfernen.jpg" alt="Remove blank pages tool with two found, checked blank-page suggestions in the overview">
+        <figcaption><b>Fig. 4</b> — Two likely blank pages found, both checked for removal; the measured ink share is shown for each.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Choose a scope (usually <b class="ui">All pages</b>, since one typically checks the whole freshly loaded batch) and click <b class="ui">Search for blank pages</b>.</span></li>
+        <li><span class="txt">Each page found appears in the overview with a checkbox and its measured ink share — all checked by default.</span></li>
+        <li><span class="txt">Deselect whatever isn't actually a blank page.</span></li>
+        <li><span class="txt">Click <b class="ui">Remove selected</b>.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Threshold and sensitivity adjustable</span>
+        The ink threshold (what counts as "ink") and the maximum share (at what point a page
+        counts as "blank") can be adjusted — handy for scanners with visible noise/dust that
+        would otherwise falsely flag real, nearly blank pages.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="seiten-teilen">
+      <p class="nr">Tool 05</p>
+      <h2>Split pages</h2>
+      <p class="intro">Cuts a page along vertical and/or horizontal lines into a
+        row-by-column grid — e.g. for two book pages on one double-page scan, or several
+        form fields on one scanned sheet. The cut lines are dragged with the mouse, with
+        zoom for pixel-precise placement.</p>
+      <figure class="platte">
+        <img src="bilder_en/2_seiten_teilen.jpg" alt="Split pages tool: a double-page spread with a yellow vertical cut line in the middle">
+        <figcaption><b>Fig. 5</b> — Two columns, cut line placed in the middle; "Apply split now" actually cuts it.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Set the number of columns and/or rows, click <b class="ui">Apply</b> — the lines appear evenly distributed.</span></li>
+        <li><span class="txt">Drag each line individually with the mouse; to hit precisely, zoom in with <b class="ui">Ctrl/Cmd</b>+scroll resp. a pinch gesture.</span></li>
+        <li><span class="txt"><b class="ui">Auto-align</b> pulls each line to the quietest (emptiest) nearby image area — good for a booklet's gutter instead of the middle of the text.</span></li>
+        <li><span class="txt"><b class="ui">Apply split now</b> actually cuts the page apart; the parts replace the page as independent, further-editable entries in the list.</span></li>
+      </ol>
+      <div class="hinweis warnung">
+        <span class="label">Mind the order</span>
+        Until applied, the split is only a setting — until then the page can still be
+        exported normally (then split automatically) or the split removed again.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="seiten-zusammenfuegen">
+      <p class="nr">Tool 06</p>
+      <h2>Combine pages</h2>
+      <p class="intro">The counterpart to the split tool: several smaller scans — e.g. A4
+        sheets of an A1 drawing or a schematic — are assembled into one large page. One
+        click produces an initial edge-to-edge layout; afterwards, each part can be freely
+        dragged, fine-rotated, and cropped at the edges.</p>
+      <figure class="platte">
+        <img src="bilder_en/3_seiten_zusammenfuegen.jpg" alt="Combine pages tool: four colored tiles in a 2×2 grid, one tile is selected and slightly rotated/cropped">
+        <figcaption><b>Fig. 6</b> — Four parts in a 2×2 grid; the top-left tile is selected, fine-rotated by 3°, and cropped on the left/top.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Select the parts in the file list in the desired reading order (<b class="ui">Cmd</b>/<b class="ui">Shift</b>-click).</span></li>
+        <li><span class="txt">Set the number of columns (e.g. <b class="ui">2</b> for a 2×2 grid from four parts) and click <b class="ui">Generate layout from selection</b>.</span></li>
+        <li><span class="txt">Click each part in the preview (selects it) and drag it to the right place with the mouse.</span></li>
+        <li><span class="txt">For the selected part, set a <b>fine rotation</b> (0.1° steps) and a <b>crop per edge</b> in % on the right, to compensate for slightly different scan edges or a deliberate overlap.</span></li>
+        <li><span class="txt"><b class="ui">Apply</b> replaces the originally selected parts with the one assembled page.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Rotation as a number field, deliberately</span>
+        For technical drawings, an exact degree value is more precise than a mouse click —
+        the "Rotate pages" tool remains useful for the rough alignment of individual parts
+        regardless, and factors in automatically here.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="heftseiten-teilen">
+      <p class="nr">Tool 07</p>
+      <h2>Split booklet pages</h2>
+      <p class="intro">For stapled booklets available as double-page spread scans in their
+        physically stacked order (scan 1 shows the last and the first book page, scan 2 the
+        ones before and after that, and so on): this tool automatically splits every
+        double-page spread down the middle and puts both halves into the correct reading
+        order — following the classic saddle-stitch formula.</p>
+      <figure class="platte">
+        <img src="bilder_en/4_heftseiten_teilen.jpg" alt="Split booklet pages tool with four selected double-page scans in the file list">
+        <figcaption><b>Fig. 7</b> — Four double-page scans selected, ready for automatic splitting and placement.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Select all double-page scans of the booklet in their physically stacked order.</span></li>
+        <li><span class="txt">If scanned sideways (alternating by 90° in alternating directions): check <b class="ui">Scans were scanned sideways</b>.</span></li>
+        <li><span class="txt">Click <b class="ui">Split + sort selected scans</b>.</span></li>
+        <li><span class="txt">If a scan is clearly wider than the others (cover with foldout part): the same drag editor as in the split tool opens automatically — set as many cuts as needed there and specify which parts belong to the left resp. right target page. Placement then happens fully automatically.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Where the formula comes from</span>
+        A saddle-stitched booklet with <var>n</var> sheets gives sheet <var>i</var>
+        (0-based) the target pages <b class="ui">n−i</b> (left) and <b class="ui">i+1</b>
+        (right) for even <var>i</var>, swapped for odd <var>i</var> — exactly matching how
+        it is physically folded and stapled.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="seiten-nummerieren">
+      <p class="nr">Tool 08</p>
+      <h2>Number pages</h2>
+      <p class="intro">For a scrambled page sequence — manually assign each page a target
+        number, then rearrange in one step. Nothing is written onto the page, only the
+        order in the list changes. Alternatively: automatic sorting by capture/creation
+        date, including renaming the files on disk.</p>
+      <figure class="platte">
+        <img src="bilder_en/5_seiten_nummerieren.jpg" alt="Number pages tool: four pages with assigned target numbers 1 to 4 in the file list">
+        <figcaption><b>Fig. 8</b> — Each thumbnail shows its assigned target number; "Rearrange now" sorts the list accordingly.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Click a page, enter the target number, click <b class="ui">Assign &amp; next</b> — automatically jumps to the next page.</span></li>
+        <li><span class="txt">Once all pages are assigned: click <b class="ui">Rearrange now</b>.</span></li>
+        <li><span class="txt">Alternatively, if capture/file date gives the correct order: <b class="ui">Sort automatically by capture/creation date</b>.</span></li>
+        <li><span class="txt">To also rename the original files on disk: <b class="ui">Rename files on disk by date …</b>.</span></li>
+      </ol>
+    </section>
+
+    <section class="werkzeug" id="lesezeichen-setzen">
+      <p class="nr">Tool 09</p>
+      <h2>Set bookmarks</h2>
+      <p class="intro">For booklets and books one already goes through page by page anyway:
+        optionally give each page a chapter or sub-chapter title. Automatically becomes a
+        bookmark/table of contents (outline) in the PDF file when saving — with no separate
+        export step.</p>
+      <figure class="platte">
+        <img src="bilder_en/12_lesezeichen_setzen.jpg" alt="Set bookmarks tool with three bookmarks set in the overview">
+        <figcaption><b>Fig. 9</b> — Three bookmarks set (two chapters, one sub-chapter); the overview below shows all of them in page order.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Select the page that starts a chapter or sub-chapter, enter a title.</span></li>
+        <li><span class="txt">Choose a level — <b class="ui">Chapter</b> or <b class="ui">Sub-chapter</b> — then click <b class="ui">Set &amp; continue</b>; automatically jumps to the next page.</span></li>
+        <li><span class="txt">The overview below shows every bookmark set so far in page order — click one to jump to that page.</span></li>
+        <li><span class="txt">Automatically carried over into the PDF file as an outline the next time it's saved.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">No separate export needed</span>
+        Unlike other tools, there's no dedicated "Apply" button here — bookmarks
+        automatically flow into every save, whether via "Create PDF", "Save", or "Shrink PDF
+        &amp; PDF/A".
+      </div>
+    </section>
+
+    <section class="werkzeug" id="seitenmass-normieren">
+      <p class="nr">Tool 10</p>
+      <h2>Normalize page size</h2>
+      <p class="intro">Brings pages to an exact physical size — a DIN A format, a US format
+        (Letter, Legal, …), or a custom size. Black scan borders, such as those that appear
+        when the original was smaller than the scanner bed, are automatically detected per
+        edge and cropped away; without a detectable border, the page is scaled directly.</p>
+      <figure class="platte">
+        <img src="bilder_en/6_seitenmass_normieren.jpg" alt="Normalize page size tool: the measured size of a page (approx. A4) is shown, with an apply button">
+        <figcaption><b>Fig. 10</b> — Measured size of the current page with an automatic format suggestion and a use-size button.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Click a page — the tool automatically measures the current (content) size and suggests a matching format, if one is close enough (DIN A or US).</span></li>
+        <li><span class="txt"><b class="ui">Use measured size</b> sets this suggestion directly as the target size — or choose a format resp. a custom size by hand.</span></li>
+        <li><span class="txt">Set the output resolution (dpi) and whether black borders should be cropped.</span></li>
+        <li><span class="txt">Choose the scope and click <b class="ui">Apply</b>.</span></li>
+      </ol>
+      <table class="masse">
+        <tr><th>DIN format</th><th>Size (mm)</th><th>US format</th><th>Size (in)</th></tr>
+        <tr><td>A3</td><td class="num">297 × 420</td><td>US Letter</td><td class="num">8.50 × 11.00</td></tr>
+        <tr><td>A4</td><td class="num">210 × 297</td><td>US Legal</td><td class="num">8.50 × 14.00</td></tr>
+        <tr><td>A5</td><td class="num">148 × 210</td><td>US Executive</td><td class="num">7.25 × 10.50</td></tr>
+      </table>
+      <figure class="platte">
+        <img src="bilder_en/9_seitenmass_us_zoll.jpg" alt="Normalize page size tool with format “US Letter” and measurement unit “inch” set">
+        <figcaption><b>Fig. 11</b> — The same page with format <b class="ui">US Letter</b> and the measurement unit switched to <b class="ui">inches</b>: the number fields show 8.50 × 11.00 in.</figcaption>
+      </figure>
+      <div class="hinweis">
+        <span class="label">All formats always available</span>
+        DIN A and US formats are both available for selection at the same time, regardless
+        of the configured measurement unit — only the <b>display</b> of the numeric values
+        follows the measurement unit chosen under
+        <a href="#einstellungen">Preferences</a> (millimeters or inches), not which formats
+        are on offer.
+      </div>
+      <div class="hinweis">
+        <span class="label">Several sections, different formats</span>
+        For a document with, say, A4 inner pages and an A3 insert: run the tool once on the
+        A4 pages (select, A4, Apply), then again with a different selection and A3.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="seiten-zuschneiden">
+      <p class="nr">Tool 11</p>
+      <h2>Crop pages</h2>
+      <p class="intro">Crops pages on all four edges by a freely chosen amount — e.g. to
+        precisely remove a punch-hole strip or binding margin. Unlike "Normalize page size",
+        this does not scale to a target size but cuts away exactly the specified amount; the
+        resulting size follows from that and is displayed live.</p>
+      <figure class="platte">
+        <img src="bilder_en/10_seiten_zuschneiden.jpg" alt="Crop pages tool: a page with a punch-hole strip on the left, the cropped-away area is shown darkened">
+        <figcaption><b>Fig. 12</b> — The area to be cut away is shown darkened; here the punch-hole strip on the left disappears into the dark area.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Enter the four margins as number fields (Left, Top, Right, Bottom) — or drag the yellow lines directly in the preview with the mouse.</span></li>
+        <li><span class="txt">To hit precisely with small margins: zoom in with <b class="ui">Ctrl/Cmd</b>+scroll resp. a pinch gesture.</span></li>
+        <li><span class="txt">The resulting size is shown live below the margin fields, including a format suggestion if one fits.</span></li>
+        <li><span class="txt">Choose the scope and click <b class="ui">Apply</b> — the same margins are applied to every page within the selected scope.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Fixed margins persist</span>
+        The configured margins persist when switching to the next page — handy for
+        deliberately applying the same fixed amount to several, slightly different-sized
+        pages ("in bulk").
+      </div>
+    </section>
+
+    <section class="werkzeug" id="schwaerzen">
+      <p class="nr">Tool 12</p>
+      <h2>Redact</h2>
+      <p class="intro">Permanently obscure any number of areas on a page: fully filled
+        rectangles, freely drawn, moved, and resized with the mouse. Unlike a plain black box,
+        the rectangles are actually burned into the image pixels on save — affected pages are
+        automatically rasterized for this, even if they'd otherwise export losslessly as a
+        vector page, so no original text is guaranteed to remain underneath.</p>
+      <figure class="platte">
+        <img src="bilder_en/15_schwaerzen.jpg" alt="Redact tool with a drawn black rectangle over lines of text, marked blue as selected">
+        <figcaption><b>Fig. 13</b> — An area redacted and selected (blue outline with corner handles); the rectangles are permanently burned into the image pixels on save.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Dragging on empty space draws a new rectangle; clicking an existing one selects it.</span></li>
+        <li><span class="txt">Dragging inside moves the selected rectangle, dragging a corner resizes it.</span></li>
+        <li><span class="txt"><b class="ui">Delete selected rectangle</b> resp. <b class="ui">Delete all on this page</b> removes them again.</span></li>
+        <li><span class="txt"><b class="ui">Transfer</b> copies the current page's rectangles onto a chosen scope of further pages — handy for recurring information (e.g. a case number at the top of every page).</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Really permanent</span>
+        The color is selectable in Preferences (default: black), but always fully opaque with
+        no transparency — what's redacted is irrevocably gone from the saved file, not just
+        covered up.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="pdf-in-bilder">
+      <p class="nr">Tool 13</p>
+      <h2>Split PDF into images</h2>
+      <p class="intro">The way back out of a PDF: save the shared file list as individual,
+        sequentially numbered image files (PDF, JPEG, TIFF, or BMP per page) or as one
+        multi-page TIFF file — e.g. for further processing that expects individual image
+        files instead of a PDF.</p>
+      <figure class="platte">
+        <img src="bilder_en/7_pdf_in_bilder.jpg" alt="Split PDF into images tool with three loaded pages in the file list">
+        <figcaption><b>Fig. 14</b> — Three pages ready for export as individual files or a multi-page TIFF.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt"><b class="ui">Export as individual numbered files …</b> for separate files — choose format, base name, start number, and digit count in the following dialog.</span></li>
+        <li><span class="txt">Or <b class="ui">Export as one multi-page TIFF file …</b> for a single file containing all pages.</span></li>
+      </ol>
+    </section>
+
+    <section class="werkzeug" id="pdf-verkleinern">
+      <p class="nr">Tool 14</p>
+      <h2>Shrink PDF &amp; PDF/A</h2>
+      <p class="intro">Three separate, independently usable functions: significantly reduce
+        the file size of large scans via JPEG encoding (quality and maximum resolution
+        selectable — already efficiently compressed black-and-white pages are automatically
+        passed through unchanged, since JPEG would usually be both bigger <em>and</em> worse
+        there), losslessly compress an existing PDF's structure, or mark a PDF with the
+        markers for the PDF/A-2b archival format.</p>
+      <figure class="platte">
+        <img src="bilder_en/8_pdf_verkleinern.jpg" alt="Shrink PDF & PDF/A tool with the three sections Reduce file size, Mark as PDF/A, and Compress structure">
+        <figcaption><b>Fig. 15</b> — The three independent functions: shrinking, PDF/A marking, lossless structural compression.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">For smaller files: set JPEG quality and maximum resolution, <b class="ui">Export as smaller PDF …</b>.</span></li>
+        <li><span class="txt">If the result isn't smaller than the original, the app points this out — usually a sign that the source was already efficiently compressed; then lower quality/resolution further.</span></li>
+        <li><span class="txt">For archival marking: choose an existing PDF file, <b class="ui">Mark existing PDF file as PDF/A-2b …</b>.</span></li>
+        <li><span class="txt">For lossless compression with zero quality loss: <b class="ui">Losslessly compress existing PDF file …</b>.</span></li>
+      </ol>
+      <div class="hinweis warnung">
+        <span class="label">No formal certification</span>
+        The PDF/A marking sets the usual markers recognized by software, but is not a formal
+        veraPDF certification — for binding archival requirements, additionally verify with
+        a dedicated checking tool.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="metadaten-bearbeiten">
+      <p class="nr">Tool 15</p>
+      <h2>Edit metadata</h2>
+      <p class="intro">Unlike every other tool, a single set of values applies to the whole
+        document here, not per page: title, author, provider, product, version, release
+        date, and keywords. PDF only has a fixed number of standard fields — the preview
+        shows exactly how these values actually flow into them.</p>
+      <figure class="platte">
+        <img src="bilder_en/13_metadaten_bearbeiten.jpg" alt="Edit metadata tool with fields filled in and a text preview">
+        <figcaption><b>Fig. 16</b> — All fields filled in; the preview below shows how they map onto title/author/subject/keywords in the PDF.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Enter title, author, and provider — provider is prefilled with the default set in Preferences (otherwise with the one most recently used).</span></li>
+        <li><span class="txt">Add product, version, and optionally a release date — PDF doesn't have a dedicated field for these, so they automatically flow into the keywords instead (see the preview further down in the tool).</span></li>
+        <li><span class="txt">Applied automatically on every save — no separate Apply button needed.</span></li>
+        <li><span class="txt">"Save As" automatically suggests a filename from these, e.g. "Product - Title vVersion (Date).pdf".</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Provider &amp; date format configurable</span>
+        Under <a href="#einstellungen">Preferences</a>, a default provider can be set, along
+        with the date format for the release date (e.g. YY-MM or YYYY-MM-DD).
+      </div>
+    </section>
+
+    <section class="werkzeug" id="einstellungen">
+      <p class="abschnitt-titel">Preferences: language &amp; units</p>
+      <p class="intro">The menu <b class="ui">Edit → Preferences …</b> (on macOS
+        automatically moved into the application menu, keyboard shortcut <b class="ui">Cmd+,</b>
+        resp. <b class="ui">Ctrl+,</b>) lets you switch the interface language and the
+        measurement unit used by "Normalize page size" — both deliberately switched
+        <strong>by hand</strong> and not taken automatically from the system settings, since
+        the PDFs being edited can come from any country, regardless of how this computer is
+        set up.</p>
+      <figure class="platte">
+        <img src="bilder_en/9_einstellungen.jpg" alt="Preferences dialog with the Language and Measurement unit fields">
+        <figcaption><b>Fig. 17</b> — The Preferences dialog with the <b class="ui">Language</b> and <b class="ui">Measurement unit</b> fields.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt"><b class="ui">Language:</b> German (default) or English — takes effect only after restarting the program.</span></li>
+        <li><span class="txt"><b class="ui">Measurement unit:</b> Millimeter (default) or Inch — takes effect immediately, even while "Normalize page size" is already open.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Why not automatic?</span>
+        A computer bought in the US but set to German just as often processes European
+        scans as American ones, and vice versa — the system language/region says nothing
+        about the origin of a specific PDF. That's why switching this stays deliberately
+        manual.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="voraussetzungen" style="margin-bottom: 3rem;">
+      <p class="abschnitt-titel">System requirements</p>
+      <table class="masse">
+        <tr><th>Platform</th><th>Minimum</th></tr>
+        <tr><td>macOS</td><td>11 (Big Sur), 64-bit — Apple Silicon or Intel</td></tr>
+        <tr><td>Windows</td><td>10, 64-bit</td></tr>
+      </table>
+      <p style="max-width: 66ch; color: var(--ink-soft); font-size: 0.94rem;">
+        About 250 MB of free disk space for the program, plus free space for temporary
+        files while working (roughly 2 to 3 times the size of the PDFs being processed).
+        No internet connection and no additional software needed (no Python, no
+        ImageMagick/Ghostscript) — both program versions are fully self-contained.
+      </p>
+      <div class="hinweis">
+        <span class="label">Note on Windows</span>
+        Developed and tested exclusively on macOS — the Windows version is not tested by
+        the author, but hopefully works correctly. If you run into a bug, please report it
+        with a precise, reproducible description to
+        <a href="mailto:telefonmann@telefonanleitungen.de">telefonmann@telefonanleitungen.de</a>,
+        and it will be fixed as soon as possible.
+      </div>
+    </section>
+
+    <section id="bezug" style="margin-bottom: 2rem;">
+      <p class="abschnitt-titel">Source &amp; license</p>
+      <img src="bilder_en/logo_telefonanleitungen.png" alt="Logo telefonanleitungen.de -- collectors' and special-interest association for historic telecommunications" style="max-width: 260px; height: auto; display: block; margin-bottom: 1rem;">
+      <p style="max-width: 66ch; color: var(--ink-soft);">
+        Provided free of charge by <a href="https://www.telefonanleitungen.de" style="color: var(--accent); font-weight: 700; text-decoration: none;">Telefonanleitungen.de</a>.
+        Licensed under the GNU General Public License 3.0 — free software that may also be
+        modified and redistributed.
+      </p>
+    </section>
+
+    <div class="fussleiste">
+      <span>Mathias' kleines PDF-Werkzeug · Version 1.9</span>
+      <span>Provided free of charge by <a href="https://www.telefonanleitungen.de">Telefonanleitungen.de</a></span>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

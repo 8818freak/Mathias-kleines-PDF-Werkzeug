@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>PDF-Werkzeug-Anleitung</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #EDEFEA;
+    --surface: #F8F9F6;
+    --surface-raised: #FFFFFF;
+    --ink: #1C2430;
+    --ink-soft: #52606D;
+    --ink-faint: #7C8791;
+    --accent: #2E5FA3;
+    --accent-strong: #234A85;
+    --accent-soft: #DCE6F2;
+    --warn: #A6362A;
+    --warn-soft: #F1E0DA;
+    --line: #C9CFC7;
+    --line-strong: #A9B1A6;
+    --radius: 3px;
+    --serif-tab: "IBM Plex Mono", ui-monospace, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #12161D;
+      --surface: #191F29;
+      --surface-raised: #202836;
+      --ink: #E8E9E4;
+      --ink-soft: #A9B2B9;
+      --ink-faint: #798290;
+      --accent: #6FA0DE;
+      --accent-strong: #8FB6E6;
+      --accent-soft: #23344A;
+      --warn: #E08A7E;
+      --warn-soft: #3B2622;
+      --line: #2B333F;
+      --line-strong: #3D4753;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #12161D;
+    --surface: #191F29;
+    --surface-raised: #202836;
+    --ink: #E8E9E4;
+    --ink-soft: #A9B2B9;
+    --ink-faint: #798290;
+    --accent: #6FA0DE;
+    --accent-strong: #8FB6E6;
+    --accent-soft: #23344A;
+    --warn: #E08A7E;
+    --warn-soft: #3B2622;
+    --line: #2B333F;
+    --line-strong: #3D4753;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+    font-size: 16.5px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    /* DE: Bewusst OHNE hyphens:auto/overflow-wrap:break-word -- beides hat
+       sich in schmalen Spalten als Bug erwiesen (Silbe-fuer-Silbe- bzw.
+       Buchstabe-fuer-Buchstabe-Zerhackung ganzer Woerter). Normaler
+       Zeilenumbruch an Wortgrenzen ist unspektakulaer, aber zuverlaessig.
+    EN: Deliberately WITHOUT hyphens:auto/overflow-wrap:break-word -- both
+       turned out buggy in narrow columns (shredding whole words syllable
+       by syllable resp. letter by letter). Plain word-boundary wrapping
+       is unglamorous but reliable. */
+  }
+
+  .schema {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    max-width: 1180px;
+    margin: 0 auto;
+    align-items: start;
+  }
+
+  /* -- Seitliche Navigation -- */
+  nav.werkzeugliste {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 2.6rem 1.4rem 2rem 1.6rem;
+    border-right: 1px solid var(--line);
+  }
+  .marke {
+    font-family: "Archivo", sans-serif;
+    font-weight: 800;
+    font-size: 1.02rem;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    margin: 0 0 0.15rem;
+  }
+  .marke small {
+    display: block;
+    font-family: var(--serif-tab);
+    font-weight: 500;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    margin-top: 0.35rem;
+    text-transform: uppercase;
+  }
+  nav.werkzeugliste ol {
+    list-style: none;
+    margin: 2.1rem 0 0;
+    padding: 0;
+    counter-reset: werkzeug;
+  }
+  nav.werkzeugliste li { counter-increment: werkzeug; margin-bottom: 0.3rem; }
+  nav.werkzeugliste a {
+    display: flex;
+    gap: 0.65rem;
+    align-items: flex-start;
+    padding: 0.4rem 0.5rem;
+    border-radius: var(--radius);
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 0.87rem;
+    line-height: 1.4;
+  }
+  nav.werkzeugliste a:hover { background: var(--surface); color: var(--ink); }
+  nav.werkzeugliste a::before {
+    content: counter(werkzeug, decimal-leading-zero);
+    font-family: var(--serif-tab);
+    font-weight: 600;
+    font-size: 0.72rem;
+    color: var(--accent);
+    flex: 0 0 1.3rem;
+    padding-top: 0.15rem;
+  }
+  nav.werkzeugliste .stufe {
+    margin-top: 2.4rem;
+    padding-top: 1.3rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+  }
+  nav.werkzeugliste .stufe a { display: block; padding: 0.25rem 0.5rem; font-size: 0.82rem; }
+  nav.werkzeugliste .stufe a::before { content: none; }
+
+  /* -- Hauptspalte -- */
+  main { padding: 3.4rem 3.2rem 5rem; min-width: 0; }
+
+  .deckblatt { margin-bottom: 3.6rem; }
+  .eyebrow {
+    font-family: var(--serif-tab);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 0.9rem;
+  }
+  h1.titel {
+    font-family: "Archivo", sans-serif;
+    font-weight: 800;
+    font-size: 2.5rem;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    margin: 0 0 0.9rem;
+    text-wrap: balance;
+    max-width: 15ch;
+  }
+  .deckblatt .lead {
+    font-size: 1.1rem;
+    color: var(--ink-soft);
+    max-width: 62ch;
+    margin: 0 0 1.6rem;
+  }
+  .kennzahlen {
+    display: flex;
+    gap: 2.2rem;
+    flex-wrap: wrap;
+    margin-top: 1.8rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid var(--line);
+  }
+  .kennzahlen div strong {
+    display: block;
+    font-family: "Archivo", sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--accent-strong);
+  }
+  .kennzahlen div span {
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  section.werkzeug {
+    margin-bottom: 4.6rem;
+    padding-top: 0.2rem;
+    scroll-margin-top: 1.5rem;
+  }
+  section.werkzeug .nr {
+    font-family: var(--serif-tab);
+    font-size: 0.8rem;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+  }
+  section.werkzeug h2 {
+    font-family: "Archivo", sans-serif;
+    font-weight: 800;
+    font-size: 1.72rem;
+    letter-spacing: -0.01em;
+    margin: 0.35rem 0 1rem;
+    text-wrap: balance;
+  }
+  section.werkzeug .intro {
+    max-width: 66ch;
+    color: var(--ink-soft);
+    margin: 0 0 1.6rem;
+  }
+  section.werkzeug .intro strong { color: var(--ink); }
+
+  figure.platte {
+    margin: 0 0 1.7rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.6rem 0.6rem 0;
+    overflow: hidden;
+  }
+  figure.platte img {
+    display: block;
+    width: 100%;
+    border-radius: 2px;
+    border: 1px solid var(--line);
+  }
+  figure.platte figcaption {
+    font-family: var(--serif-tab);
+    font-size: 0.76rem;
+    color: var(--ink-faint);
+    padding: 0.6rem 0.3rem 0.75rem;
+  }
+  figure.platte figcaption b { color: var(--ink-soft); font-weight: 600; }
+
+  ol.schritte {
+    list-style: none;
+    counter-reset: schritt;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    max-width: 66ch;
+  }
+  ol.schritte li {
+    counter-increment: schritt;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 0.55rem 0;
+    border-top: 1px solid var(--line);
+  }
+  ol.schritte li:first-child { border-top: none; }
+  /* DE: Die Nummer als eigenes, generiertes Element mit fester Breite --
+       der Schritt-TEXT steht daneben in einem eigenen <span class="txt">
+       (siehe Markup), NIE als lose Textknoten direkt im Flex-Container.
+       Gemischte Textknoten + <b>-Elemente direkt als Flex-/Grid-Kinder
+       wurden von Chromium in getrennte anonyme Boxen aufgeteilt statt als
+       ein Textfluss behandelt -- daher rutschten Woerter durcheinander
+       bzw. lagen aufeinander. Ein einzelnes umschliessendes Element pro
+       Kind vermeidet diese Mehrdeutigkeit vollstaendig.
+  EN: The number as its own generated element with a fixed width -- the
+       step TEXT sits next to it in its own <span class="txt"> (see
+       markup), NEVER as loose text nodes directly in the flex container.
+       Mixed text nodes + <b> elements as direct flex/grid children got
+       split by Chromium into separate anonymous boxes instead of being
+       treated as one text flow -- hence words ending up scrambled/
+       overlapping. A single wrapping element per child avoids that
+       ambiguity entirely. */
+  ol.schritte li::before {
+    content: counter(schritt);
+    flex: 0 0 1.7rem;
+    font-family: var(--serif-tab);
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--accent);
+    padding-top: 0.1rem;
+  }
+  ol.schritte li .txt { flex: 1 1 auto; min-width: 0; }
+  /* DE: UI-Namen (Knopf-/Feldbezeichnungen) als schlichter Fettdruck IN
+       der normalen Schrift -- keine Monospace-Chips mehr. Die flossen
+       vorher als eigene, nicht umbrechende Einheit mitten im Satz und
+       haben in schmalen Spalten das Folgewort ueberlappt bzw. den Rest
+       der Zeile auf einen winzigen Rest zusammengedrueckt. Normaler
+       Fliesstext bricht dagegen genauso robust wie jedes andere Wort.
+  EN: UI names (button/field labels) as plain bold text IN the normal
+       typeface -- no more monospace chips. Those used to flow as their
+       own non-wrapping unit mid-sentence and, in narrow columns, ended
+       up overlapping the following word resp. squeezing the rest of the
+       line into a sliver. Plain running text instead wraps exactly as
+       robustly as any other word. */
+  b.ui { font-weight: 700; color: var(--accent-strong); }
+
+  .hinweis {
+    max-width: 66ch;
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 3px 3px 0;
+    padding: 0.85rem 1.1rem;
+    margin: 0 0 1.2rem;
+    font-size: 0.94rem;
+    color: var(--ink-soft);
+  }
+  .hinweis .label {
+    display: block;
+    font-family: var(--serif-tab);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+  .warnung {
+    border-left-color: var(--warn);
+    background: var(--warn-soft);
+  }
+  .warnung .label { color: var(--warn); }
+
+  .abschnitt-titel {
+    font-family: "Archivo", sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    margin: 0 0 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  table.masse {
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    margin: 0 0 1.6rem;
+    max-width: 66ch;
+  }
+  table.masse th, table.masse td {
+    text-align: left;
+    padding: 0.45rem 1.1rem 0.45rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  table.masse th {
+    font-family: var(--serif-tab);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  table.masse td.num { font-family: var(--serif-tab); font-variant-numeric: tabular-nums; }
+
+  .fussleiste {
+    margin-top: 4rem;
+    padding-top: 1.8rem;
+    border-top: 1px solid var(--line);
+    color: var(--ink-faint);
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .fussleiste a { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 860px) {
+    .schema { grid-template-columns: 1fr; }
+    nav.werkzeugliste { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--line); }
+    main { padding: 2rem 1.4rem 3rem; }
+    h1.titel { font-size: 2rem; }
+  }
+
+  @media print {
+    .schema { display: block; max-width: none; }
+    nav.werkzeugliste {
+      position: static; height: auto; overflow: visible;
+      border-right: none; border-bottom: 1px solid var(--line);
+      padding: 1rem 0 1.5rem;
+    }
+    main { padding: 1.5rem 0; }
+    figure.platte, .hinweis { page-break-inside: avoid; }
+    section.werkzeug h2 { page-break-after: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="schema" lang="de">
+  <nav class="werkzeugliste">
+    <p class="marke">Mathias' kleines<br>PDF-Werkzeug
+      <small>Anleitung · Version 1.9</small>
+    </p>
+    <ol>
+      <li><a href="#pdf-erstellen">PDF erstellen</a></li>
+      <li><a href="#seiten-drehen">Seiten drehen</a></li>
+      <li><a href="#bildbereinigung">Bildbereinigung</a></li>
+      <li><a href="#leerseiten-entfernen">Leerseiten entfernen</a></li>
+      <li><a href="#seiten-teilen">Seiten teilen</a></li>
+      <li><a href="#seiten-zusammenfuegen">Seiten zusammenfügen</a></li>
+      <li><a href="#heftseiten-teilen">Heftseiten teilen</a></li>
+      <li><a href="#seiten-nummerieren">Seiten nummerieren</a></li>
+      <li><a href="#lesezeichen-setzen">Lesezeichen setzen</a></li>
+      <li><a href="#seitenmass-normieren">Seitenmaß normieren</a></li>
+      <li><a href="#seiten-zuschneiden">Seiten zuschneiden</a></li>
+      <li><a href="#schwaerzen">Schwärzen</a></li>
+      <li><a href="#pdf-in-bilder">PDF in Bilder teilen</a></li>
+      <li><a href="#pdf-verkleinern">PDF verkleinern &amp; PDF/A</a></li>
+      <li><a href="#metadaten-bearbeiten">Metadaten bearbeiten</a></li>
+    </ol>
+    <div class="stufe">
+      <a href="#einstellungen">Einstellungen: Sprache &amp; Maßeinheit</a>
+      <a href="#voraussetzungen">Systemvoraussetzungen</a>
+      <a href="#bezug">Bezugsquelle &amp; Lizenz</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="deckblatt">
+      <p class="eyebrow">Bedienungsanleitung · Deutsch</p>
+      <h1 class="titel">Mathias' kleines PDF-Werkzeug</h1>
+      <p class="lead">Fünfzehn Werkzeuge für ein wiederkehrendes Problem: gescannte Unterlagen
+        nachträglich in eine ordentliche, korrekt formatierte PDF-Datei verwandeln — gerade
+        ziehen, zerlegen, wieder zusammensetzen, auf Normmaß bringen, verkleinern. Diese
+        Anleitung zeigt jedes Werkzeug an einem echten Beispiel.</p>
+      <div class="kennzahlen">
+        <div><strong>15</strong><span>Werkzeuge</span></div>
+        <div><strong>1</strong><span>Gemeinsame Dateiliste</span></div>
+        <div><strong>DE / EN</strong><span>Sprache umstellbar</span></div>
+        <div><strong>GPL-3.0</strong><span>Freie Software</span></div>
+      </div>
+    </div>
+
+    <section class="werkzeug" id="pdf-erstellen">
+      <p class="nr">Werkzeug 01</p>
+      <h2>PDF erstellen</h2>
+      <p class="intro">Der Ausgangspunkt für praktisch jede Sitzung: PDF-Dateien, JPGs, BMPs
+        und TIFFs (auch mehrseitige) werden per Drag&amp;Drop in eine <strong>gemeinsame
+        Dateiliste</strong> geladen und in genau dieser Reihenfolge zu einer einzigen PDF
+        zusammengefügt. Diese Liste ist der Dreh- und Angelpunkt der ganzen App — jedes andere
+        Werkzeug arbeitet auf derselben Liste weiter, ohne dass zwischendurch exportiert und
+        neu geladen werden muss.</p>
+      <figure class="platte">
+        <img src="bilder/0_pdf_erstellen.jpg" alt="Fenster des Werkzeugs „PDF erstellen“ mit vier geladenen Scans in der Dateiliste">
+        <figcaption><b>Abb. 1</b> — Vier Scans in der Dateiliste, bereit zum Zusammenfügen.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Dateien per <b class="ui">Dateien hinzufügen …</b> oder Drag&amp;Drop in die mittlere Liste laden.</span></li>
+        <li><span class="txt">Reihenfolge bei Bedarf per Ziehen in der Liste ändern.</span></li>
+        <li><span class="txt">Optional: mit anderen Werkzeugen vorbereiten (drehen, teilen, normieren) — die Liste bleibt dabei erhalten.</span></li>
+        <li><span class="txt"><b class="ui">Als PDF exportieren …</b> klicken und Speicherort wählen.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Verlustfrei, wo möglich</span>
+        Unveränderte PDF-Seiten, die um 0/90/180/270° gedreht sind, bleiben beim Export
+        Vektorseiten — nur wirklich freie Drehwinkel, Spiegelungen oder Teilungen werden
+        gerastert.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="seiten-drehen">
+      <p class="nr">Werkzeug 02</p>
+      <h2>Seiten drehen</h2>
+      <p class="intro">Schräg eingescannte Seiten direkt mit der Maus geradeziehen: in der
+        Vorschau ziehen dreht die Seite frei, feste rote Linien dienen als Wasserwaage. Dazu
+        die üblichen Schnellaktionen — 90°, 180°, Spiegeln — sowie eine Funktion für
+        Doppelseiten, die abwechselnd in verschiedene Richtungen quer eingescannt wurden.</p>
+      <figure class="platte">
+        <img src="bilder/1_seiten_drehen.jpg" alt="Seiten-drehen-Werkzeug: eine schräge Seite wird mit gelben Referenzlinien um 4,5° gedreht">
+        <figcaption><b>Abb. 2</b> — Freies Geraderichten per Maus-Zug; das Feld unten zeigt den exakten Winkel (hier 4,5°).</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Seite in der Liste anklicken, dann in der Vorschau mit gedrückter Maustaste ziehen, bis der Inhalt an den roten Linien ausgerichtet ist.</span></li>
+        <li><span class="txt">Für exakte Werte: Zahlenfeld unter der Vorschau nutzen, oder mit den Pfeiltasten in <b class="ui">0,1°</b>-Schritten feinjustieren (<b class="ui">Umschalt</b>+Pfeil = <b class="ui">1°</b>-Schritte).</span></li>
+        <li><span class="txt">Für rechte Winkel/Spiegelung: die Schnellaktionsknöpfe verwenden.</span></li>
+        <li><span class="txt">Geltungsbereich (aktuelle Seite / Auswahl / alle) oben in der Liste festlegen, bevor eine Schnellaktion angewendet wird.</span></li>
+        <li><span class="txt">Bei quer gescannten Doppelseiten mit wechselnder Ausrichtung: <b class="ui">Abwechselnd 90° drehen</b> auf die gesamte Auswahl anwenden.</span></li>
+        <li><span class="txt">Bei großen Stapeln: <b class="ui">Schräglage automatisch erkennen</b> schlägt den Winkel per Texterkennung vor (weiter mit der Maus oder dem Zahlenfeld korrigierbar); bei Fotos oder grafiklastigen Seiten ohne erkennbares Zeilenmuster bleibt die Seite unverändert.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Feinwinkel übertragen</span>
+        Kopiert den exakten Winkel der aktuellen Seite auf den gewählten Bereich — praktisch,
+        wenn mehrere Seiten desselben Stapels denselben leichten Schieflauf haben.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="bildbereinigung">
+      <p class="nr">Werkzeug 03</p>
+      <h2>Bildbereinigung</h2>
+      <p class="intro">Für gescannte Schwarzweiß-/Textvorlagen: wandelt in reines Schwarzweiß
+        um (Schwellwert, auf Wunsch automatisch per Otsu-Verfahren vorgeschlagen) und/oder
+        entfernt kleine dunkle Flecken (Staub, Druckpunkte). Beide Schritte sind unabhängig
+        voneinander zuschaltbar.</p>
+      <figure class="platte">
+        <img src="bilder/11_bildbereinigung.jpg" alt="Bildbereinigung-Werkzeug: eine gescannte Seite mit Otsu-Schwellwert binarisiert in der Vorschau">
+        <figcaption><b>Abb. 3</b> — Vorschau des Werkzeugs „Bildbereinigung“: eine gescannte Seite mit automatisch vorgeschlagenem Schwellwert, binarisiert dargestellt.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Seite auswählen — die Vorschau zeigt sofort, wie sich Schwellwert, Binarisieren und Entflecken auf genau diese Seite auswirken.</span></li>
+        <li><span class="txt"><b class="ui">Automatisch vorschlagen</b> berechnet per Otsu-Verfahren einen Schwellwert, der Text/Linien am deutlichsten vom Hintergrund trennt — oder von Hand feinjustieren.</span></li>
+        <li><span class="txt"><b class="ui">In reines Schwarzweiß umwandeln (Binarisieren)</b> bei Bedarf abschalten, um nur Flecken zu entfernen und Grau-/Farbwerte sonst unverändert zu lassen.</span></li>
+        <li><span class="txt">Geltungsbereich wählen und <b class="ui">Anwenden</b> klicken.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Kleinere Dateien als Nebeneffekt</span>
+        Binarisierte Seiten lassen sich in „PDF verkleinern &amp; PDF/A“ oft besonders klein
+        komprimieren — reiner Schwarzweiß-Inhalt braucht deutlich weniger Speicher als ein
+        Graustufen- oder Farbscan.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="leerseiten-entfernen">
+      <p class="nr">Werkzeug 04</p>
+      <h2>Leerseiten entfernen</h2>
+      <p class="intro">Sucht im gewählten Bereich nach wahrscheinlich leeren Seiten (per
+        Tinte-Anteil) — typisch beim automatisierten Scannen mit Einzug (Duplex mit
+        gelegentlich unbedruckter Rückseite, leere Trennblätter). Findet nur Vorschläge,
+        löscht nichts automatisch: die gefundenen Seiten erscheinen in einer Übersicht mit
+        Häkchen (alle vorausgewählt), zum Abwählen einzelner Seiten vor dem tatsächlichen
+        Entfernen.</p>
+      <figure class="platte">
+        <img src="bilder/14_leerseiten_entfernen.jpg" alt="Leerseiten-entfernen-Werkzeug mit zwei gefundenen, angehakten Leerseiten-Vorschlägen in der Übersicht">
+        <figcaption><b>Abb. 4</b> — Zwei wahrscheinlich leere Seiten gefunden, beide zum Entfernen angehakt; der gemessene Tinte-Anteil steht jeweils dabei.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Geltungsbereich wählen (meist <b class="ui">Alle Seiten</b>, da man typischerweise den ganzen frisch geladenen Stapel prüft) und <b class="ui">Leerseiten suchen</b> klicken.</span></li>
+        <li><span class="txt">Jede gefundene Seite erscheint in der Übersicht mit Häkchen und ihrem gemessenen Tinte-Anteil — standardmäßig alle angehakt.</span></li>
+        <li><span class="txt">Was tatsächlich keine Leerseite ist, dort abwählen.</span></li>
+        <li><span class="txt"><b class="ui">Ausgewählte entfernen</b> klicken.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Schwellwert und Empfindlichkeit einstellbar</span>
+        Der Tinte-Schwellwert (was als "Tinte" zählt) und der Höchstanteil (ab wann eine
+        Seite als "leer" gilt) lassen sich anpassen — praktisch bei Scannern mit sichtbarem
+        Rauschen/Staub, die sonst echte, fast leere Seiten fälschlich markieren könnten.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="seiten-teilen">
+      <p class="nr">Werkzeug 05</p>
+      <h2>Seiten teilen</h2>
+      <p class="intro">Zerschneidet eine Seite entlang senkrechter und/oder waagerechter
+        Linien in ein Zeilen-×-Spalten-Raster — etwa für zwei Buchseiten auf einem
+        Doppelseiten-Scan, oder mehrere Formularfelder auf einem gescannten Blatt. Die
+        Schnittlinien werden mit der Maus gezogen, mit Zoom für punktgenaues Treffen.</p>
+      <figure class="platte">
+        <img src="bilder/2_seiten_teilen.jpg" alt="Seiten-teilen-Werkzeug: eine Doppelseite mit einer gelben senkrechten Schnittlinie in der Mitte">
+        <figcaption><b>Abb. 5</b> — Zwei Spalten, Schnittlinie mittig platziert; „Teilung jetzt anwenden“ zerschneidet wirklich.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Spalten- und/oder Zeilenzahl festlegen, <b class="ui">Übernehmen</b> klicken — die Linien erscheinen gleichmäßig verteilt.</span></li>
+        <li><span class="txt">Jede Linie einzeln mit der Maus verschieben; zum genauen Treffen mit <b class="ui">Strg/Cmd</b>+Scrollen bzw. Pinch-Geste vergrößern.</span></li>
+        <li><span class="txt"><b class="ui">Automatisch ausrichten</b> zieht jede Linie auf die ruhigste (leerste) Bildstelle in der Nähe — gut für eine Heftmitte statt mitten im Text.</span></li>
+        <li><span class="txt"><b class="ui">Teilung jetzt anwenden</b> zerschneidet die Seite wirklich; die Teile ersetzen die Seite als eigenständige, weiter bearbeitbare Einträge in der Liste.</span></li>
+      </ol>
+      <div class="hinweis warnung">
+        <span class="label">Reihenfolge beachten</span>
+        Bis zum Anwenden ist die Teilung nur eine Einstellung — die Seite lässt sich bis dahin
+        noch normal exportieren (dann automatisch geteilt) oder die Teilung wieder entfernen.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="seiten-zusammenfuegen">
+      <p class="nr">Werkzeug 06</p>
+      <h2>Seiten zusammenfügen</h2>
+      <p class="intro">Das Gegenstück zum Teilen-Werkzeug: mehrere kleinere Scans — etwa
+        A4-Blätter einer A1-Zeichnung oder eines Schaltplans — werden zu einer großen Seite
+        zusammengesetzt. Ein Klick erzeugt eine erste Kante-an-Kante-Anordnung; danach lässt
+        sich jedes Teil frei verschieben, fein nachdrehen und an den Rändern beschneiden.</p>
+      <figure class="platte">
+        <img src="bilder/3_seiten_zusammenfuegen.jpg" alt="Seiten-zusammenfügen-Werkzeug: vier farbige Kacheln im 2×2-Raster, eine Kachel ist ausgewählt und leicht gedreht/beschnitten">
+        <figcaption><b>Abb. 6</b> — Vier Teile im 2×2-Raster; die rote Kachel ist ausgewählt, um 3° feingedreht und links/oben beschnitten.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Die Teile in der Dateiliste in der gewünschten Lesereihenfolge auswählen (<b class="ui">Cmd</b>/<b class="ui">Shift</b>-Klick).</span></li>
+        <li><span class="txt">Spaltenzahl festlegen (z. B. <b class="ui">2</b> für ein 2×2-Raster aus vier Teilen) und <b class="ui">Anordnung aus Auswahl erzeugen</b> klicken.</span></li>
+        <li><span class="txt">Jedes Teil in der Vorschau anklicken (wählt es aus) und mit der Maus an die richtige Stelle ziehen.</span></li>
+        <li><span class="txt">Für das ausgewählte Teil rechts eine <b>Feindrehung</b> (0,1°-Schritte) und einen <b>Beschnitt je Rand</b> in % einstellen, um unterschiedliche Scan-Ränder oder eine bewusste Überlappung auszugleichen.</span></li>
+        <li><span class="txt"><b class="ui">Übernehmen</b> ersetzt die ursprünglich ausgewählten Teile durch die eine zusammengesetzte Seite.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Drehung bewusst als Zahlenfeld</span>
+        Für technische Zeichnungen ist ein exaktes Gradmaß präziser als ein Mausklick — das
+        „Seiten drehen“-Werkzeug bleibt für die grobe Ausrichtung einzelner Teile trotzdem
+        nützlich und wirkt sich hier automatisch mit aus.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="heftseiten-teilen">
+      <p class="nr">Werkzeug 07</p>
+      <h2>Heftseiten teilen</h2>
+      <p class="intro">Für geheftete Broschüren, die als Doppelseiten-Scans in ihrer
+        physisch gestapelten Reihenfolge vorliegen (Scan 1 zeigt die letzte und die erste
+        Buchseite, Scan 2 die davor und danach usw.): Dieses Werkzeug teilt jede Doppelseite
+        automatisch mittig und bringt beide Hälften in die richtige Lesereihenfolge — nach der
+        klassischen Sattelheft-Formel.</p>
+      <figure class="platte">
+        <img src="bilder/4_heftseiten_teilen.jpg" alt="Heftseiten-teilen-Werkzeug mit vier ausgewählten Doppelseiten-Scans in der Dateiliste">
+        <figcaption><b>Abb. 7</b> — Vier Doppelseiten-Scans ausgewählt, bereit zum automatischen Teilen und Einsortieren.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Alle Doppelseiten-Scans des Hefts in ihrer physisch gestapelten Reihenfolge auswählen.</span></li>
+        <li><span class="txt">Falls quer eingescannt (abwechselnd um 90° in wechselnde Richtungen): Häkchen bei <b class="ui">Scans sind quer eingescannt</b> setzen.</span></li>
+        <li><span class="txt"><b class="ui">Ausgewählte Scans teilen + sortieren</b> klicken.</span></li>
+        <li><span class="txt">Ist ein Scan deutlich breiter als die übrigen (Umschlag mit Aufklappteil): Es öffnet sich automatisch derselbe Ziehen-Editor wie beim Teilen-Werkzeug — dort beliebig viele Schnitte setzen und angeben, welche Teile zur linken bzw. rechten Zielseite gehören. Die Einsortierung geschieht danach vollautomatisch.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Woher die Formel kommt</span>
+        Ein Sattelheft mit <var>n</var> Blättern ergibt für Blatt <var>i</var> (0-basiert) die
+        Zielseiten <b class="ui">n−i</b> (links) und <b class="ui">i+1</b> (rechts) bei geraden,
+        vertauscht bei ungeraden <var>i</var> — exakt wie physisch gefaltet und geheftet wird.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="seiten-nummerieren">
+      <p class="nr">Werkzeug 08</p>
+      <h2>Seiten nummerieren</h2>
+      <p class="intro">Für eine durcheinandergeratene Seitenfolge — von Hand jeder Seite eine
+        Zielnummer zuweisen, dann in einem Schritt neu anordnen. Es wird nichts auf die Seite
+        geschrieben, nur die Reihenfolge in der Liste ändert sich. Alternativ: automatische
+        Sortierung nach Aufnahme-/Erstellungsdatum, inklusive Umbenennen der Dateien auf der
+        Festplatte.</p>
+      <figure class="platte">
+        <img src="bilder/5_seiten_nummerieren.jpg" alt="Seiten-nummerieren-Werkzeug: vier Seiten mit zugewiesenen Zielnummern 1 bis 4 in der Dateiliste">
+        <figcaption><b>Abb. 8</b> — Jede Miniatur zeigt ihre zugewiesene Zielnummer; „Jetzt neu anordnen“ sortiert die Liste entsprechend.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Seite anklicken, Zielnummer eintragen, <b class="ui">Zuweisen &amp; weiter</b> klicken — springt automatisch zur nächsten Seite.</span></li>
+        <li><span class="txt">Nach Zuweisung aller Seiten: <b class="ui">Jetzt neu anordnen</b> klicken.</span></li>
+        <li><span class="txt">Alternativ, wenn Aufnahmedatum/Dateidatum die richtige Reihenfolge ergibt: <b class="ui">Automatisch nach Aufnahme-/Erstellungsdatum sortieren</b>.</span></li>
+        <li><span class="txt">Sollen auch die Originaldateien auf der Platte umbenannt werden: <b class="ui">Dateien auf der Platte nach Datum umbenennen …</b>.</span></li>
+      </ol>
+    </section>
+
+    <section class="werkzeug" id="lesezeichen-setzen">
+      <p class="nr">Werkzeug 09</p>
+      <h2>Lesezeichen setzen</h2>
+      <p class="intro">Für Broschüren und Bücher, die man ohnehin schon Seite für Seite
+        durchgeht: jeder Seite optional einen Kapitel- oder Unterkapitel-Titel geben. Wird
+        beim Speichern automatisch zu einem Lesezeichen/Inhaltsverzeichnis (Outline) in der
+        PDF-Datei — ganz ohne separaten Exportschritt.</p>
+      <figure class="platte">
+        <img src="bilder/12_lesezeichen_setzen.jpg" alt="Lesezeichen-setzen-Werkzeug mit drei gesetzten Lesezeichen in der Übersicht">
+        <figcaption><b>Abb. 9</b> — Drei Lesezeichen gesetzt (zwei Kapitel, ein Unterkapitel); die Übersicht unten zeigt alle in Seitenreihenfolge.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Seite auswählen, die ein Kapitel oder Unterkapitel beginnt, Titel eintragen.</span></li>
+        <li><span class="txt">Ebene wählen — <b class="ui">Kapitel</b> oder <b class="ui">Unterkapitel</b> — dann <b class="ui">Setzen &amp; weiter</b> klicken; springt automatisch zur nächsten Seite.</span></li>
+        <li><span class="txt">Die Übersicht unten zeigt alle bislang gesetzten Lesezeichen in Seitenreihenfolge — ein Klick darauf springt zur jeweiligen Seite.</span></li>
+        <li><span class="txt">Wird beim nächsten Speichern automatisch als Gliederung in die PDF-Datei übernommen.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Kein separater Export nötig</span>
+        Anders als bei anderen Werkzeugen gibt es hier keinen eigenen „Anwenden“-Knopf — die
+        Lesezeichen fließen automatisch in jede Speicherung ein, egal ob über „PDF erstellen“,
+        „Speichern“ oder „PDF verkleinern &amp; PDF/A“.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="seitenmass-normieren">
+      <p class="nr">Werkzeug 10</p>
+      <h2>Seitenmaß normieren</h2>
+      <p class="intro">Bringt Seiten auf ein exaktes physisches Maß — ein DIN-A-Format, ein
+        US-Format (Letter, Legal, …) oder ein freies Maß. Schwarze Scan-Ränder, wie sie
+        entstehen, wenn die Vorlage kleiner als das Scannerglas war, werden dabei je Kante
+        automatisch erkannt und abgeschnitten; ohne erkennbaren Rand wird direkt skaliert.</p>
+      <figure class="platte">
+        <img src="bilder/6_seitenmass_normieren.jpg" alt="Seitenmaß-normieren-Werkzeug: die gemessene Größe einer Seite (ca. A4) wird angezeigt, mit Übernehmen-Knopf">
+        <figcaption><b>Abb. 10</b> — Gemessene Größe der aktuellen Seite mit automatischem Formatvorschlag und Übernehmen-Knopf.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Seite anklicken — das Werkzeug misst automatisch die aktuelle (Inhalts-)Größe und schlägt ein passendes Format vor, falls eines nahe genug liegt (DIN A oder US).</span></li>
+        <li><span class="txt"><b class="ui">Gemessene Größe übernehmen</b> setzt diesen Vorschlag direkt als Zielgröße — oder Format bzw. eigenes Maß von Hand wählen.</span></li>
+        <li><span class="txt">Ausgabeauflösung (dpi) und ob schwarze Ränder abgeschnitten werden sollen, festlegen.</span></li>
+        <li><span class="txt">Geltungsbereich wählen und <b class="ui">Anwenden</b> klicken.</span></li>
+      </ol>
+      <table class="masse">
+        <tr><th>DIN-Format</th><th>Maße (mm)</th><th>US-Format</th><th>Maße (in)</th></tr>
+        <tr><td>A3</td><td class="num">297 × 420</td><td>US Letter</td><td class="num">8,50 × 11,00</td></tr>
+        <tr><td>A4</td><td class="num">210 × 297</td><td>US Legal</td><td class="num">8,50 × 14,00</td></tr>
+        <tr><td>A5</td><td class="num">148 × 210</td><td>US Executive</td><td class="num">7,25 × 10,50</td></tr>
+      </table>
+      <figure class="platte">
+        <img src="bilder/9_seitenmass_us_zoll.jpg" alt="Seitenmaß-normieren-Werkzeug mit Format „US Letter“ und Maßeinheit „Zoll“ eingestellt">
+        <figcaption><b>Abb. 11</b> — Dieselbe Seite mit Format <b class="ui">US Letter</b> und auf <b class="ui">Zoll</b> umgestellter Maßeinheit: die Zahlenfelder zeigen 8,50 × 11,00 in.</figcaption>
+      </figure>
+      <div class="hinweis">
+        <span class="label">Alle Formate immer verfügbar</span>
+        DIN-A- und US-Formate stehen unabhängig von der eingestellten Maßeinheit gleichzeitig
+        zur Auswahl — nur die <b>Anzeige</b> der Zahlenwerte folgt der unter
+        <a href="#einstellungen">Einstellungen</a> gewählten Maßeinheit (Millimeter oder Zoll),
+        nicht das Angebot an Formaten selbst.
+      </div>
+      <div class="hinweis">
+        <span class="label">Mehrere Abschnitte, unterschiedliche Formate</span>
+        Für ein Dokument mit z. B. A4-Innenseiten und einer A3-Beilage: Werkzeug einmal auf
+        die A4-Seiten anwenden (auswählen, A4, Anwenden), dann erneut mit anderer Auswahl und
+        A3.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="seiten-zuschneiden">
+      <p class="nr">Werkzeug 11</p>
+      <h2>Seiten zuschneiden</h2>
+      <p class="intro">Schneidet Seiten von allen vier Rändern aus um ein frei wählbares Maß
+        zu — z. B. um einen Lochrandstreifen oder Heftrand präzise zu entfernen. Anders als
+        „Seitenmaß normieren“ wird dabei nicht auf eine Zielgröße skaliert, sondern genau das
+        angegebene Maß abgeschnitten; die Ergebnisgröße ergibt sich daraus und wird live
+        angezeigt.</p>
+      <figure class="platte">
+        <img src="bilder/10_seiten_zuschneiden.jpg" alt="Seiten-zuschneiden-Werkzeug: eine Seite mit Lochrandstreifen links, der abgeschnittene Bereich ist abgedunkelt dargestellt">
+        <figcaption><b>Abb. 12</b> — Der abzuschneidende Bereich wird abgedunkelt dargestellt; hier verschwindet der Lochrandstreifen links im dunklen Bereich.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Die vier Randmaße als Zahlenfelder eintragen (Links, Oben, Rechts, Unten) — oder die gelben Linien direkt in der Vorschau mit der Maus ziehen.</span></li>
+        <li><span class="txt">Zum genauen Treffen bei kleinen Randmaßen: mit <b class="ui">Strg/Cmd</b>+Scrollen bzw. Pinch-Geste vergrößern.</span></li>
+        <li><span class="txt">Die Ergebnisgröße wird unterhalb der Randfelder live angezeigt, inklusive Formatvorschlag, falls einer passt.</span></li>
+        <li><span class="txt">Geltungsbereich wählen und <b class="ui">Anwenden</b> klicken — dieselben Randmaße werden auf jede Seite im gewählten Bereich angewendet.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Feste Randmaße bleiben erhalten</span>
+        Die eingestellten Randmaße bleiben beim Wechsel zur nächsten Seite erhalten — praktisch,
+        um dasselbe feste Maß gezielt auf mehrere, leicht unterschiedlich große Seiten
+        anzuwenden ("im Block").
+      </div>
+    </section>
+
+    <section class="werkzeug" id="schwaerzen">
+      <p class="nr">Werkzeug 12</p>
+      <h2>Schwärzen</h2>
+      <p class="intro">Beliebig viele Bereiche einer Seite dauerhaft unkenntlich machen:
+        deckende Rechtecke, frei mit der Maus gezeichnet, verschoben und in der Größe
+        verändert. Anders als ein einfacher schwarzer Kasten werden die Rechtecke beim
+        Speichern wirklich in die Bildpixel eingebrannt — betroffene Seiten werden dafür
+        automatisch gerastert, auch wenn sie sonst verlustfrei als Vektorseite exportiert
+        würden, damit garantiert kein Originaltext darunter erhalten bleibt.</p>
+      <figure class="platte">
+        <img src="bilder/15_schwaerzen.jpg" alt="Schwärzen-Werkzeug mit einem gezeichneten schwarzen Rechteck über Textzeilen, blau markiert als ausgewählt">
+        <figcaption><b>Abb. 13</b> — Ein Bereich geschwärzt und ausgewählt (blauer Rahmen mit Eckgriffen); die Rechtecke werden beim Speichern dauerhaft in die Bildpixel eingebrannt.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Auf leerer Fläche ziehen zeichnet ein neues Rechteck; ein bestehendes anklicken wählt es aus.</span></li>
+        <li><span class="txt">Ziehen im Inneren verschiebt das ausgewählte Rechteck, Ziehen an einer Ecke ändert die Größe.</span></li>
+        <li><span class="txt"><b class="ui">Ausgewähltes Rechteck löschen</b> bzw. <b class="ui">Alle auf dieser Seite löschen</b> entfernt wieder.</span></li>
+        <li><span class="txt"><b class="ui">Übertragen</b> kopiert die Rechtecke der aktuellen Seite auf einen wählbaren Bereich weiterer Seiten — praktisch für wiederkehrende Angaben (z. B. eine Aktennummer oben auf jeder Seite).</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Wirklich dauerhaft</span>
+        Die Farbe ist in den Einstellungen wählbar (Standard Schwarz), aber immer deckend
+        ohne Transparenz — was geschwärzt ist, ist aus der gespeicherten Datei unwiderruflich
+        weg, nicht nur überdeckt.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="pdf-in-bilder">
+      <p class="nr">Werkzeug 13</p>
+      <h2>PDF in Bilder teilen</h2>
+      <p class="intro">Der Rückweg aus der PDF heraus: die gemeinsame Dateiliste als
+        einzelne, durchnummerierte Bilddateien speichern (PDF, JPEG, TIFF oder BMP je Seite)
+        oder als eine mehrseitige TIFF-Datei — z. B. für eine Weiterverarbeitung, die einzelne
+        Bilddateien statt einer PDF erwartet.</p>
+      <figure class="platte">
+        <img src="bilder/7_pdf_in_bilder.jpg" alt="PDF-in-Bilder-teilen-Werkzeug mit drei geladenen Seiten in der Dateiliste">
+        <figcaption><b>Abb. 14</b> — Drei Seiten bereit für den Export als Einzeldateien oder mehrseitige TIFF.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt"><b class="ui">Als einzelne nummerierte Dateien exportieren …</b> für getrennte Dateien — Format, Basisname, Startnummer und Stellenzahl im folgenden Dialog wählen.</span></li>
+        <li><span class="txt">Oder <b class="ui">Als eine mehrseitige TIFF-Datei exportieren …</b> für eine gemeinsame Datei mit allen Seiten.</span></li>
+      </ol>
+    </section>
+
+    <section class="werkzeug" id="pdf-verkleinern">
+      <p class="nr">Werkzeug 14</p>
+      <h2>PDF verkleinern &amp; PDF/A</h2>
+      <p class="intro">Drei getrennte, unabhängig nutzbare Funktionen: die Dateigröße
+        großer Scans durch JPEG-Kodierung deutlich verkleinern (Qualität und Höchstauflösung
+        wählbar — bereits effizient komprimierte Schwarzweißseiten werden dabei automatisch
+        unverändert durchgereicht, da JPEG dort meist größer <em>und</em> schlechter wäre),
+        eine bestehende PDF verlustfrei strukturell komprimieren, oder eine PDF mit den
+        Kennzeichen für das Archivformat PDF/A-2b versehen.</p>
+      <figure class="platte">
+        <img src="bilder/8_pdf_verkleinern.jpg" alt="Werkzeug PDF verkleinern & PDF/A mit den drei Abschnitten Dateigröße verringern, PDF/A kennzeichnen und Struktur komprimieren">
+        <figcaption><b>Abb. 15</b> — Die drei unabhängigen Funktionen: Verkleinern, PDF/A-Kennzeichnung, verlustfreie Struktur-Komprimierung.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Für kleinere Dateien: JPEG-Qualität und Höchstauflösung einstellen, <b class="ui">Als kleinere PDF exportieren …</b>.</span></li>
+        <li><span class="txt">Ist das Ergebnis nicht kleiner als das Original, weist die App darauf hin — meist ein Zeichen, dass die Quelle schon effizient komprimiert war; dann Qualität/Auflösung weiter senken.</span></li>
+        <li><span class="txt">Für die Archivkennzeichnung: bestehende PDF-Datei wählen, <b class="ui">Bestehende PDF-Datei als PDF/A-2b kennzeichnen …</b>.</span></li>
+        <li><span class="txt">Für verlustfreie Kompression ohne Qualitätsverlust: <b class="ui">Bestehende PDF-Datei verlustfrei komprimieren …</b>.</span></li>
+      </ol>
+      <div class="hinweis warnung">
+        <span class="label">Keine förmliche Zertifizierung</span>
+        Die PDF/A-Kennzeichnung setzt die üblichen, von Software erkannten Merkmale, ist aber
+        keine formale veraPDF-Zertifizierung — für verbindliche Archivanforderungen zusätzlich
+        mit einem dedizierten Prüfwerkzeug gegenchecken.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="metadaten-bearbeiten">
+      <p class="nr">Werkzeug 15</p>
+      <h2>Metadaten bearbeiten</h2>
+      <p class="intro">Anders als alle anderen Werkzeuge gilt hier ein einziger Satz Angaben
+        für das gesamte Dokument, nicht pro Seite: Titel, Autor, Anbieter, Produkt, Version,
+        Releasedatum und Stichwörter. PDF kennt nur eine feste Anzahl Standardfelder — die
+        Vorschau zeigt genau, wie diese Angaben tatsächlich hineinfließen.</p>
+      <figure class="platte">
+        <img src="bilder/13_metadaten_bearbeiten.jpg" alt="Metadaten-bearbeiten-Werkzeug mit ausgefüllten Feldern und Textvorschau">
+        <figcaption><b>Abb. 16</b> — Alle Felder ausgefüllt; die Vorschau unten zeigt, wie sie sich auf Titel/Autor/Thema/Stichwörter im PDF verteilen.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Titel, Autor und Anbieter eintragen — Anbieter ist mit dem in den Einstellungen hinterlegten Standard vorbelegt (sonst mit dem zuletzt verwendeten).</span></li>
+        <li><span class="txt">Produkt, Version und optional ein Releasedatum ergänzen — beides gibt es in PDF nicht als eigenes Feld, fließt deshalb automatisch mit in die Stichwörter ein (siehe Vorschau unten im Werkzeug).</span></li>
+        <li><span class="txt">Wird automatisch bei jedem Speichern übernommen — kein eigener Anwenden-Knopf nötig.</span></li>
+        <li><span class="txt">„Speichern unter“ schlägt daraus automatisch einen Dateinamen vor, z. B. „Produkt - Titel vVersion (Datum).pdf“.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Anbieter &amp; Datumsformat einstellbar</span>
+        Unter <a href="#einstellungen">Einstellungen</a> lässt sich ein Standard-Anbieter
+        hinterlegen sowie das Datumsformat fürs Releasedatum wählen (z. B. JJ-MM oder
+        JJJJ-MM-TT).
+      </div>
+    </section>
+
+    <section class="werkzeug" id="einstellungen">
+      <p class="abschnitt-titel">Einstellungen: Sprache &amp; Maßeinheit</p>
+      <p class="intro">Über das Menü <b class="ui">Bearbeiten → Einstellungen …</b> (unter
+        macOS automatisch im Programmmenü, Tastenkürzel <b class="ui">Cmd+,</b> bzw.
+        <b class="ui">Strg+,</b>) lassen sich die Oberflächensprache und die für
+        „Seitenmaß normieren“ verwendete Maßeinheit umstellen — beides bewusst
+        <strong>von Hand</strong> und nicht automatisch aus den Systemeinstellungen
+        übernommen, da die bearbeiteten PDFs aus jedem Land stammen können, unabhängig
+        davon, wie dieser Rechner eingestellt ist.</p>
+      <figure class="platte">
+        <img src="bilder/9_einstellungen.jpg" alt="Einstellungen-Dialog mit den Auswahlfeldern Sprache und Maßeinheit">
+        <figcaption><b>Abb. 17</b> — Der Einstellungen-Dialog mit den Feldern <b class="ui">Sprache</b> und <b class="ui">Maßeinheit</b>.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt"><b class="ui">Sprache:</b> Deutsch (Vorgabe) oder Englisch — wirkt sich erst nach einem Neustart des Programms aus.</span></li>
+        <li><span class="txt"><b class="ui">Maßeinheit:</b> Millimeter (Vorgabe) oder Zoll — wirkt sich sofort aus, auch während „Seitenmaß normieren“ bereits offen ist.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Warum nicht automatisch?</span>
+        Ein in den USA gekaufter, aber auf Deutsch eingestellter Rechner verarbeitet
+        genauso oft europäische wie amerikanische Scans, und umgekehrt — die
+        Systemsprache/-region sagt nichts über die Herkunft eines konkreten PDFs aus.
+        Deshalb bleibt die Umstellung hier bewusst manuell.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="voraussetzungen" style="margin-bottom: 3rem;">
+      <p class="abschnitt-titel">Systemvoraussetzungen</p>
+      <table class="masse">
+        <tr><th>Plattform</th><th>Mindestens</th></tr>
+        <tr><td>macOS</td><td>11 (Big Sur), 64-Bit — Apple Silicon oder Intel</td></tr>
+        <tr><td>Windows</td><td>10, 64-Bit</td></tr>
+      </table>
+      <p style="max-width: 66ch; color: var(--ink-soft); font-size: 0.94rem;">
+        Rund 250 MB freier Speicherplatz für das Programm, zusätzlich freier Platz für
+        Zwischendateien während der Bearbeitung (grob das 2- bis 3-fache der Größe der
+        bearbeiteten PDFs). Keine Internetverbindung und keine zusätzliche Software nötig
+        (kein Python, kein ImageMagick/Ghostscript) — beide Programmversionen sind vollständig
+        eigenständig.
+      </p>
+      <div class="hinweis">
+        <span class="label">Hinweis zu Windows</span>
+        Entwickelt und getestet wird ausschließlich auf macOS — die Windows-Version wird
+        nicht selbst getestet, funktioniert aber hoffentlich fehlerfrei. Bei Fehlern bitte
+        mit einer genauen, nachvollziehbaren Beschreibung an
+        <a href="mailto:telefonmann@telefonanleitungen.de">telefonmann@telefonanleitungen.de</a>
+        schreiben, dann wird so schnell wie möglich korrigiert.
+      </div>
+    </section>
+
+    <section id="bezug" style="margin-bottom: 2rem;">
+      <p class="abschnitt-titel">Bezugsquelle &amp; Lizenz</p>
+      <img src="bilder/logo_telefonanleitungen.png" alt="Logo telefonanleitungen.de -- Sammler- und Interessengemeinschaft für das historische Fernmeldewesen e.V." style="max-width: 260px; height: auto; display: block; margin-bottom: 1rem;">
+      <p style="max-width: 66ch; color: var(--ink-soft);">
+        Kostenlos bereitgestellt von <a href="https://www.telefonanleitungen.de" style="color: var(--accent); font-weight: 700; text-decoration: none;">Telefonanleitungen.de</a>.
+        Lizenziert unter der GNU General Public License 3.0 — freie Software, die auch
+        verändert und weiterverbreitet werden darf.
+      </p>
+    </section>
+
+    <div class="fussleiste">
+      <span>Mathias' kleines PDF-Werkzeug · Version 1.9</span>
+      <span>Kostenlos bereitgestellt von <a href="https://www.telefonanleitungen.de">Telefonanleitungen.de</a></span>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

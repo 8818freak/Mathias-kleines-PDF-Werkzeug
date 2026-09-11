@@ -32,6 +32,7 @@ from __future__ import annotations
 import copy
 from contextlib import contextmanager
 from datetime import date
+from functools import lru_cache
 from typing import Callable
 
 from PySide6.QtCore import QCoreApplication, QRectF, QSize, Qt, Signal
@@ -51,9 +52,40 @@ THUMB_GROESSE = 160
 _VERLAUF_LIMIT = 50
 
 
-def _basis_pixmap(source: PageSource, max_dim: int) -> QPixmap:
-    """DE: Unveraendertes Vorschaubild einer Seite erzeugen.
-    EN: Build the unmodified preview image of a page."""
+# DE: Cache-Groesse grosszuegig gewaehlt -- bei Dokumenten mit einigen
+#     hundert Seiten (real vorkommend, siehe z. B. das 912-seitige
+#     Testdokument) reicht ein kleiner Cache nicht, um wenigstens alle
+#     Miniaturen gleichzeitig warm zu halten.
+# EN: Cache size chosen generously -- for documents with a few hundred
+#     pages (a real occurrence, see e.g. the 912-page test document), a
+#     small cache isn't enough to keep even just all thumbnails warm at
+#     the same time.
+_BASIS_PIXMAP_CACHE_GROESSE = 1500
+
+
+@lru_cache(maxsize=_BASIS_PIXMAP_CACHE_GROESSE)
+def basis_pixmap(source: PageSource, max_dim: int) -> QPixmap:
+    """DE: Unveraendertes Vorschaubild einer Seite erzeugen -- gecacht, da
+        das Rendern aus der Quelldatei (PDF-Rasterung bzw. Bild-Dekodierung)
+        der eigentlich teure Teil ist, nicht die anschliessende Drehung/
+        Schwaerzung (die aendert sich haeufiger und bleibt daher bewusst
+        UNgecacht, siehe vorschau_pixmap). `source` ist unveraenderlich
+        (frozen dataclass) und referenziert nie eine nachtraeglich
+        veraenderte Datei -- bearbeitete Seiten bekommen beim
+        Materialisieren immer eine neue Datei mit neuem Pfad (siehe
+        core/export_dateien.py's bild_materialisieren), nie denselben Pfad
+        erneut. Der Cache kann also fuer die gesamte Programmlaufzeit
+        gueltig bleiben.
+    EN: Build the unmodified preview image of a page -- cached, since
+        rendering from the source file (PDF rasterization resp. image
+        decoding) is the actually expensive part, not the subsequent
+        rotation/redaction (which changes more often and is therefore
+        deliberately left UNcached, see vorschau_pixmap). `source` is
+        immutable (frozen dataclass) and never references a file that
+        gets modified afterward -- edited pages always get a new file
+        with a new path when materialized (see core/export_dateien.py's
+        bild_materialisieren), never the same path again. So the cache
+        can stay valid for the entire program's runtime."""
     rgb_bytes, breite, hoehe = render_rgb(source, max_dim)
     bild = QImage(rgb_bytes, breite, hoehe, breite * 3, QImage.Format.Format_RGB888)
     # DE: Kopie noetig, da rgb_bytes nach Funktionsende freigegeben wird.
@@ -73,7 +105,7 @@ def vorschau_pixmap(wp: WorkingPage, max_dim: int) -> QPixmap:
         the list thumbnails and for the large preview of other tools (e.g.
         Split Pages).
     """
-    pixmap = _basis_pixmap(wp.source, max_dim)
+    pixmap = basis_pixmap(wp.source, max_dim)
     if wp.rotation == 0.0 and not wp.spiegel_h and not wp.spiegel_v:
         return pixmap
     transform = QTransform()

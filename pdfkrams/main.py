@@ -29,6 +29,7 @@ from pathlib import Path
 from PySide6.QtCore import QEvent, QTranslator
 from PySide6.QtWidgets import QApplication
 
+from pdfkrams.core.windows_registrierung import registrieren as windows_dateitypen_registrieren
 from pdfkrams.einstellungen import einstellungen
 from pdfkrams.gui.main_window import MainWindow
 
@@ -80,6 +81,8 @@ def main() -> None:
         uebersetzer = QTranslator(app)
         if uebersetzer.load(str(_UEBERSETZUNGEN_ORDNER / f"pdfkrams_{sprache}.qm")):
             app.installTranslator(uebersetzer)
+
+    windows_dateitypen_registrieren()
 
     fenster = MainWindow()
     app.fenster_registrieren(fenster)
