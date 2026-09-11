@@ -167,10 +167,21 @@ class RotateToolWidget(QWidget):
         btn_auto_erkennen.clicked.connect(self._winkel_automatisch_erkennen)
         gruppe_layout.addWidget(btn_auto_erkennen)
 
-        btn_abwechselnd = QPushButton(self.tr("Abwechselnd 90° drehen (gerade/ungerade entgegengesetzt)"))
+        # DE: Knopftext bewusst kurz -- "gerade/ungerade entgegengesetzt"
+        #     stand frueher direkt im Text und war mit Abstand das
+        #     breiteste Element im ganzen Werkzeug (386 px), was die
+        #     gesamte Bedienspalte unnoetig breit hielt. Die Erklaerung
+        #     steht jetzt vollstaendig im Tooltip.
+        # EN: Button text deliberately short -- "odd/even opposite" used
+        #     to be spelled out directly in the label and was by far the
+        #     widest element in the whole tool (386 px), which forced the
+        #     whole control column to stay needlessly wide. The
+        #     explanation now lives entirely in the tooltip.
+        btn_abwechselnd = QPushButton(self.tr("Abwechselnd 90° drehen"))
         btn_abwechselnd.setToolTip(
             self.tr("Für Hefte, die als Doppelseiten quer gescannt wurden: dreht jede "
-                   "zweite Seite um +90°, die dazwischenliegenden um -90°.")
+                   "zweite Seite um +90°, die dazwischenliegenden um -90° (gerade/ungerade "
+                   "entgegengesetzt).")
         )
         btn_abwechselnd.clicked.connect(self._abwechselnd_drehen)
         gruppe_layout.addWidget(btn_abwechselnd)

@@ -143,9 +143,18 @@ class SplitToolWidget(QWidget):
         btn_uebernehmen = QPushButton(self.tr("Übernehmen"))
         btn_uebernehmen.setToolTip(self.tr("Spalten/Zeilen auf den gewählten Bereich anwenden, gleichmäßig verteilt."))
         btn_uebernehmen.clicked.connect(self._uebernehmen)
-        btn_gleichmaessig = QPushButton(self.tr("Gleichmäßig verteilen"))
+        # DE: Kurze Knopftexte -- diese Dreier-Reihe war mit Abstand die
+        #     breiteste Stelle im ganzen Werkzeug und bestimmte dadurch
+        #     die Mindestbreite der gesamten Bedienspalte. Details stehen
+        #     im Tooltip.
+        # EN: Short button texts -- this row of three used to be by far
+        #     the widest spot in the whole tool, dictating the minimum
+        #     width of the entire control column. Details live in the
+        #     tooltip.
+        btn_gleichmaessig = QPushButton(self.tr("Gleichmäßig"))
+        btn_gleichmaessig.setToolTip(self.tr("Spalten/Zeilen gleichmäßig über den gewählten Bereich verteilen."))
         btn_gleichmaessig.clicked.connect(self._gleichmaessig_verteilen)
-        btn_automatisch = QPushButton(self.tr("Automatisch ausrichten"))
+        btn_automatisch = QPushButton(self.tr("Ausrichten"))
         btn_automatisch.setToolTip(
             self.tr("Schnitte je Seite einzeln auf die ruhigste Bildstelle in der Nähe ziehen "
                    "(z. B. eine Heftmitte statt mitten im Text).")
@@ -173,7 +182,13 @@ class SplitToolWidget(QWidget):
         self._btn_export = QPushButton(self.tr("Als eine PDF exportieren …"))
         self._btn_export.clicked.connect(self._exportieren)
 
-        self._btn_export_einzeln = QPushButton(self.tr("Als einzelne nummerierte Dateien exportieren …"))
+        # DE: Kurzer Knopftext (war "Als einzelne nummerierte Dateien
+        #     exportieren …", mit 303 px das breiteste Element im ganzen
+        #     Werkzeug) -- die Erklaerung steht im Tooltip.
+        # EN: Short button text (used to be "Export as individual
+        #     numbered files …", at 303 px the widest element in the
+        #     whole tool) -- the explanation lives in the tooltip.
+        self._btn_export_einzeln = QPushButton(self.tr("Als Einzeldateien exportieren …"))
         self._btn_export_einzeln.setToolTip(
             self.tr("Jeder Teil wird eine eigene, durchnummerierte Datei in einem Zielordner "
                    "(z. B. 0001.pdf, 0002.pdf, …).")

@@ -13,7 +13,7 @@ EN: Central facts about the program itself -- name, version, provider,
 from __future__ import annotations
 
 PROGRAMMNAME = "Mathias' kleines PDF-Werkzeug"
-VERSION = "1.11"
+VERSION = "1.11.1"
 ANBIETER = "Telefonanleitungen.de"
 WEBSITE = "https://www.telefonanleitungen.de"
 COPYRIGHT_JAHR = "2026"

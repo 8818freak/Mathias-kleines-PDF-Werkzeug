@@ -31,6 +31,7 @@ from pathlib import Path
 from PySide6.QtCore import QCoreApplication, QSize, Qt
 from PySide6.QtGui import QAction, QActionGroup, QKeySequence, QPixmap
 from PySide6.QtWidgets import (
+    QAbstractItemView,
     QApplication,
     QLabel,
     QLineEdit,
@@ -282,30 +283,35 @@ class MainWindow(QMainWindow):
 
         bearbeiten_menu.addSeparator()
 
-        # DE: Ausschneiden/Kopieren/Einfuegen/Alles auswaehlen -- fachlich
-        #     wirkungslos fuer die Seitenliste, aber auf macOS NOETIG,
-        #     damit Cmd+X/C/V/A ueberhaupt funktionieren: ohne ein Menue
-        #     mit diesen Standard-Tastenkuerzeln registriert AppKit sie
-        #     nirgends, wodurch Cmd+V (u. a.) selbst in normalen
+        # DE: Ausschneiden/Kopieren/Einfuegen/Alles auswaehlen -- auf macOS
+        #     NOETIG, damit Cmd+X/C/V/A ueberhaupt funktionieren: ohne ein
+        #     Menue mit diesen Standard-Tastenkuerzeln registriert AppKit
+        #     sie nirgends, wodurch Cmd+V (u. a.) selbst in normalen
         #     Textfeldern -- etwa dem Dateinamen-Feld im Speichern-Dialog
         #     -- ins Leere lief; ueber das Rechtsklick-Kontextmenue ging
         #     Einfuegen dagegen immer, da das direkt am Pasteboard
         #     vorbeigeht, nicht ueber die Menuleiste. QApplication.
         #     focusWidget() traegt die eigentliche Aktion, falls das
-        #     fokussierte Feld sie unterstuetzt (QLineEdit/QTextEdit).
-        # EN: Cut/Copy/Paste/Select All -- functionally meaningless for the
-        #     page list, but NECESSARY on macOS for Cmd+X/C/V/A to work at
-        #     all: without a menu registering these standard shortcuts,
-        #     AppKit doesn't route them anywhere, which meant Cmd+V (among
-        #     others) did nothing even in plain text fields -- e.g. the
-        #     filename field in the Save dialog -- while right-click paste
-        #     always worked there, since that goes straight through the
-        #     pasteboard rather than the menu bar. QApplication.
-        #     focusWidget() carries out the actual action, if the focused
-        #     field supports it (QLineEdit/QTextEdit).
+        #     fokussierte Feld sie unterstuetzt (QLineEdit/QTextEdit fuer
+        #     Ausschneiden/Kopieren/Einfuegen; zusaetzlich QAbstractItemView
+        #     -- also auch die gemeinsame Seitenliste selbst -- fuer Alles
+        #     auswaehlen: Cmd+A dort sollte natuerlich alle Seiten
+        #     markieren, nicht wirkungslos bleiben).
+        # EN: Cut/Copy/Paste/Select All -- NECESSARY on macOS for
+        #     Cmd+X/C/V/A to work at all: without a menu registering these
+        #     standard shortcuts, AppKit doesn't route them anywhere,
+        #     which meant Cmd+V (among others) did nothing even in plain
+        #     text fields -- e.g. the filename field in the Save dialog --
+        #     while right-click paste always worked there, since that
+        #     goes straight through the pasteboard rather than the menu
+        #     bar. QApplication.focusWidget() carries out the actual
+        #     action, if the focused field supports it (QLineEdit/
+        #     QTextEdit for Cut/Copy/Paste; also QAbstractItemView -- i.e.
+        #     the shared page list itself -- for Select All: Cmd+A there
+        #     should naturally select all pages, not do nothing).
         def _fokus_aktion(methode: str) -> None:
             feld = QApplication.focusWidget()
-            if isinstance(feld, (QLineEdit, QTextEdit)) and hasattr(feld, methode):
+            if isinstance(feld, (QLineEdit, QTextEdit, QAbstractItemView)) and hasattr(feld, methode):
                 getattr(feld, methode)()
 
         action_ausschneiden = QAction(self.tr("Ausschneiden"), self)

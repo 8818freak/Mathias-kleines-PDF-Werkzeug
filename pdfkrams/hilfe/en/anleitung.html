@@ -317,7 +317,7 @@
 <div class="schema" lang="en">
   <nav class="werkzeugliste">
     <p class="marke">Mathias' kleines<br>PDF-Werkzeug
-      <small>Manual · Version 1.11</small>
+      <small>Manual · Version 1.11.1</small>
     </p>
     <ol>
       <li><a href="#pdf-erstellen">Create PDF</a></li>
@@ -593,9 +593,10 @@
       <p class="nr">Tool 10</p>
       <h2>Normalize page size</h2>
       <p class="intro">Brings pages to an exact physical size — a DIN A format, a US format
-        (Letter, Legal, …), or a custom size. Black scan borders, such as those that appear
-        when the original was smaller than the scanner bed, are automatically detected per
-        edge and cropped away; without a detectable border, the page is scaled directly.</p>
+        (Letter, Legal, …), or a custom size. Portrait and landscape orientation are detected
+        automatically per page. Black scan borders, such as those that appear when the
+        original was smaller than the scanner bed, are automatically detected per edge and
+        cropped away; without a detectable border, the page is scaled directly.</p>
       <figure class="platte">
         <img src="bilder_en/6_seitenmass_normieren.jpg" alt="Normalize page size tool: the measured size of a page (approx. A4) is shown, with an apply button">
         <figcaption><b>Fig. 10</b> — Measured size of the current page with an automatic format suggestion and a use-size button.</figcaption>
@@ -616,6 +617,15 @@
         <img src="bilder_en/9_seitenmass_us_zoll.jpg" alt="Normalize page size tool with format “US Letter” and measurement unit “inch” set">
         <figcaption><b>Fig. 11</b> — The same page with format <b class="ui">US Letter</b> and the measurement unit switched to <b class="ui">inches</b>: the number fields show 8.50 × 11.00 in.</figcaption>
       </figure>
+      <div class="hinweis">
+        <span class="label">Portrait/landscape detected automatically</span>
+        Format detection only compares the short and long side, regardless of orientation —
+        an A4 sheet is recognized the same way whether it was scanned upright or sideways.
+        When applying, the target size is automatically adapted to each page's actual
+        orientation (a page detected as landscape gets the landscape variant of the target
+        format) without rotating the page itself. A file with a mix of portrait and
+        landscape scans can therefore be normalized in a single pass.
+      </div>
       <div class="hinweis">
         <span class="label">All formats always available</span>
         DIN A and US formats are both available for selection at the same time, regardless
@@ -876,7 +886,7 @@
     </section>
 
     <div class="fussleiste">
-      <span>Mathias' kleines PDF-Werkzeug · Version 1.11</span>
+      <span>Mathias' kleines PDF-Werkzeug · Version 1.11.1</span>
       <span>Provided free of charge by <a href="https://www.telefonanleitungen.de">Telefonanleitungen.de</a></span>
     </div>
   </main>

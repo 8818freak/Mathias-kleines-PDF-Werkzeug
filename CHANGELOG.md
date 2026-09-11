@@ -4,6 +4,55 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 
 *All notable changes to this project are documented here.*
 
+## [1.11.1] – 2026-09-12
+
+### Behoben / Fixed
+
+- Cmd+V/C/X/A funktionierte im Dateinamen-Feld der Speichern-/Öffnen-
+  Dialoge weiterhin nicht richtig -- das native macOS-Panel liegt
+  außerhalb der Qt-Kontrolle, und das in 1.10 ergänzte Bearbeiten-Menü
+  fing das Tastenkürzel zwar ab ("es passiert etwas"), konnte es aber
+  nicht ans native Feld weiterreichen. Alle Datei-Dialoge verwenden
+  jetzt Qt's eigenen (nicht-nativen) Dialog, wodurch die Kürzel
+  zuverlässig funktionieren.
+  *Cmd+V/C/X/A still didn't work correctly in the filename field of
+  Save/Open dialogs -- the native macOS panel lives outside Qt's
+  control, and the Edit menu added in 1.10 intercepted the shortcut
+  ("something happens") without being able to forward it to the native
+  field. All file dialogs now use Qt's own (non-native) dialog, which
+  makes the shortcuts work reliably.*
+- Cmd+A ("Alles auswählen") wirkte in der gemeinsamen Seitenliste
+  überhaupt nicht (z. B. im Werkzeug "Heftseiten teilen") -- derselbe
+  Menü-Eintrag griff bisher nur bei Textfeldern. Wirkt jetzt zusätzlich
+  auf die Seitenliste selbst.
+  *Cmd+A ("Select All") had no effect at all in the shared page list
+  (e.g. in the "Split booklet pages" tool) -- the same menu entry
+  previously only worked on text fields. Now also acts on the page
+  list itself.*
+
+### Geändert / Changed
+
+- Knöpfe und Gruppenrahmen sind app-weit kompakter (weniger
+  Innenabstand) -- mehr Platz für Vorschau-/Arbeitsflächen, besonders
+  spürbar bei "Seiten drehen" und "Seiten teilen". Dort außerdem zwei
+  überlange Knopftexte gekürzt (Erklärung jetzt im Tooltip statt im
+  Knopf selbst), da diese jeweils die Mindestbreite des ganzen
+  Werkzeugs bestimmt hatten.
+  *Buttons and group frames are more compact app-wide (less inner
+  padding) -- more room for preview/work areas, especially noticeable
+  in "Rotate pages" and "Split pages". Also shortened two overly long
+  button labels there (explanation now in the tooltip instead of the
+  button itself), since each had been dictating the whole tool's
+  minimum width.*
+- Anleitung/Hilfe: "Seitenmaß normieren" erklärt jetzt ausdrücklich,
+  dass Hoch-/Querformat je Seite automatisch erkannt und beim Anwenden
+  berücksichtigt werden (eine Datei mit gemischt hoch/quer gescannten
+  Seiten lässt sich in einem Durchgang normieren).
+  *Manual/help: "Normalize page size" now explicitly explains that
+  portrait/landscape orientation is detected automatically per page
+  and accounted for when applying (a file with a mix of portrait and
+  landscape scans can be normalized in a single pass).*
+
 ## [1.11] – 2026-09-11
 
 ### Hinzugefügt / Added

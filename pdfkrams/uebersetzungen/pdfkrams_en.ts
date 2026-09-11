@@ -513,112 +513,112 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../gui/main_window.py" line="143"/>
+        <location filename="../gui/main_window.py" line="144"/>
         <source>„{0}“ kommt in einem der nächsten Schritte.</source>
         <translation>“{0}” is coming in one of the next steps.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="240"/>
+        <location filename="../gui/main_window.py" line="241"/>
         <source>Datei</source>
         <translation>File</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="242"/>
+        <location filename="../gui/main_window.py" line="243"/>
         <source>Dateien öffnen …</source>
         <translation>Open files …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="247"/>
+        <location filename="../gui/main_window.py" line="248"/>
         <source>Datei schließen</source>
         <translation>Close file</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="258"/>
+        <location filename="../gui/main_window.py" line="259"/>
         <source>Speichern</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="263"/>
+        <location filename="../gui/main_window.py" line="264"/>
         <source>Speichern unter …</source>
         <translation>Save as …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="268"/>
+        <location filename="../gui/main_window.py" line="269"/>
         <source>Bearbeiten</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="270"/>
+        <location filename="../gui/main_window.py" line="271"/>
         <source>Rückgängig</source>
         <translation>Undo</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="275"/>
+        <location filename="../gui/main_window.py" line="276"/>
         <source>Wiederholen</source>
         <translation>Redo</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="311"/>
+        <location filename="../gui/main_window.py" line="317"/>
         <source>Ausschneiden</source>
         <translation>Cut</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="316"/>
+        <location filename="../gui/main_window.py" line="322"/>
         <source>Kopieren</source>
         <translation>Copy</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="321"/>
+        <location filename="../gui/main_window.py" line="327"/>
         <source>Einfügen</source>
         <translation>Paste</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="326"/>
+        <location filename="../gui/main_window.py" line="332"/>
         <source>Alles auswählen</source>
         <translation>Select All</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="333"/>
+        <location filename="../gui/main_window.py" line="339"/>
         <source>Einstellungen …</source>
         <translation>Preferences …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="343"/>
+        <location filename="../gui/main_window.py" line="349"/>
         <source>Ansicht</source>
         <translation>View</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="345"/>
+        <location filename="../gui/main_window.py" line="351"/>
         <source>Werkzeugliste einblenden</source>
         <translation>Show tool list</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="352"/>
+        <location filename="../gui/main_window.py" line="383"/>
         <source>Werkzeuge</source>
         <translation>Tools</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="373"/>
+        <location filename="../gui/main_window.py" line="404"/>
         <source>Hilfe</source>
         <translation>Help</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="375"/>
+        <location filename="../gui/main_window.py" line="406"/>
         <source>Bedienungsanleitung</source>
         <translation>User Manual</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="387"/>
+        <location filename="../gui/main_window.py" line="418"/>
         <source>Über {0} …</source>
         <translation>About {0} …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="408"/>
+        <location filename="../gui/main_window.py" line="439"/>
         <source>Über {0}</source>
         <translation>About {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="414"/>
+        <location filename="../gui/main_window.py" line="445"/>
         <source>Kostenlos bereitgestellt von {0}&lt;br&gt;&lt;a href=&quot;{1}&quot;&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;Dieses Programm kommt OHNE JEDE GEWÄHRLEISTUNG. Es ist freie Software, und Sie dürfen es unter bestimmten Bedingungen weiterverbreiten -- siehe die Lizenz GNU GPL 3.0 (Datei LICENSE) für Details.&lt;br&gt;&lt;br&gt;Entwickelt und getestet wird ausschließlich auf macOS -- die Windows-Version wird nicht selbst getestet, funktioniert aber hoffentlich fehlerfrei. Bei Fehlern bitte mit einer genauen, nachvollziehbaren Beschreibung an &lt;a href=&quot;mailto:telefonmann@telefonanleitungen.de&quot;&gt;telefonmann@telefonanleitungen.de&lt;/a&gt; schreiben, dann wird so schnell wie möglich korrigiert.</source>
         <translation>Provided free of charge by {0}&lt;br&gt;&lt;a href=&quot;{1}&quot;&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;This program comes WITH ABSOLUTELY NO WARRANTY. It is free software, and you are welcome to redistribute it under certain conditions -- see the GNU GPL 3.0 license (file LICENSE) for details.&lt;br&gt;&lt;br&gt;Developed and tested exclusively on macOS -- the Windows version is not tested by the author, but hopefully works correctly. If you run into a bug, please report it with a precise, reproducible description to &lt;a href=&quot;mailto:telefonmann@telefonanleitungen.de&quot;&gt;telefonmann@telefonanleitungen.de&lt;/a&gt;, and it will be fixed as soon as possible.</translation>
     </message>
@@ -627,63 +627,63 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
         <translation>Provided free of charge by {0}&lt;br&gt;&lt;a href=&quot;{1}&quot;&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;This program comes WITH ABSOLUTELY NO WARRANTY. It is free software, and you are welcome to redistribute it under certain conditions -- see the GNU GPL 3.0 license (file LICENSE) for details.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="573"/>
+        <location filename="../gui/main_window.py" line="604"/>
         <source>PDF speichern unter</source>
         <translation>Save PDF as</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="572"/>
+        <location filename="../gui/main_window.py" line="603"/>
         <source>dokument.pdf</source>
         <translation>document.pdf</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="548"/>
-        <location filename="../gui/main_window.py" line="558"/>
+        <location filename="../gui/main_window.py" line="579"/>
+        <location filename="../gui/main_window.py" line="589"/>
         <source>Ungespeicherte Änderungen</source>
         <translation>Unsaved changes</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="549"/>
+        <location filename="../gui/main_window.py" line="580"/>
         <source>Diese Datei hat ungespeicherte Änderungen. Trotzdem schließen?</source>
         <translation>This file has unsaved changes. Close anyway?</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="559"/>
+        <location filename="../gui/main_window.py" line="590"/>
         <source>Es gibt ungespeicherte Änderungen. Trotzdem beenden?</source>
         <translation>There are unsaved changes. Quit anyway?</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="573"/>
+        <location filename="../gui/main_window.py" line="604"/>
         <source>PDF-Datei (*.pdf)</source>
         <translation>PDF file (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="582"/>
+        <location filename="../gui/main_window.py" line="613"/>
         <source>Keine Seiten</source>
         <translation>No pages</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="582"/>
+        <location filename="../gui/main_window.py" line="613"/>
         <source>Die Dateiliste ist leer.</source>
         <translation>The file list is empty.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="584"/>
+        <location filename="../gui/main_window.py" line="615"/>
         <source>PDF wird erstellt …</source>
         <translation>Creating PDF …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="591"/>
+        <location filename="../gui/main_window.py" line="622"/>
         <source>Speichern fehlgeschlagen</source>
         <translation>Save failed</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="596"/>
+        <location filename="../gui/main_window.py" line="627"/>
         <source>Gespeichert</source>
         <translation>Saved</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="596"/>
+        <location filename="../gui/main_window.py" line="627"/>
         <source>PDF gespeichert unter:
 {0}</source>
         <translation>PDF saved to:
@@ -1864,94 +1864,102 @@ Add it to the password log (see “Password protection” tool)?</translation>
         <translation>Suggests a straightening angle for each page in the selected scope, based on the text lines in the image -- only works for pages with a detectable line pattern (not photos etc.), which are then left unchanged. The suggestion is applied directly, but as usual can still be fine-tuned by hand.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="170"/>
+        <location filename="../gui/tools/rotate_tool.py" line="180"/>
+        <source>Abwechselnd 90° drehen</source>
+        <translation>Rotate alternately by 90°</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/rotate_tool.py" line="182"/>
+        <source>Für Hefte, die als Doppelseiten quer gescannt wurden: dreht jede zweite Seite um +90°, die dazwischenliegenden um -90° (gerade/ungerade entgegengesetzt).</source>
+        <translation>For booklets scanned as sideways double pages: rotates every other page by +90°, the ones in between by -90° (odd/even opposite).</translation>
+    </message>
+    <message>
         <source>Abwechselnd 90° drehen (gerade/ungerade entgegengesetzt)</source>
         <translation>Rotate alternately by 90° (even/odd opposite)</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="172"/>
         <source>Für Hefte, die als Doppelseiten quer gescannt wurden: dreht jede zweite Seite um +90°, die dazwischenliegenden um -90°.</source>
         <translation>For booklets scanned sideways as double-page spreads: rotates every other page by +90°, and the ones in between by -90°.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="178"/>
+        <location filename="../gui/tools/rotate_tool.py" line="189"/>
         <source>Als PDF exportieren …</source>
         <translation>Export as PDF …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="298"/>
+        <location filename="../gui/tools/rotate_tool.py" line="309"/>
         <source>{0} %</source>
         <translation>{0} %</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="390"/>
+        <location filename="../gui/tools/rotate_tool.py" line="401"/>
         <source>Keine Auswahl</source>
         <translation>No selection</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="390"/>
+        <location filename="../gui/tools/rotate_tool.py" line="401"/>
         <source>Bitte zuerst Seiten in der Liste links auswählen.</source>
         <translation>Please select pages in the list on the left first.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="395"/>
+        <location filename="../gui/tools/rotate_tool.py" line="406"/>
         <source>Schräglage wird erkannt …</source>
         <translation>Detecting skew …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="414"/>
+        <location filename="../gui/tools/rotate_tool.py" line="425"/>
         <source>Teilweise kein Vorschlag</source>
         <translation>No suggestion for some pages</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="415"/>
+        <location filename="../gui/tools/rotate_tool.py" line="426"/>
         <source>Für {0} von {1} Seite(n) wurde keine zuverlässige Schräglage erkannt (unverändert gelassen):
 {2}</source>
         <translation>No reliable skew was detected for {0} of {1} page(s) (left unchanged):
 {2}</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="425"/>
+        <location filename="../gui/tools/rotate_tool.py" line="436"/>
         <source>Zu wenige Seiten</source>
         <translation>Too few pages</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="426"/>
+        <location filename="../gui/tools/rotate_tool.py" line="437"/>
         <source>Dafür müssen mindestens zwei Seiten im gewählten Bereich liegen.</source>
         <translation>This requires at least two pages within the selected scope.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="442"/>
+        <location filename="../gui/tools/rotate_tool.py" line="453"/>
         <source>PDF speichern unter</source>
         <translation>Save PDF as</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="443"/>
+        <location filename="../gui/tools/rotate_tool.py" line="454"/>
         <source>gedreht.pdf</source>
         <translation>rotated.pdf</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="444"/>
+        <location filename="../gui/tools/rotate_tool.py" line="455"/>
         <source>PDF-Datei (*.pdf)</source>
         <translation>PDF file (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="445"/>
+        <location filename="../gui/tools/rotate_tool.py" line="456"/>
         <source>PDF wird erstellt …</source>
         <translation>Creating PDF …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="446"/>
+        <location filename="../gui/tools/rotate_tool.py" line="457"/>
         <source>Export fehlgeschlagen</source>
         <translation>Export failed</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="447"/>
+        <location filename="../gui/tools/rotate_tool.py" line="458"/>
         <source>Fertig</source>
         <translation>Done</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="448"/>
+        <location filename="../gui/tools/rotate_tool.py" line="459"/>
         <source>PDF gespeichert unter:
 {0}</source>
         <translation>PDF saved to:
@@ -2078,122 +2086,126 @@ Add it to the password log (see “Password protection” tool)?</translation>
 <context>
     <name>SeitenmassToolWidget</name>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="100"/>
         <source>Bringt Seiten auf eine exakte physische Zielgröße -- ein DIN-A-Format, ein US-Format oder ein freies Maß. Schwarze Scan-Ränder (z. B. wenn die Vorlage kleiner als das Scannerglas war) werden dabei je Kante automatisch erkannt und abgeschnitten; ohne erkennbaren Rand wird direkt skaliert. Für ein Dokument mit mehreren Abschnitten unterschiedlicher Zielgröße: das Werkzeug mehrfach mit jeweils passender Auswahl anwenden.</source>
         <translation>Brings pages to an exact physical target size -- a DIN A format, a US format, or a custom size. Black scan borders (e.g. when the original was smaller than the scanner bed) are automatically detected per edge and cropped away; without a detectable border, the page is scaled directly. For a document with several sections needing different target sizes: run the tool several times with the matching selection each time.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="116"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="100"/>
+        <source>Bringt Seiten auf eine exakte physische Zielgröße -- ein DIN-A-Format, ein US-Format oder ein freies Maß. Hoch- und Querformat werden dabei je Seite automatisch erkannt: eine quer liegende Seite wird nicht gedreht, sondern bekommt automatisch die quere Variante des Zielmaßes (z. B. A4 quer bleibt quer) -- eine Datei mit gemischt hoch/quer eingescannten Seiten kann daher in einem Rutsch normiert werden. Schwarze Scan-Ränder (z. B. wenn die Vorlage kleiner als das Scannerglas war) werden dabei je Kante automatisch erkannt und abgeschnitten; ohne erkennbaren Rand wird direkt skaliert. Für ein Dokument mit mehreren Abschnitten unterschiedlicher Zielgröße: das Werkzeug mehrfach mit jeweils passender Auswahl anwenden.</source>
+        <translation>Brings pages to an exact physical target size -- a DIN A format, a US format, or a custom size. Portrait and landscape orientation are detected automatically per page: a landscape page is not rotated, but automatically gets the landscape variant of the target size instead (e.g. A4 landscape stays landscape) -- so a file with mixed portrait/landscape scans can be normalized in one pass. Black scan borders (e.g. when the original was smaller than the scanner bed) are automatically detected per edge and cropped away; without a detectable border, the page is scaled directly. For a document with several sections needing different target sizes: run the tool several times with the matching selection each time.</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenmass_tool.py" line="121"/>
         <source>Zielgröße – anwenden auf:</source>
         <translation>Target size -- apply to:</translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="138"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="143"/>
         <source>Breite: </source>
         <translation>Width: </translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="141"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="146"/>
         <source>Höhe: </source>
         <translation>Height: </translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="153"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="158"/>
         <source>Ausgabeauflösung: </source>
         <translation>Output resolution: </translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="157"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="162"/>
         <source>Schwarze Ränder automatisch abschneiden</source>
         <translation>Automatically crop black borders</translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="173"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="178"/>
         <source>Gemessene Größe übernehmen</source>
         <translation>Use measured size</translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="175"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="180"/>
         <source>Die gemessene Größe der aktuellen Seite als Zielgröße oben einsetzen.</source>
         <translation>Inserts the measured size of the current page as the target size above.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="182"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="187"/>
         <source>Anwenden</source>
         <translation>Apply</translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="186"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="191"/>
         <source>Gemessene Größe je Seite im gewählten Bereich</source>
         <translation>Measured size per page within the selected scope</translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="298"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="303"/>
         <source>{0} × {1} {2}</source>
         <translation>{0} × {1} {2}</translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="328"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="333"/>
         <source>Kein schwarzer Rand an der aktuellen Seite erkannt.</source>
         <translation>No black border detected on the current page.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="331"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="336"/>
         <source>Erkannter Rand an der aktuellen Seite -- links {0} %, oben {1} %, rechts {2} %, unten {3} %.</source>
         <translation>Detected border on the current page -- left {0} %, top {1} %, right {2} %, bottom {3} %.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="347"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="352"/>
         <source>Aktuelle Seite gemessen: {0} -- entspricht ungefähr {1} ({2}).</source>
         <translation>Current page measured: {0} -- corresponds roughly to {1} ({2}).</translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="355"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="360"/>
         <source>Aktuelle Seite gemessen: {0} -- entspricht keinem bekannten Papierformat.</source>
         <translation>Current page measured: {0} -- does not correspond to any known paper format.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="362"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="367"/>
         <source>Keine Seiten im gewählten Bereich.</source>
         <translation>No pages within the selected scope.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="370"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="375"/>
         <source>{0}. {1}</source>
         <translation>{0}. {1}</translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="372"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="377"/>
         <source> (≈ {0})</source>
         <translation> (≈ {0})</translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="375"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="380"/>
         <source>… und {0} weitere Seite(n).</source>
         <translation>… and {0} more page(s).</translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="395"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="400"/>
         <source>Keine Auswahl</source>
         <translation>No selection</translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="395"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="400"/>
         <source>Bitte zuerst Seiten in der Liste links auswählen.</source>
         <translation>Please select pages in the list on the left first.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="405"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="410"/>
         <source>Seiten werden normiert …</source>
         <translation>Normalizing pages …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="421"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="426"/>
         <source>Fertig</source>
         <translation>Done</translation>
     </message>
     <message>
-        <location filename="../gui/tools/seitenmass_tool.py" line="422"/>
+        <location filename="../gui/tools/seitenmass_tool.py" line="427"/>
         <source>{0} Seite(n) auf {1} normiert.</source>
         <translation>{0} page(s) normalized to {1}.</translation>
     </message>
@@ -2277,123 +2289,140 @@ Add it to the password log (see “Password protection” tool)?</translation>
         <translation>Applies columns/rows to the selected scope, evenly distributed.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="146"/>
         <source>Gleichmäßig verteilen</source>
         <translation>Distribute evenly</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="148"/>
         <source>Automatisch ausrichten</source>
         <translation>Auto-align</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="150"/>
+        <location filename="../gui/tools/split_tool.py" line="159"/>
         <source>Schnitte je Seite einzeln auf die ruhigste Bildstelle in der Nähe ziehen (z. B. eine Heftmitte statt mitten im Text).</source>
         <translation>Moves the cuts for each page individually to the quietest nearby image area (e.g. a booklet&apos;s gutter instead of the middle of the text).</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="159"/>
+        <location filename="../gui/tools/split_tool.py" line="168"/>
         <source>Teilung entfernen</source>
         <translation>Remove split</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="163"/>
+        <location filename="../gui/tools/split_tool.py" line="172"/>
         <source>Teilung jetzt anwenden</source>
         <translation>Apply split now</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="165"/>
+        <location filename="../gui/tools/split_tool.py" line="174"/>
         <source>Schneidet die Seiten im gewählten Bereich sofort auseinander. Die Teile ersetzen die Originalseite als eigene, weiter bearbeitbare Einträge in der Dateiliste -- z. B. um sie danach einzeln erneut zu teilen, ohne vorher exportieren zu müssen.</source>
         <translation>Immediately cuts apart the pages within the selected scope. The parts replace the original page as separate, further-editable entries in the file list -- e.g. to split them again individually afterwards, without having to export first.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="173"/>
+        <location filename="../gui/tools/split_tool.py" line="182"/>
         <source>Als eine PDF exportieren …</source>
         <translation>Export as one PDF …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="176"/>
         <source>Als einzelne nummerierte Dateien exportieren …</source>
         <translation>Export as individual numbered files …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="178"/>
+        <location filename="../gui/tools/split_tool.py" line="154"/>
+        <source>Gleichmäßig</source>
+        <translation>Evenly</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/split_tool.py" line="155"/>
+        <source>Spalten/Zeilen gleichmäßig über den gewählten Bereich verteilen.</source>
+        <translation>Distribute columns/rows evenly across the selected area.</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/split_tool.py" line="157"/>
+        <source>Ausrichten</source>
+        <translation>Align</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/split_tool.py" line="191"/>
+        <source>Als Einzeldateien exportieren …</source>
+        <translation>Export as individual files …</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/split_tool.py" line="193"/>
         <source>Jeder Teil wird eine eigene, durchnummerierte Datei in einem Zielordner (z. B. 0001.pdf, 0002.pdf, …).</source>
         <translation>Each part becomes its own, sequentially numbered file in a target folder (e.g. 0001.pdf, 0002.pdf, …).</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="246"/>
+        <location filename="../gui/tools/split_tool.py" line="261"/>
         <source>{0} %</source>
         <translation>{0} %</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="291"/>
-        <location filename="../gui/tools/split_tool.py" line="331"/>
+        <location filename="../gui/tools/split_tool.py" line="306"/>
+        <location filename="../gui/tools/split_tool.py" line="346"/>
         <source>Keine Teilung</source>
         <translation>No split</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="292"/>
-        <location filename="../gui/tools/split_tool.py" line="332"/>
+        <location filename="../gui/tools/split_tool.py" line="307"/>
+        <location filename="../gui/tools/split_tool.py" line="347"/>
         <source>Zuerst über „Übernehmen“ eine Teilung für den gewählten Bereich anlegen.</source>
         <translation>First create a split for the selected scope via “Apply”.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="296"/>
+        <location filename="../gui/tools/split_tool.py" line="311"/>
         <source>Schnitte werden ausgerichtet …</source>
         <translation>Aligning cuts …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="342"/>
+        <location filename="../gui/tools/split_tool.py" line="357"/>
         <source>Seiten werden geteilt …</source>
         <translation>Splitting pages …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="366"/>
+        <location filename="../gui/tools/split_tool.py" line="381"/>
         <source>PDF speichern unter</source>
         <translation>Save PDF as</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="367"/>
+        <location filename="../gui/tools/split_tool.py" line="382"/>
         <source>geteilt.pdf</source>
         <translation>split.pdf</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="368"/>
+        <location filename="../gui/tools/split_tool.py" line="383"/>
         <source>PDF-Datei (*.pdf)</source>
         <translation>PDF file (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="369"/>
+        <location filename="../gui/tools/split_tool.py" line="384"/>
         <source>PDF wird erstellt …</source>
         <translation>Creating PDF …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="370"/>
-        <location filename="../gui/tools/split_tool.py" line="390"/>
+        <location filename="../gui/tools/split_tool.py" line="385"/>
+        <location filename="../gui/tools/split_tool.py" line="405"/>
         <source>Export fehlgeschlagen</source>
         <translation>Export failed</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="371"/>
-        <location filename="../gui/tools/split_tool.py" line="395"/>
+        <location filename="../gui/tools/split_tool.py" line="386"/>
+        <location filename="../gui/tools/split_tool.py" line="410"/>
         <source>Fertig</source>
         <translation>Done</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="372"/>
+        <location filename="../gui/tools/split_tool.py" line="387"/>
         <source>PDF gespeichert unter:
 {0}</source>
         <translation>PDF saved to:
 {0}</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="380"/>
+        <location filename="../gui/tools/split_tool.py" line="395"/>
         <source>Dateien werden geschrieben …</source>
         <translation>Writing files …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/split_tool.py" line="395"/>
+        <location filename="../gui/tools/split_tool.py" line="410"/>
         <source>{0} Dateien gespeichert in:
 {1}</source>
         <translation>{0} files saved to:

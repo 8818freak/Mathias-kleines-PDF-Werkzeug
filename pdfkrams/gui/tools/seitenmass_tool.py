@@ -98,12 +98,17 @@ class SeitenmassToolWidget(QWidget):
 
         hinweis = QLabel(
             self.tr("Bringt Seiten auf eine exakte physische Zielgröße -- ein DIN-"
-                   "A-Format, ein US-Format oder ein freies Maß. Schwarze Scan-Ränder "
-                   "(z. B. wenn die Vorlage kleiner als das Scannerglas war) "
-                   "werden dabei je Kante automatisch erkannt und abgeschnitten; "
-                   "ohne erkennbaren Rand wird direkt skaliert. Für ein Dokument "
-                   "mit mehreren Abschnitten unterschiedlicher Zielgröße: das "
-                   "Werkzeug mehrfach mit jeweils passender Auswahl anwenden.")
+                   "A-Format, ein US-Format oder ein freies Maß. Hoch- und Querformat "
+                   "werden dabei je Seite automatisch erkannt: eine quer liegende Seite "
+                   "wird nicht gedreht, sondern bekommt automatisch die quere Variante "
+                   "des Zielmaßes (z. B. A4 quer bleibt quer) -- eine Datei mit "
+                   "gemischt hoch/quer eingescannten Seiten kann daher in einem Rutsch "
+                   "normiert werden. Schwarze Scan-Ränder (z. B. wenn die Vorlage "
+                   "kleiner als das Scannerglas war) werden dabei je Kante automatisch "
+                   "erkannt und abgeschnitten; ohne erkennbaren Rand wird direkt "
+                   "skaliert. Für ein Dokument mit mehreren Abschnitten "
+                   "unterschiedlicher Zielgröße: das Werkzeug mehrfach mit jeweils "
+                   "passender Auswahl anwenden.")
         )
         hinweis.setWordWrap(True)
 

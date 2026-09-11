@@ -35,6 +35,35 @@ from pdfkrams.gui.main_window import MainWindow
 
 _UEBERSETZUNGEN_ORDNER = Path(__file__).parent / "uebersetzungen"
 
+# DE: Kompaktere Knoepfe/Gruppenrahmen app-weit -- die macOS-Standard-
+#     Polsterung ist grosszuegig bemessen und geht bei Werkzeugen mit
+#     vielen Bedienelementen (z. B. Seiten drehen/zusammenfuegen/teilen)
+#     spuerbar auf Kosten der eigentlichen Vorschau/Arbeitsflaeche.
+#     Wirkt sich NICHT auf Schriftgroesse/Lesbarkeit aus, nur auf den
+#     Leerraum drumherum.
+# EN: More compact buttons/group frames app-wide -- macOS' default
+#     padding is generous and, for tools with many controls (e.g.
+#     Rotate/Combine/Split pages), noticeably eats into the actual
+#     preview/work area. Doesn't affect font size/readability, only the
+#     surrounding whitespace.
+_KOMPAKT_STYLESHEET = """
+QPushButton {
+    padding: 3px 10px;
+}
+QGroupBox {
+    margin-top: 0.7em;
+    padding-top: 0.5em;
+}
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 6px;
+    padding: 0 3px;
+}
+QCheckBox, QRadioButton {
+    spacing: 4px;
+}
+"""
+
 
 class _App(QApplication):
     """DE: QApplication-Unterklasse, die macOS' QFileOpenEvent abfaengt --
@@ -75,6 +104,7 @@ class _App(QApplication):
 
 def main() -> None:
     app = _App(sys.argv)
+    app.setStyleSheet(_KOMPAKT_STYLESHEET)
 
     sprache = einstellungen.sprache()
     if sprache != "de":

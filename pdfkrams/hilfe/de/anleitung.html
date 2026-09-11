@@ -395,7 +395,7 @@
 <div class="schema" lang="de">
   <nav class="werkzeugliste">
     <p class="marke">Mathias' kleines<br>PDF-Werkzeug
-      <small>Anleitung · Version 1.11</small>
+      <small>Anleitung · Version 1.11.1</small>
     </p>
     <ol>
       <li><a href="#pdf-erstellen">PDF erstellen</a></li>
@@ -677,7 +677,8 @@
       <p class="nr">Werkzeug 10</p>
       <h2>Seitenmaß normieren</h2>
       <p class="intro">Bringt Seiten auf ein exaktes physisches Maß — ein DIN-A-Format, ein
-        US-Format (Letter, Legal, …) oder ein freies Maß. Schwarze Scan-Ränder, wie sie
+        US-Format (Letter, Legal, …) oder ein freies Maß. Hoch- und Querformat werden dabei
+        je Seite automatisch erkannt und berücksichtigt. Schwarze Scan-Ränder, wie sie
         entstehen, wenn die Vorlage kleiner als das Scannerglas war, werden dabei je Kante
         automatisch erkannt und abgeschnitten; ohne erkennbaren Rand wird direkt skaliert.</p>
       <figure class="platte">
@@ -700,6 +701,15 @@
         <img src="bilder/9_seitenmass_us_zoll.jpg" alt="Seitenmaß-normieren-Werkzeug mit Format „US Letter“ und Maßeinheit „Zoll“ eingestellt">
         <figcaption><b>Abb. 11</b> — Dieselbe Seite mit Format <b class="ui">US Letter</b> und auf <b class="ui">Zoll</b> umgestellter Maßeinheit: die Zahlenfelder zeigen 8,50 × 11,00 in.</figcaption>
       </figure>
+      <div class="hinweis">
+        <span class="label">Hoch- und Querformat automatisch erkannt</span>
+        Die Formaterkennung vergleicht nur die kurze und die lange Seite, unabhängig von der
+        Ausrichtung — ein A4-Blatt wird also gleichermaßen erkannt, ob es hoch oder quer
+        eingescannt wurde. Beim Anwenden wird das Zielmaß automatisch an die Ausrichtung der
+        jeweiligen Seite angepasst (eine quer erkannte Seite bekommt die quere Variante des
+        Zielformats), ohne die Seite selbst zu drehen. Eine Datei mit gemischt hoch und quer
+        eingescannten Seiten lässt sich dadurch in einem einzigen Durchgang normieren.
+      </div>
       <div class="hinweis">
         <span class="label">Alle Formate immer verfügbar</span>
         DIN-A- und US-Formate stehen unabhängig von der eingestellten Maßeinheit gleichzeitig
@@ -965,7 +975,7 @@
     </section>
 
     <div class="fussleiste">
-      <span>Mathias' kleines PDF-Werkzeug · Version 1.11</span>
+      <span>Mathias' kleines PDF-Werkzeug · Version 1.11.1</span>
       <span>Kostenlos bereitgestellt von <a href="https://www.telefonanleitungen.de">Telefonanleitungen.de</a></span>
     </div>
   </main>
