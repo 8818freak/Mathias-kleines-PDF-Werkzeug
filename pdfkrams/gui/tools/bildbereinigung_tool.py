@@ -161,6 +161,14 @@ class BildbereinigungToolWidget(QWidget):
     # -- Vorschau / preview -------------------------------------------------
 
     def _auswahl_geaendert(self) -> None:
+        # DE: Ueberspringen, wenn nicht sichtbar -- siehe die ausfuehrliche
+        #     Begruendung in rotate_tool.py's _auswahl_geaendert(). showEvent()
+        #     holt die Vorschau nach, sobald das Werkzeug wieder sichtbar wird.
+        # EN: Skip when not visible -- see the detailed rationale in
+        #     rotate_tool.py's _auswahl_geaendert(). showEvent() catches the
+        #     preview up once the tool becomes visible again.
+        if not self.isVisible():
+            return
         self._vorschau_aktualisieren()
 
     def _schwellwert_vorschlagen(self) -> None:

@@ -17,7 +17,7 @@ EN: Preferences window (macOS: "Preferences …" in the application menu,
 
 from __future__ import annotations
 
-from PySide6.QtGui import QColor
+from PySide6.QtGui import QColor, QKeySequence, QShortcut
 from PySide6.QtWidgets import QColorDialog, QComboBox, QDialog, QFormLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout
 
 from pdfkrams.einstellungen import DATUMSFORMATE, MASSEINHEITEN, SPRACHEN, einstellungen
@@ -36,6 +36,21 @@ class EinstellungenDialog(QDialog):
         #     -- a restart notice only makes sense once that actually
         #     changes.
         self._sprache_beim_start = einstellungen.sprache()
+
+        # DE: Cmd+W (StandardKey.Close) schliesst dieses Fenster --
+        #     ohne das tut Cmd+W hier gar nichts: das Kuerzel ist nur auf
+        #     der QAction im Hauptfenster registriert, dessen Shortcuts
+        #     aber nicht ausgeloest werden, waehrend dieser modale Dialog
+        #     im Vordergrund ist. Escape schliesst bereits automatisch
+        #     (QDialog-Standardverhalten), Cmd+W ergaenzt das macOS-
+        #     ueblich.
+        # EN: Cmd+W (StandardKey.Close) closes this window -- without
+        #     this, Cmd+W does nothing here: the shortcut is only
+        #     registered on the QAction in the main window, whose
+        #     shortcuts don't fire while this modal dialog is in front.
+        #     Escape already closes it automatically (QDialog's default
+        #     behavior), Cmd+W adds the macOS-conventional equivalent.
+        QShortcut(QKeySequence.StandardKey.Close, self, activated=self.close)
 
         self._sprache_feld = QComboBox()
         for code, name in SPRACHEN.items():

@@ -15,11 +15,8 @@ EN: "Number pages" tool: for a scrambled page sequence -- go through each
 
 from __future__ import annotations
 
-from pathlib import Path
-
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
-    QFileDialog,
     QGroupBox,
     QHBoxLayout,
     QLabel,
@@ -31,11 +28,10 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from pdfkrams.core.combine import export_pdf
 from pdfkrams.core.datumssortierung import natuerlich, seiten_zeitstempel
 from pdfkrams.core.document import WorkingPage
-from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
 from pdfkrams.gui.widgets.page_list import PageListWidget, vorschau_pixmap
+from pdfkrams.gui.widgets.pdf_export import seitenliste_als_pdf_exportieren
 from pdfkrams.gui.widgets.umbenennen_dialog import umbenennen_dialog_oeffnen
 
 _VORSCHAU_GROESSE = 900
@@ -147,6 +143,14 @@ class NummerierenToolWidget(QWidget):
         self._auswahl_geaendert()
 
     def _auswahl_geaendert(self) -> None:
+        # DE: Ueberspringen, wenn nicht sichtbar -- siehe die ausfuehrliche
+        #     Begruendung in rotate_tool.py's _auswahl_geaendert(). showEvent()
+        #     holt die Vorschau nach, sobald das Werkzeug wieder sichtbar wird.
+        # EN: Skip when not visible -- see the detailed rationale in
+        #     rotate_tool.py's _auswahl_geaendert(). showEvent() catches the
+        #     preview up once the tool becomes visible again.
+        if not self.isVisible():
+            return
         wp = self.liste.aktuelle_seite()
         if wp is None:
             self._vorschau.clear()
@@ -234,20 +238,13 @@ class NummerierenToolWidget(QWidget):
         umbenennen_dialog_oeffnen(self)
 
     def _exportieren(self) -> None:
-        ziel, _ = QFileDialog.getSaveFileName(
-            self, self.tr("PDF speichern unter"), self.tr("sortiert.pdf"), self.tr("PDF-Datei (*.pdf)")
+        seitenliste_als_pdf_exportieren(
+            self, self.liste,
+            dialog_titel=self.tr("PDF speichern unter"),
+            dateiname_vorschlag=self.tr("sortiert.pdf"),
+            dialog_filter=self.tr("PDF-Datei (*.pdf)"),
+            fortschritt_text=self.tr("PDF wird erstellt …"),
+            fehler_titel=self.tr("Export fehlgeschlagen"),
+            erfolg_titel=self.tr("Fertig"),
+            erfolg_text_vorlage=self.tr("PDF gespeichert unter:\n{0}"),
         )
-        if not ziel:
-            return
-        seiten = self.liste.seiten()
-        anzeige = Fortschrittsanzeige(self, self.tr("PDF wird erstellt …"), len(seiten))
-        try:
-            export_pdf(seiten, Path(ziel), fortschritt=anzeige.callback)
-        except Abgebrochen:
-            return
-        except Exception as exc:  # noqa: BLE001 -- Fehler dem Nutzer verstaendlich zeigen
-            QMessageBox.critical(self, self.tr("Export fehlgeschlagen"), str(exc))
-            return
-        finally:
-            anzeige.schliessen()
-        QMessageBox.information(self, self.tr("Fertig"), self.tr("PDF gespeichert unter:\n{0}").format(ziel))

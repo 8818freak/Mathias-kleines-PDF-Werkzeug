@@ -196,6 +196,48 @@ class _Einstellungen(QObject):
         _schwaerzung.farbe_setzen(_hex_zu_rgb(hex_code))
         self.schwaerzungsfarbeGeaendert.emit(hex_code)
 
+    def letzter_ordner(self) -> str:
+        """DE: Ordner, in dem der Nutzer zuletzt eine Datei geoeffnet oder
+            gespeichert hat -- als Startordner fuer den naechsten Datei-
+            dialog, ganz gleich in welchem Werkzeug (siehe
+            gui/widgets/datei_dialoge.py). Leerer String, falls noch nie
+            etwas gespeichert wurde (QFileDialog faellt dann auf seinen
+            eigenen Standardordner zurueck).
+        EN: Folder the user most recently opened or saved a file in -- used
+            as the starting folder for the next file dialog, in ANY tool
+            (see gui/widgets/datei_dialoge.py). Empty string if nothing has
+            been saved yet (QFileDialog then falls back to its own default
+            folder)."""
+        return self._settings.value("letzterOrdner", "")
+
+    def letzter_ordner_setzen(self, pfad: str) -> None:
+        self._settings.setValue("letzterOrdner", pfad)
+
+    def splitter_groessen(self) -> list[int] | None:
+        """DE: Zuletzt gemerkte Spaltenbreiten des Hauptfenster-Splitters
+            (Werkzeugliste/Dateiliste/Werkzeug-Bereich), oder None, falls
+            noch nie gespeichert.
+        EN: Last remembered column widths of the main window's splitter
+            (tool list/file list/tool area), or None if never saved."""
+        wert = self._settings.value("splitterGroessen", None)
+        return [int(w) for w in wert] if wert else None
+
+    def splitter_groessen_setzen(self, groessen: list[int]) -> None:
+        self._settings.setValue("splitterGroessen", groessen)
+
+    def passwort_log(self) -> list[dict]:
+        """DE: Liste vergebener PDF-Passwoerter (siehe core/passwort_log.py) --
+            als Klartext in QSettings abgelegt, bewusst nicht verschluesselt
+            (siehe passwortschutz.py's Docstring).
+        EN: List of PDF passwords that have been set (see
+            core/passwort_log.py) -- stored as plaintext in QSettings,
+            deliberately unencrypted (see passwortschutz.py's docstring)."""
+        wert = self._settings.value("passwortLog", [])
+        return wert if isinstance(wert, list) else []
+
+    def passwort_log_setzen(self, eintraege: list[dict]) -> None:
+        self._settings.setValue("passwortLog", eintraege)
+
 
 # DE: Eine einzige, geteilte Instanz fuer die ganze App -- wie bei
 #     pdfkrams/info.py bewusst als Modul-Singleton statt Dependency

@@ -16,11 +16,10 @@ EN: "Split PDF into images" tool: exports the shared page list as image
 
 from __future__ import annotations
 
-from pathlib import Path
-
-from PySide6.QtWidgets import QFileDialog, QLabel, QMessageBox, QPushButton, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QLabel, QMessageBox, QPushButton, QVBoxLayout, QWidget
 
 from pdfkrams.core.export_dateien import export_einzeldateien, export_mehrseitige_tiff
+from pdfkrams.gui.widgets.datei_dialoge import speichern_dialog
 from pdfkrams.gui.widgets.export_dialog import einzelexport_abfragen
 from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
 from pdfkrams.gui.widgets.page_list import PageListWidget
@@ -92,15 +91,15 @@ class PdfZuBildernToolWidget(QWidget):
         )
 
     def _als_mehrseitige_tiff_exportieren(self) -> None:
-        ziel, _ = QFileDialog.getSaveFileName(
+        ziel = speichern_dialog(
             self, self.tr("TIFF speichern unter"), self.tr("seiten.tif"), self.tr("TIFF-Datei (*.tif *.tiff)")
         )
-        if not ziel:
+        if ziel is None:
             return
         seiten = self.liste.seiten()
         anzeige = Fortschrittsanzeige(self, self.tr("TIFF wird erstellt …"), len(seiten))
         try:
-            anzahl = export_mehrseitige_tiff(seiten, Path(ziel), fortschritt=anzeige.callback)
+            anzahl = export_mehrseitige_tiff(seiten, ziel, fortschritt=anzeige.callback)
         except Abgebrochen:
             return
         except Exception as exc:  # noqa: BLE001 -- Fehler dem Nutzer verstaendlich zeigen

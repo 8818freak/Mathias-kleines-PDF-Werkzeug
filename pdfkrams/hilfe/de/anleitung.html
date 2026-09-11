@@ -395,7 +395,7 @@
 <div class="schema" lang="de">
   <nav class="werkzeugliste">
     <p class="marke">Mathias' kleines<br>PDF-Werkzeug
-      <small>Anleitung · Version 1.9</small>
+      <small>Anleitung · Version 1.10</small>
     </p>
     <ol>
       <li><a href="#pdf-erstellen">PDF erstellen</a></li>
@@ -412,10 +412,12 @@
       <li><a href="#schwaerzen">Schwärzen</a></li>
       <li><a href="#pdf-in-bilder">PDF in Bilder teilen</a></li>
       <li><a href="#pdf-verkleinern">PDF verkleinern &amp; PDF/A</a></li>
+      <li><a href="#pdf-reparieren-entsperren">PDF reparieren &amp; entsperren</a></li>
+      <li><a href="#passwortschutz">Passwortschutz</a></li>
       <li><a href="#metadaten-bearbeiten">Metadaten bearbeiten</a></li>
     </ol>
     <div class="stufe">
-      <a href="#einstellungen">Einstellungen: Sprache &amp; Maßeinheit</a>
+      <a href="#einstellungen">Einstellungen</a>
       <a href="#voraussetzungen">Systemvoraussetzungen</a>
       <a href="#bezug">Bezugsquelle &amp; Lizenz</a>
     </div>
@@ -425,12 +427,12 @@
     <div class="deckblatt">
       <p class="eyebrow">Bedienungsanleitung · Deutsch</p>
       <h1 class="titel">Mathias' kleines PDF-Werkzeug</h1>
-      <p class="lead">Fünfzehn Werkzeuge für ein wiederkehrendes Problem: gescannte Unterlagen
+      <p class="lead">Siebzehn Werkzeuge für ein wiederkehrendes Problem: gescannte Unterlagen
         nachträglich in eine ordentliche, korrekt formatierte PDF-Datei verwandeln — gerade
         ziehen, zerlegen, wieder zusammensetzen, auf Normmaß bringen, verkleinern. Diese
         Anleitung zeigt jedes Werkzeug an einem echten Beispiel.</p>
       <div class="kennzahlen">
-        <div><strong>15</strong><span>Werkzeuge</span></div>
+        <div><strong>17</strong><span>Werkzeuge</span></div>
         <div><strong>1</strong><span>Gemeinsame Dateiliste</span></div>
         <div><strong>DE / EN</strong><span>Sprache umstellbar</span></div>
         <div><strong>GPL-3.0</strong><span>Freie Software</span></div>
@@ -802,8 +804,72 @@
       </div>
     </section>
 
-    <section class="werkzeug" id="metadaten-bearbeiten">
+    <section class="werkzeug" id="pdf-reparieren-entsperren">
       <p class="nr">Werkzeug 15</p>
+      <h2>PDF reparieren &amp; entsperren</h2>
+      <p class="intro"><strong>Drei getrennte, unabhängig nutzbare Funktionen</strong>, die nur
+        thematisch zusammengehören (beschädigte bzw. gesperrte Dateien): eine PDF-Datei
+        reparieren, die sich nicht mehr öffnen lässt; den Passwortschutz einer Datei entfernen,
+        wenn das Passwort <em>bekannt</em> ist; oder ein <em>vergessenes</em> Passwort
+        wiederherstellen (Wörterbuch-Angriff oder Brute-Force).</p>
+      <figure class="platte">
+        <img src="bilder/16_pdf_reparieren_entsperren.jpg" alt="Werkzeug PDF reparieren & entsperren mit den drei Abschnitten Reparieren, Passwort entfernen und Passwort wiederherstellen">
+        <figcaption><b>Abb. 16</b> — Die drei unabhängigen Abschnitte: Reparieren, Passwort entfernen, Passwort wiederherstellen (Wörterbuch-Angriff und Brute-Force).</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt"><b class="ui">PDF reparieren:</b> beschädigte Datei wählen, Zielort wählen, <b class="ui">Beschädigte PDF-Datei reparieren …</b> — rekonstruiert eine defekte Querverweistabelle bzw. einen fehlerhaften Dateiabschluss, die häufigsten Ursachen für "PDF lässt sich nicht öffnen".</span></li>
+        <li><span class="txt"><b class="ui">Passwort entfernen:</b> Datei wählen, bekanntes Passwort eingeben, Zielort wählen — speichert eine unverschlüsselte Kopie.</span></li>
+        <li><span class="txt"><b class="ui">Passwort wiederherstellen — Wörterbuch-Angriff:</b> Datei wählen, optional eine Wortliste (eine Zeile je Kandidat) hinzunehmen und/oder das eigene Passwort-Log durchsuchen lassen.</span></li>
+        <li><span class="txt"><b class="ui">Passwort wiederherstellen — Brute-Force:</b> Zeichenarten und Längenbereich wählen, zuerst <b class="ui">Suchraum &amp; Dauer schätzen</b> (misst die tatsächliche Geschwindigkeit an dieser Datei), erst dann <b class="ui">Suche starten …</b> — jederzeit über den Abbrechen-Knopf im Fortschrittsfenster stoppbar.</span></li>
+      </ol>
+      <div class="hinweis warnung">
+        <span class="label">Reparatur ersetzt kein Backup</span>
+        Bei sehr stark beschädigten Dateien (z. B. beim Speichern abgebrochen, ohne jede
+        Seitenstruktur) ist auch mit dieser Funktion keine Rettung möglich.
+      </div>
+      <div class="hinweis">
+        <span class="label">Brute-Force wächst extrem schnell</span>
+        Jedes zusätzliche Zeichen an Länge multipliziert die Anzahl der Kombinationen mit der
+        Größe des gewählten Zeichenvorrats — deshalb immer erst schätzen lassen, bevor ein
+        möglicherweise aussichtsloser Lauf gestartet wird.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="passwortschutz">
+      <p class="nr">Werkzeug 16</p>
+      <h2>Passwortschutz</h2>
+      <p class="intro"><strong>Vier getrennte Funktionen</strong>, die sich eine gemeinsame
+        Verschlüsselungseinstellung (Verfahren, Rechte-Passwort, Berechtigungen) teilen: eine
+        einzelne Datei mit einem Passwort versehen, einen ganzen Ordner samt Unterordnern
+        verschlüsseln, Dateien anhand einer Liste verschlüsseln, sowie ein Log der vergebenen
+        Passwörter führen.</p>
+      <figure class="platte">
+        <img src="bilder/17_passwortschutz.jpg" alt="Werkzeug Passwortschutz mit Verschlüsselungseinstellungen, den drei Verschlüsselungs-Aktionen und dem Passwort-Log">
+        <figcaption><b>Abb. 17</b> — Oben die gemeinsamen Verschlüsselungseinstellungen, darunter die drei Aktionen und das Passwort-Log.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt"><b class="ui">Verschlüsselungseinstellungen</b> (oben, gelten für alle drei Aktionen): Verfahren (RC4 40/128-Bit oder AES 128/256-Bit — AES 256-Bit voreingestellt), optionales Rechte-Passwort (bleibt es leer, gilt das Nutzerpasswort auch als Rechte-Passwort), sowie Drucken/Kopieren/Bearbeiten einzeln erlauben oder sperren.</span></li>
+        <li><span class="txt"><b class="ui">Einzelne Datei schützen:</b> Nutzerpasswort eingeben, Datei wählen, Zielort wählen.</span></li>
+        <li><span class="txt"><b class="ui">Ordner verschlüsseln:</b> Passwort eingeben, Ordner wählen — verschlüsselt ALLE PDF-Dateien darin und in allen Unterordnern <strong>direkt in den Originaldateien</strong>, nicht als Kopie.</span></li>
+        <li><span class="txt"><b class="ui">Nach Liste verschlüsseln:</b> CSV-Datei wählen (Spalten "Dateipfad;Passwort" — eine exportierte Log-Datei passt direkt) — verschlüsselt jede genannte Datei <strong>direkt</strong> mit ihrem eigenen Passwort.</span></li>
+        <li><span class="txt"><b class="ui">Passwort-Log:</b> merkt sich automatisch, welche Datei mit welchem Passwort versehen wurde. <b class="ui">Passwörter anzeigen</b> blendet sie ein/aus, <b class="ui">Log exportieren/importieren …</b> tauscht es als CSV-Datei.</span></li>
+      </ol>
+      <div class="hinweis warnung">
+        <span class="label">Ordner und Liste arbeiten direkt auf den Originalen</span>
+        Anders als bei einer einzelnen Datei wird hier nicht nach einem Zielort gefragt — die
+        gefundenen PDF-Dateien werden direkt verschlüsselt. Vorher ein Backup anlegen, falls die
+        Dateien noch unverschlüsselt gebraucht werden.
+      </div>
+      <div class="hinweis">
+        <span class="label">Log ist Klartext</span>
+        Das Passwort-Log wird bewusst unverschlüsselt gespeichert — praktisch für die eigene
+        Ablage, aber kein Tresor. Es liegt in den Programmeinstellungen und lässt sich jederzeit
+        exportieren, importieren oder vollständig leeren.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="metadaten-bearbeiten">
+      <p class="nr">Werkzeug 17</p>
       <h2>Metadaten bearbeiten</h2>
       <p class="intro">Anders als alle anderen Werkzeuge gilt hier ein einziger Satz Angaben
         für das gesamte Dokument, nicht pro Seite: Titel, Autor, Anbieter, Produkt, Version,
@@ -811,7 +877,7 @@
         Vorschau zeigt genau, wie diese Angaben tatsächlich hineinfließen.</p>
       <figure class="platte">
         <img src="bilder/13_metadaten_bearbeiten.jpg" alt="Metadaten-bearbeiten-Werkzeug mit ausgefüllten Feldern und Textvorschau">
-        <figcaption><b>Abb. 16</b> — Alle Felder ausgefüllt; die Vorschau unten zeigt, wie sie sich auf Titel/Autor/Thema/Stichwörter im PDF verteilen.</figcaption>
+        <figcaption><b>Abb. 18</b> — Alle Felder ausgefüllt; die Vorschau unten zeigt, wie sie sich auf Titel/Autor/Thema/Stichwörter im PDF verteilen.</figcaption>
       </figure>
       <ol class="schritte">
         <li><span class="txt">Titel, Autor und Anbieter eintragen — Anbieter ist mit dem in den Einstellungen hinterlegten Standard vorbelegt (sonst mit dem zuletzt verwendeten).</span></li>
@@ -828,21 +894,24 @@
     </section>
 
     <section class="werkzeug" id="einstellungen">
-      <p class="abschnitt-titel">Einstellungen: Sprache &amp; Maßeinheit</p>
+      <p class="abschnitt-titel">Einstellungen</p>
       <p class="intro">Über das Menü <b class="ui">Bearbeiten → Einstellungen …</b> (unter
         macOS automatisch im Programmmenü, Tastenkürzel <b class="ui">Cmd+,</b> bzw.
-        <b class="ui">Strg+,</b>) lassen sich die Oberflächensprache und die für
-        „Seitenmaß normieren“ verwendete Maßeinheit umstellen — beides bewusst
-        <strong>von Hand</strong> und nicht automatisch aus den Systemeinstellungen
-        übernommen, da die bearbeiteten PDFs aus jedem Land stammen können, unabhängig
-        davon, wie dieser Rechner eingestellt ist.</p>
+        <b class="ui">Strg+,</b>) lassen sich Oberflächensprache, Maßeinheit, Datumsformat,
+        Standard-Anbieter und Schwärzungsfarbe einstellen. Sprache und Maßeinheit bleiben dabei
+        bewusst <strong>von Hand</strong> gewählt statt automatisch aus den
+        Systemeinstellungen übernommen, da die bearbeiteten PDFs aus jedem Land stammen
+        können, unabhängig davon, wie dieser Rechner eingestellt ist.</p>
       <figure class="platte">
         <img src="bilder/9_einstellungen.jpg" alt="Einstellungen-Dialog mit den Auswahlfeldern Sprache und Maßeinheit">
-        <figcaption><b>Abb. 17</b> — Der Einstellungen-Dialog mit den Feldern <b class="ui">Sprache</b> und <b class="ui">Maßeinheit</b>.</figcaption>
+        <figcaption><b>Abb. 19</b> — Der Einstellungen-Dialog mit allen fünf Feldern.</figcaption>
       </figure>
       <ol class="schritte">
         <li><span class="txt"><b class="ui">Sprache:</b> Deutsch (Vorgabe) oder Englisch — wirkt sich erst nach einem Neustart des Programms aus.</span></li>
         <li><span class="txt"><b class="ui">Maßeinheit:</b> Millimeter (Vorgabe) oder Zoll — wirkt sich sofort aus, auch während „Seitenmaß normieren“ bereits offen ist.</span></li>
+        <li><span class="txt"><b class="ui">Datumsformat:</b> für das Releasedatum im Werkzeug „Metadaten bearbeiten“ (Dateiname-Vorschlag und Stichwörter) — JJ-MM, JJJJ-MM-TT oder TT.MM.JJJJ.</span></li>
+        <li><span class="txt"><b class="ui">Anbieter (Standard):</b> Vorbelegung für „Anbieter“ im Werkzeug „Metadaten bearbeiten“ — leer lassen, um stattdessen immer den zuletzt dort eingetragenen Anbieter vorzuschlagen.</span></li>
+        <li><span class="txt"><b class="ui">Schwärzungsfarbe:</b> Farbe für neu eingebrannte Schwärzungen im Werkzeug „Schwärzen“ — Klick öffnet den systemeigenen Farbwähler (unter macOS mit Farbkreis).</span></li>
       </ol>
       <div class="hinweis">
         <span class="label">Warum nicht automatisch?</span>
@@ -877,7 +946,7 @@
       </div>
     </section>
 
-    <section id="bezug" style="margin-bottom: 2rem;">
+    <section id="bezug" style="margin-bottom: 2rem; break-inside: avoid; page-break-inside: avoid;">
       <p class="abschnitt-titel">Bezugsquelle &amp; Lizenz</p>
       <img src="bilder/logo_telefonanleitungen.png" alt="Logo telefonanleitungen.de -- Sammler- und Interessengemeinschaft für das historische Fernmeldewesen e.V." style="max-width: 260px; height: auto; display: block; margin-bottom: 1rem;">
       <p style="max-width: 66ch; color: var(--ink-soft);">
@@ -888,7 +957,7 @@
     </section>
 
     <div class="fussleiste">
-      <span>Mathias' kleines PDF-Werkzeug · Version 1.9</span>
+      <span>Mathias' kleines PDF-Werkzeug · Version 1.10</span>
       <span>Kostenlos bereitgestellt von <a href="https://www.telefonanleitungen.de">Telefonanleitungen.de</a></span>
     </div>
   </main>

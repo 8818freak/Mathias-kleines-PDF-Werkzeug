@@ -17,16 +17,18 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from PySide6.QtCore import QCoreApplication
+from PySide6.QtGui import QKeySequence, QShortcut
 from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
     QDialogButtonBox,
-    QFileDialog,
     QFormLayout,
     QLineEdit,
     QSpinBox,
     QWidget,
 )
+
+from pdfkrams.gui.widgets.datei_dialoge import ordner_dialog
 
 # DE: Dateiendung -> (unuebersetzter) Anzeigename. Als Dateiendung
 #     verschluesselt statt als uebersetzten Anzeigetext, damit die
@@ -50,6 +52,11 @@ class _EinstellungenDialog(QDialog):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setWindowTitle(self.tr("Als einzelne Dateien exportieren"))
+        # DE: Cmd+W schliesst dieses Fenster -- siehe die ausfuehrliche
+        #     Begruendung in gui/einstellungen_dialog.py.
+        # EN: Cmd+W closes this window -- see the detailed rationale in
+        #     gui/einstellungen_dialog.py.
+        QShortcut(QKeySequence.StandardKey.Close, self, activated=self.close)
 
         self._format_feld = QComboBox()
         for endung, anzeige in _FORMATE.items():
@@ -105,12 +112,12 @@ def einzelexport_abfragen(parent: QWidget) -> EinzelExportEinstellungen | None:
     if dialog.exec() != QDialog.DialogCode.Accepted:
         return None
 
-    zielordner = QFileDialog.getExistingDirectory(parent, QCoreApplication.translate("ExportDialog", "Zielordner wählen"))
-    if not zielordner:
+    zielordner = ordner_dialog(parent, QCoreApplication.translate("ExportDialog", "Zielordner wählen"))
+    if zielordner is None:
         return None
 
     return EinzelExportEinstellungen(
-        zielordner=Path(zielordner),
+        zielordner=zielordner,
         endung=dialog.endung(),
         basis=dialog.basis(),
         start=dialog.start(),

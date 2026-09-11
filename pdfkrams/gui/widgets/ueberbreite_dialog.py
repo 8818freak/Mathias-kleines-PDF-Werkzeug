@@ -38,6 +38,7 @@ EN: Dialog for the booklet tool when a selected scan is clearly wider than
 
 from __future__ import annotations
 
+from PySide6.QtGui import QKeySequence, QShortcut
 from PySide6.QtWidgets import (
     QDialog,
     QDialogButtonBox,
@@ -61,6 +62,11 @@ class _UeberbreiteDialog(QDialog):
         self.resize(900, 760)
         self._west_seite = west_seite
         self._ost_seite = ost_seite
+        # DE: Cmd+W schliesst dieses Fenster -- siehe die ausfuehrliche
+        #     Begruendung in gui/einstellungen_dialog.py.
+        # EN: Cmd+W closes this window -- see the detailed rationale in
+        #     gui/einstellungen_dialog.py.
+        QShortcut(QKeySequence.StandardKey.Close, self, activated=self.close)
 
         hinweis = QLabel(
             self.tr("„{0}“ ist deutlich breiter als die übrigen ausgewählten Seiten. "

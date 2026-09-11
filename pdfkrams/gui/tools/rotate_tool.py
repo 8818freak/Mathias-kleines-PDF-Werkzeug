@@ -14,13 +14,10 @@ EN: "Rotate pages" tool: freely straighten pages via mouse drag, plus quick
 
 from __future__ import annotations
 
-from pathlib import Path
-
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QKeySequence
 from PySide6.QtWidgets import (
     QComboBox,
-    QFileDialog,
     QGroupBox,
     QHBoxLayout,
     QLabel,
@@ -32,10 +29,10 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from pdfkrams.core.combine import export_pdf
 from pdfkrams.core.rotate import normalisiert, rotiertes_bild, schraeglagen_korrektur_erkennen
 from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
 from pdfkrams.gui.widgets.page_list import PageListWidget, basis_pixmap
+from pdfkrams.gui.widgets.pdf_export import seitenliste_als_pdf_exportieren
 from pdfkrams.gui.widgets.rotate_canvas import RotateCanvas
 
 # DE: Groesse, in der die aktuelle Seite in der grossen Vorschau gerendert wird.
@@ -232,6 +229,28 @@ class RotateToolWidget(QWidget):
     # -- Auswahl / Vorschau laden --------------------------------------
 
     def _auswahl_geaendert(self) -> None:
+        # DE: Fruehzeitig abbrechen, wenn dieses Werkzeug gerade gar nicht
+        #     sichtbar ist (QStackedWidget zeigt ein anderes Werkzeug) --
+        #     sonst rendert JEDES der acht Werkzeuge mit eigener grosser
+        #     Vorschau (Drehen, Zuschneiden, Schwaerzen, Seitenmass, Teilen,
+        #     Nummerieren, Lesezeichen, Bildbereinigung) bei JEDEM
+        #     Seitenwechsel in der Liste mit -- unabhaengig davon, welches
+        #     davon der Nutzer gerade sieht. Bei vielen Seiten war genau
+        #     das die gemeldete Traeg­heit beim Durchklicken. showEvent()
+        #     ruft diese Methode erneut auf, sobald das Werkzeug wieder
+        #     sichtbar wird, und holt die Vorschau dann nach.
+        # EN: Bail out early if this tool isn't currently visible
+        #     (QStackedWidget is showing a different tool) -- otherwise
+        #     EVERY one of the eight tools with its own large preview
+        #     (Rotate, Crop, Redact, Page size, Split, Number, Bookmarks,
+        #     Image cleanup) re-renders on EVERY page change in the list,
+        #     regardless of which one the user is actually looking at.
+        #     With many pages, that was exactly the reported sluggishness
+        #     when clicking through pages. showEvent() calls this method
+        #     again once the tool becomes visible again, catching the
+        #     preview up at that point.
+        if not self.isVisible():
+            return
         wp = self.liste.aktuelle_seite()
         self._steuerung_aktivieren(wp is not None)
         if wp is None:
@@ -249,6 +268,31 @@ class RotateToolWidget(QWidget):
         self._canvas.seite_setzen(pixmap, wp.rotation, wp.spiegel_h, wp.spiegel_v)
         self._winkel_feld.setValue(wp.rotation)
         self._synchronisiere = False
+        QTimer.singleShot(0, self._nachbarn_vorwaermen)
+
+    def _nachbarn_vorwaermen(self) -> None:
+        """DE: Waermt den Vorschau-Cache (siehe basis_pixmap) fuer die
+            direkten Nachbarseiten der aktuellen Auswahl vor -- verzoegert
+            auf den naechsten Event-Loop-Durchlauf, damit die aktuelle
+            Seite sofort angezeigt wird und das Vorwaermen nur Zeit
+            nutzt, die sonst ungenutzt bliebe. Macht das Weiterblaettern
+            durch viele Seiten in der Praxis fast immer treffer-schnell,
+            statt bei jeder neuen Seite erneut das PDF/Bild rendern zu
+            muessen.
+        EN: Warms the preview cache (see basis_pixmap) for the direct
+            neighbors of the current selection -- deferred to the next
+            event loop pass, so the current page displays immediately and
+            warming only uses time that would otherwise go unused. In
+            practice makes flipping through many pages nearly always
+            cache-hit-fast, instead of re-rendering the PDF/image on every
+            new page."""
+        zeile = self.liste.currentRow()
+        for nachbar_zeile in (zeile - 1, zeile + 1):
+            item = self.liste.item(nachbar_zeile)
+            if item is None:
+                continue
+            nachbar_wp = item.data(Qt.ItemDataRole.UserRole)
+            basis_pixmap(nachbar_wp.source, _VORSCHAU_GROESSE)
 
     def _zoom_anzeige_aktualisieren(self, zoom: float) -> None:
         self._zoom_label.setText(self.tr("{0} %").format(round(zoom * 100)))
@@ -393,20 +437,13 @@ class RotateToolWidget(QWidget):
     # -- Export -------------------------------------------------------------
 
     def _exportieren(self) -> None:
-        ziel, _ = QFileDialog.getSaveFileName(
-            self, self.tr("PDF speichern unter"), self.tr("gedreht.pdf"), self.tr("PDF-Datei (*.pdf)")
+        seitenliste_als_pdf_exportieren(
+            self, self.liste,
+            dialog_titel=self.tr("PDF speichern unter"),
+            dateiname_vorschlag=self.tr("gedreht.pdf"),
+            dialog_filter=self.tr("PDF-Datei (*.pdf)"),
+            fortschritt_text=self.tr("PDF wird erstellt …"),
+            fehler_titel=self.tr("Export fehlgeschlagen"),
+            erfolg_titel=self.tr("Fertig"),
+            erfolg_text_vorlage=self.tr("PDF gespeichert unter:\n{0}"),
         )
-        if not ziel:
-            return
-        seiten = self.liste.seiten()
-        anzeige = Fortschrittsanzeige(self, self.tr("PDF wird erstellt …"), len(seiten))
-        try:
-            export_pdf(seiten, Path(ziel), fortschritt=anzeige.callback)
-        except Abgebrochen:
-            return
-        except Exception as exc:  # noqa: BLE001 -- Fehler dem Nutzer verstaendlich zeigen
-            QMessageBox.critical(self, self.tr("Export fehlgeschlagen"), str(exc))
-            return
-        finally:
-            anzeige.schliessen()
-        QMessageBox.information(self, self.tr("Fertig"), self.tr("PDF gespeichert unter:\n{0}").format(ziel))

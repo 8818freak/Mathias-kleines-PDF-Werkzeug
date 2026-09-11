@@ -19,12 +19,9 @@ EN: "Split pages" tool: cut pages into a grid of rows and columns -- one
 
 from __future__ import annotations
 
-from pathlib import Path
-
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QComboBox,
-    QFileDialog,
     QGroupBox,
     QHBoxLayout,
     QLabel,
@@ -36,13 +33,13 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from pdfkrams.core.combine import export_pdf
 from pdfkrams.core.document import SplitSpec, WorkingPage
 from pdfkrams.core.export_dateien import export_einzeldateien, materialisiere_teilung
 from pdfkrams.core.split import automatische_positionen, gleichmaessige_positionen
 from pdfkrams.core.rotate import rotiertes_bild
 from pdfkrams.gui.widgets.export_dialog import einzelexport_abfragen
 from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
+from pdfkrams.gui.widgets.pdf_export import seitenliste_als_pdf_exportieren
 from pdfkrams.gui.widgets.page_list import PageListWidget, vorschau_pixmap
 from pdfkrams.gui.widgets.split_canvas import SplitCanvas
 
@@ -223,6 +220,14 @@ class SplitToolWidget(QWidget):
     # -- Auswahl / Vorschau laden --------------------------------------
 
     def _auswahl_geaendert(self) -> None:
+        # DE: Ueberspringen, wenn nicht sichtbar -- siehe die ausfuehrliche
+        #     Begruendung in rotate_tool.py's _auswahl_geaendert(). showEvent()
+        #     holt die Vorschau nach, sobald das Werkzeug wieder sichtbar wird.
+        # EN: Skip when not visible -- see the detailed rationale in
+        #     rotate_tool.py's _auswahl_geaendert(). showEvent() catches the
+        #     preview up once the tool becomes visible again.
+        if not self.isVisible():
+            return
         wp = self.liste.aktuelle_seite()
         if wp is None:
             self._canvas.seite_setzen(None, [], [])
@@ -356,23 +361,16 @@ class SplitToolWidget(QWidget):
         self._btn_export_einzeln.setEnabled(an)
 
     def _exportieren(self) -> None:
-        ziel, _ = QFileDialog.getSaveFileName(
-            self, self.tr("PDF speichern unter"), self.tr("geteilt.pdf"), self.tr("PDF-Datei (*.pdf)")
+        seitenliste_als_pdf_exportieren(
+            self, self.liste,
+            dialog_titel=self.tr("PDF speichern unter"),
+            dateiname_vorschlag=self.tr("geteilt.pdf"),
+            dialog_filter=self.tr("PDF-Datei (*.pdf)"),
+            fortschritt_text=self.tr("PDF wird erstellt …"),
+            fehler_titel=self.tr("Export fehlgeschlagen"),
+            erfolg_titel=self.tr("Fertig"),
+            erfolg_text_vorlage=self.tr("PDF gespeichert unter:\n{0}"),
         )
-        if not ziel:
-            return
-        seiten = self.liste.seiten()
-        anzeige = Fortschrittsanzeige(self, self.tr("PDF wird erstellt …"), len(seiten))
-        try:
-            export_pdf(seiten, Path(ziel), fortschritt=anzeige.callback)
-        except Abgebrochen:
-            return
-        except Exception as exc:  # noqa: BLE001 -- Fehler dem Nutzer verstaendlich zeigen
-            QMessageBox.critical(self, self.tr("Export fehlgeschlagen"), str(exc))
-            return
-        finally:
-            anzeige.schliessen()
-        QMessageBox.information(self, self.tr("Fertig"), self.tr("PDF gespeichert unter:\n{0}").format(ziel))
 
     def _als_einzeldateien_exportieren(self) -> None:
         einstellungen = einzelexport_abfragen(self)

@@ -31,13 +31,15 @@ from pathlib import Path
 from PySide6.QtCore import QCoreApplication, Qt
 from PySide6.QtGui import QAction, QKeySequence, QPixmap
 from PySide6.QtWidgets import (
-    QFileDialog,
+    QApplication,
     QLabel,
+    QLineEdit,
     QListWidget,
     QMainWindow,
     QMessageBox,
     QSplitter,
     QStackedWidget,
+    QTextEdit,
     QWidget,
 )
 
@@ -52,7 +54,9 @@ from pdfkrams.gui.tools.leerseiten_tool import LeerseitenToolWidget
 from pdfkrams.gui.tools.lesezeichen_tool import LesezeichenToolWidget
 from pdfkrams.gui.tools.metadaten_tool import MetadatenToolWidget
 from pdfkrams.gui.tools.nummerieren_tool import NummerierenToolWidget
+from pdfkrams.gui.tools.passwortschutz_tool import PasswortschutzToolWidget
 from pdfkrams.gui.tools.pdf_zu_bildern_tool import PdfZuBildernToolWidget
+from pdfkrams.gui.tools.reparatur_tool import ReparaturToolWidget
 from pdfkrams.gui.tools.rotate_tool import RotateToolWidget
 from pdfkrams.gui.tools.schwaerzung_tool import SchwaerzungToolWidget
 from pdfkrams.gui.tools.seitenmass_tool import SeitenmassToolWidget
@@ -60,6 +64,7 @@ from pdfkrams.gui.tools.split_tool import SplitToolWidget
 from pdfkrams.gui.tools.verkleinern_tool import VerkleinernToolWidget
 from pdfkrams.gui.tools.zuschneiden_tool import ZuschneidenToolWidget
 from pdfkrams.gui.tools.zusammenfuegen_tool import ZusammenfuegenToolWidget
+from pdfkrams.gui.widgets.datei_dialoge import speichern_dialog
 from pdfkrams.gui.widgets.file_tool_base import DateiListenPanel
 from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
 from pdfkrams.gui.widgets.page_list import PageListWidget
@@ -96,6 +101,8 @@ _WERKZEUGE: list[tuple[str, type[QWidget] | None]] = [
     ("Schwärzen", SchwaerzungToolWidget),
     ("PDF in Bilder teilen", PdfZuBildernToolWidget),
     ("PDF verkleinern & PDF/A", VerkleinernToolWidget),
+    ("PDF reparieren & entsperren", ReparaturToolWidget),
+    ("Passwortschutz", PasswortschutzToolWidget),
     ("Metadaten bearbeiten", MetadatenToolWidget),
 ]
 
@@ -134,6 +141,7 @@ class MainWindow(QMainWindow):
         self._dateiliste_panel.einzelneDateiGeoeffnet.connect(self._dokument_geoeffnet)
         self._dateiliste_panel.andereDateienHinzugefuegt.connect(self._speicherziel_verwerfen)
         self._liste.geaendert.connect(self._als_ungespeichert_markieren)
+        self._liste.alsExportiertMarkiert.connect(self._exportziel_uebernehmen)
 
         self._seitenleiste = QListWidget()
         self._werkzeuge = QStackedWidget()
@@ -162,6 +170,23 @@ class MainWindow(QMainWindow):
         splitter.addWidget(self._werkzeuge)
         splitter.setStretchFactor(1, 1)
         splitter.setStretchFactor(2, 2)
+        # DE: Breitere Griffflaeche -- der Standard (1 px) ist auf macOS
+        #     kaum zu treffen, was den Eindruck erweckt, die mittlere
+        #     Spalte (Dateiliste) liesse sich gar nicht in der Breite
+        #     anpassen. setChildrenCollapsible(False) verhindert zudem,
+        #     dass ein zu weiter Zug eine Spalte versehentlich auf 0 px
+        #     zusammenschiebt.
+        # EN: Wider grab area -- the default (1 px) is hard to hit on
+        #     macOS, which gives the impression that the middle column
+        #     (file list) can't be resized at all. setChildrenCollapsible
+        #     (False) also prevents an over-eager drag from accidentally
+        #     collapsing a column to 0 px.
+        splitter.setHandleWidth(6)
+        splitter.setChildrenCollapsible(False)
+        gemerkte_groessen = einstellungen.splitter_groessen()
+        if gemerkte_groessen and len(gemerkte_groessen) == 3:
+            splitter.setSizes(gemerkte_groessen)
+        splitter.splitterMoved.connect(lambda *_: einstellungen.splitter_groessen_setzen(splitter.sizes()))
 
         self.setCentralWidget(splitter)
         self._menu_erstellen()
@@ -213,6 +238,56 @@ class MainWindow(QMainWindow):
 
         self._liste.verlaufGeaendert.connect(self._verlauf_aktualisieren)
         self._verlauf_aktualisieren()
+
+        bearbeiten_menu.addSeparator()
+
+        # DE: Ausschneiden/Kopieren/Einfuegen/Alles auswaehlen -- fachlich
+        #     wirkungslos fuer die Seitenliste, aber auf macOS NOETIG,
+        #     damit Cmd+X/C/V/A ueberhaupt funktionieren: ohne ein Menue
+        #     mit diesen Standard-Tastenkuerzeln registriert AppKit sie
+        #     nirgends, wodurch Cmd+V (u. a.) selbst in normalen
+        #     Textfeldern -- etwa dem Dateinamen-Feld im Speichern-Dialog
+        #     -- ins Leere lief; ueber das Rechtsklick-Kontextmenue ging
+        #     Einfuegen dagegen immer, da das direkt am Pasteboard
+        #     vorbeigeht, nicht ueber die Menuleiste. QApplication.
+        #     focusWidget() traegt die eigentliche Aktion, falls das
+        #     fokussierte Feld sie unterstuetzt (QLineEdit/QTextEdit).
+        # EN: Cut/Copy/Paste/Select All -- functionally meaningless for the
+        #     page list, but NECESSARY on macOS for Cmd+X/C/V/A to work at
+        #     all: without a menu registering these standard shortcuts,
+        #     AppKit doesn't route them anywhere, which meant Cmd+V (among
+        #     others) did nothing even in plain text fields -- e.g. the
+        #     filename field in the Save dialog -- while right-click paste
+        #     always worked there, since that goes straight through the
+        #     pasteboard rather than the menu bar. QApplication.
+        #     focusWidget() carries out the actual action, if the focused
+        #     field supports it (QLineEdit/QTextEdit).
+        def _fokus_aktion(methode: str) -> None:
+            feld = QApplication.focusWidget()
+            if isinstance(feld, (QLineEdit, QTextEdit)) and hasattr(feld, methode):
+                getattr(feld, methode)()
+
+        action_ausschneiden = QAction(self.tr("Ausschneiden"), self)
+        action_ausschneiden.setShortcut(QKeySequence.StandardKey.Cut)
+        action_ausschneiden.triggered.connect(lambda: _fokus_aktion("cut"))
+        bearbeiten_menu.addAction(action_ausschneiden)
+
+        action_kopieren = QAction(self.tr("Kopieren"), self)
+        action_kopieren.setShortcut(QKeySequence.StandardKey.Copy)
+        action_kopieren.triggered.connect(lambda: _fokus_aktion("copy"))
+        bearbeiten_menu.addAction(action_kopieren)
+
+        action_einfuegen = QAction(self.tr("Einfügen"), self)
+        action_einfuegen.setShortcut(QKeySequence.StandardKey.Paste)
+        action_einfuegen.triggered.connect(lambda: _fokus_aktion("paste"))
+        bearbeiten_menu.addAction(action_einfuegen)
+
+        action_alles_auswaehlen = QAction(self.tr("Alles auswählen"), self)
+        action_alles_auswaehlen.setShortcut(QKeySequence.StandardKey.SelectAll)
+        action_alles_auswaehlen.triggered.connect(lambda: _fokus_aktion("selectAll"))
+        bearbeiten_menu.addAction(action_alles_auswaehlen)
+
+        bearbeiten_menu.addSeparator()
 
         action_einstellungen = QAction(self.tr("Einstellungen …"), self)
         action_einstellungen.setShortcut(QKeySequence.StandardKey.Preferences)
@@ -343,6 +418,21 @@ class MainWindow(QMainWindow):
         self._letzter_pdf_pfad = pfad
         self._ungespeicherte_aenderungen = False
 
+    def _exportziel_uebernehmen(self, pfad: Path) -> None:
+        """DE: Reagiert auf PageListWidget.alsExportiertMarkiert -- ein
+            Werkzeug (z. B. "PDF erstellen", "Seiten drehen") hat die
+            komplette aktuelle Seitenliste erfolgreich als PDF exportiert.
+            Genau wie beim Oeffnen einer Einzeldatei gilt dieser Pfad
+            danach als Speicherziel fuer "Speichern" (Cmd+S), und es gibt
+            ab jetzt wieder keine ungespeicherten Aenderungen.
+        EN: Reacts to PageListWidget.alsExportiertMarkiert -- a tool (e.g.
+            "Create PDF", "Rotate pages") successfully exported the entire
+            current page list as a PDF. Just like opening a single file,
+            that path now counts as the save target for "Save" (Cmd+S),
+            and there are once again no unsaved changes."""
+        self._letzter_pdf_pfad = pfad
+        self._ungespeicherte_aenderungen = False
+
     def _speicherziel_verwerfen(self) -> None:
         self._letzter_pdf_pfad = None
         # DE: Mehrere Dateien kombiniert (oder zu einer schon offenen Liste
@@ -398,12 +488,10 @@ class MainWindow(QMainWindow):
 
     def _speichern_unter(self) -> None:
         vorschlag = self._liste.dateiname_vorschlag() or self.tr("dokument.pdf")
-        ziel, _ = QFileDialog.getSaveFileName(
-            self, self.tr("PDF speichern unter"), vorschlag, self.tr("PDF-Datei (*.pdf)")
-        )
-        if not ziel:
+        ziel = speichern_dialog(self, self.tr("PDF speichern unter"), vorschlag, self.tr("PDF-Datei (*.pdf)"))
+        if ziel is None:
             return
-        self._letzter_pdf_pfad = Path(ziel)
+        self._letzter_pdf_pfad = ziel
         self._pdf_schreiben(self._letzter_pdf_pfad)
 
     def _pdf_schreiben(self, ziel: Path) -> None:

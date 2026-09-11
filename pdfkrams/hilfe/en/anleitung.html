@@ -317,7 +317,7 @@
 <div class="schema" lang="en">
   <nav class="werkzeugliste">
     <p class="marke">Mathias' kleines<br>PDF-Werkzeug
-      <small>Manual · Version 1.9</small>
+      <small>Manual · Version 1.10</small>
     </p>
     <ol>
       <li><a href="#pdf-erstellen">Create PDF</a></li>
@@ -334,10 +334,12 @@
       <li><a href="#schwaerzen">Redact</a></li>
       <li><a href="#pdf-in-bilder">Split PDF into images</a></li>
       <li><a href="#pdf-verkleinern">Shrink PDF &amp; PDF/A</a></li>
+      <li><a href="#pdf-reparieren-entsperren">Repair &amp; unlock PDF</a></li>
+      <li><a href="#passwortschutz">Password protection</a></li>
       <li><a href="#metadaten-bearbeiten">Edit metadata</a></li>
     </ol>
     <div class="stufe">
-      <a href="#einstellungen">Preferences: language &amp; units</a>
+      <a href="#einstellungen">Preferences</a>
       <a href="#voraussetzungen">System requirements</a>
       <a href="#bezug">Source &amp; license</a>
     </div>
@@ -347,12 +349,12 @@
     <div class="deckblatt">
       <p class="eyebrow">User manual · English</p>
       <h1 class="titel">Mathias' kleines PDF-Werkzeug</h1>
-      <p class="lead">Fifteen tools for one recurring problem: turning scanned documents into a
+      <p class="lead">Seventeen tools for one recurring problem: turning scanned documents into a
         clean, correctly formatted PDF file after the fact — straighten, split apart,
         reassemble, bring to a standard size, shrink. This manual walks through every tool
         using a real example.</p>
       <div class="kennzahlen">
-        <div><strong>15</strong><span>Tools</span></div>
+        <div><strong>17</strong><span>Tools</span></div>
         <div><strong>1</strong><span>Shared file list</span></div>
         <div><strong>DE / EN</strong><span>Switchable language</span></div>
         <div><strong>GPL-3.0</strong><span>Free software</span></div>
@@ -717,8 +719,71 @@
       </div>
     </section>
 
-    <section class="werkzeug" id="metadaten-bearbeiten">
+    <section class="werkzeug" id="pdf-reparieren-entsperren">
       <p class="nr">Tool 15</p>
+      <h2>Repair &amp; unlock PDF</h2>
+      <p class="intro"><strong>Three separate, independently usable functions</strong> that only
+        belong together thematically (damaged resp. locked files): repair a PDF file that can no
+        longer be opened; remove a file's password protection when the password is
+        <em>known</em>; or recover a <em>forgotten</em> password (dictionary attack or brute
+        force).</p>
+      <figure class="platte">
+        <img src="bilder_en/16_pdf_reparieren_entsperren.jpg" alt="Repair & unlock PDF tool with the three sections Repair, Remove password, and Recover password">
+        <figcaption><b>Fig. 16</b> — The three independent sections: repair, remove password, recover password (dictionary attack and brute force).</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt"><b class="ui">Repair PDF:</b> choose the damaged file, choose a target location, <b class="ui">Repair damaged PDF file …</b> — reconstructs a broken cross-reference table or a faulty file ending, the most common causes of "PDF won't open".</span></li>
+        <li><span class="txt"><b class="ui">Remove password:</b> choose the file, enter the known password, choose a target location — saves an unencrypted copy.</span></li>
+        <li><span class="txt"><b class="ui">Recover password — dictionary attack:</b> choose the file, optionally add a wordlist (one candidate per line) and/or have your own password log searched.</span></li>
+        <li><span class="txt"><b class="ui">Recover password — brute force:</b> choose character types and a length range, first click <b class="ui">Estimate search space &amp; duration</b> (measures the actual speed on this file), only then <b class="ui">Start search …</b> — can be stopped at any point via the Cancel button in the progress window.</span></li>
+      </ol>
+      <div class="hinweis warnung">
+        <span class="label">A repair is no substitute for a backup</span>
+        For very badly damaged files (e.g. cut off while saving, with no page structure left
+        at all), even this function can't rescue them.
+      </div>
+      <div class="hinweis">
+        <span class="label">Brute force grows extremely fast</span>
+        Every additional character of length multiplies the number of combinations by the
+        size of the chosen character set — always estimate first before starting a possibly
+        hopeless run.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="passwortschutz">
+      <p class="nr">Tool 16</p>
+      <h2>Password protection</h2>
+      <p class="intro"><strong>Four separate functions</strong> that share one set of encryption
+        settings (method, permissions password, permissions): add a password to a single file,
+        encrypt an entire folder including subfolders, encrypt files based on a list, and keep a
+        log of passwords that have been set.</p>
+      <figure class="platte">
+        <img src="bilder_en/17_passwortschutz.jpg" alt="Password protection tool with encryption settings, the three encryption actions, and the password log">
+        <figcaption><b>Fig. 17</b> — Encryption settings on top, shared by all three actions below, plus the password log.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt"><b class="ui">Encryption settings</b> (top, apply to all three actions): method (RC4 40/128-bit or AES 128/256-bit — AES 256-bit is the default), an optional permissions password (if left blank, the user password also acts as the permissions password), plus individually allowing or blocking printing/copying/editing.</span></li>
+        <li><span class="txt"><b class="ui">Protect a single file:</b> enter a user password, choose the file, choose a target location.</span></li>
+        <li><span class="txt"><b class="ui">Encrypt folder:</b> enter a password, choose a folder — encrypts ALL PDF files in it and all subfolders <strong>directly in the original files</strong>, not as a copy.</span></li>
+        <li><span class="txt"><b class="ui">Encrypt from list:</b> choose a CSV file (columns "file path;password" — an exported log file fits directly) — encrypts every named file <strong>directly</strong> with its own password.</span></li>
+        <li><span class="txt"><b class="ui">Password log:</b> automatically remembers which file was given which password. <b class="ui">Show passwords</b> toggles them visible, <b class="ui">Export/Import log …</b> exchanges it as a CSV file.</span></li>
+      </ol>
+      <div class="hinweis warnung">
+        <span class="label">Folder and list act directly on the originals</span>
+        Unlike with a single file, no target location is asked for here — the PDF files found
+        are encrypted directly. Make a backup first if the files are still needed unencrypted
+        elsewhere.
+      </div>
+      <div class="hinweis">
+        <span class="label">The log is plaintext</span>
+        The password log is deliberately stored unencrypted — convenient for your own
+        records, but not a vault. It lives in the program's settings and can be exported,
+        imported, or cleared entirely at any time.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="metadaten-bearbeiten">
+      <p class="nr">Tool 17</p>
       <h2>Edit metadata</h2>
       <p class="intro">Unlike every other tool, a single set of values applies to the whole
         document here, not per page: title, author, provider, product, version, release
@@ -726,7 +791,7 @@
         shows exactly how these values actually flow into them.</p>
       <figure class="platte">
         <img src="bilder_en/13_metadaten_bearbeiten.jpg" alt="Edit metadata tool with fields filled in and a text preview">
-        <figcaption><b>Fig. 16</b> — All fields filled in; the preview below shows how they map onto title/author/subject/keywords in the PDF.</figcaption>
+        <figcaption><b>Fig. 18</b> — All fields filled in; the preview below shows how they map onto title/author/subject/keywords in the PDF.</figcaption>
       </figure>
       <ol class="schritte">
         <li><span class="txt">Enter title, author, and provider — provider is prefilled with the default set in Preferences (otherwise with the one most recently used).</span></li>
@@ -742,21 +807,24 @@
     </section>
 
     <section class="werkzeug" id="einstellungen">
-      <p class="abschnitt-titel">Preferences: language &amp; units</p>
+      <p class="abschnitt-titel">Preferences</p>
       <p class="intro">The menu <b class="ui">Edit → Preferences …</b> (on macOS
         automatically moved into the application menu, keyboard shortcut <b class="ui">Cmd+,</b>
-        resp. <b class="ui">Ctrl+,</b>) lets you switch the interface language and the
-        measurement unit used by "Normalize page size" — both deliberately switched
-        <strong>by hand</strong> and not taken automatically from the system settings, since
-        the PDFs being edited can come from any country, regardless of how this computer is
-        set up.</p>
+        resp. <b class="ui">Ctrl+,</b>) lets you set the interface language, measurement unit,
+        date format, default provider, and redaction color. Language and measurement unit stay
+        deliberately switched <strong>by hand</strong> instead of being taken automatically
+        from the system settings, since the PDFs being edited can come from any country,
+        regardless of how this computer is set up.</p>
       <figure class="platte">
         <img src="bilder_en/9_einstellungen.jpg" alt="Preferences dialog with the Language and Measurement unit fields">
-        <figcaption><b>Fig. 17</b> — The Preferences dialog with the <b class="ui">Language</b> and <b class="ui">Measurement unit</b> fields.</figcaption>
+        <figcaption><b>Fig. 19</b> — The Preferences dialog with all five fields.</figcaption>
       </figure>
       <ol class="schritte">
         <li><span class="txt"><b class="ui">Language:</b> German (default) or English — takes effect only after restarting the program.</span></li>
         <li><span class="txt"><b class="ui">Measurement unit:</b> Millimeter (default) or Inch — takes effect immediately, even while "Normalize page size" is already open.</span></li>
+        <li><span class="txt"><b class="ui">Date format:</b> for the release date in the "Edit metadata" tool (filename suggestion and keywords) — YY-MM, YYYY-MM-DD, or DD.MM.YYYY.</span></li>
+        <li><span class="txt"><b class="ui">Provider (default):</b> prefill for "Provider" in the "Edit metadata" tool — leave blank to always suggest the provider most recently entered there instead.</span></li>
+        <li><span class="txt"><b class="ui">Redaction color:</b> color for newly burned-in redactions in the "Redact" tool — clicking it opens the system's own color picker (a color wheel on macOS).</span></li>
       </ol>
       <div class="hinweis">
         <span class="label">Why not automatic?</span>
@@ -790,7 +858,7 @@
       </div>
     </section>
 
-    <section id="bezug" style="margin-bottom: 2rem;">
+    <section id="bezug" style="margin-bottom: 2rem; break-inside: avoid; page-break-inside: avoid;">
       <p class="abschnitt-titel">Source &amp; license</p>
       <img src="bilder_en/logo_telefonanleitungen.png" alt="Logo telefonanleitungen.de -- collectors' and special-interest association for historic telecommunications" style="max-width: 260px; height: auto; display: block; margin-bottom: 1rem;">
       <p style="max-width: 66ch; color: var(--ink-soft);">
@@ -801,7 +869,7 @@
     </section>
 
     <div class="fussleiste">
-      <span>Mathias' kleines PDF-Werkzeug · Version 1.9</span>
+      <span>Mathias' kleines PDF-Werkzeug · Version 1.10</span>
       <span>Provided free of charge by <a href="https://www.telefonanleitungen.de">Telefonanleitungen.de</a></span>
     </div>
   </main>

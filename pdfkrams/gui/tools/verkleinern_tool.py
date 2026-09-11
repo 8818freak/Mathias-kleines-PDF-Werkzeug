@@ -17,11 +17,8 @@ EN: "Shrink PDF & PDF/A" tool: exports the shared page list as a
 
 from __future__ import annotations
 
-from pathlib import Path
-
 from PySide6.QtWidgets import (
     QCheckBox,
-    QFileDialog,
     QGroupBox,
     QHBoxLayout,
     QLabel,
@@ -38,6 +35,7 @@ from pdfkrams.core.komprimierung import (
     strukturell_komprimieren,
 )
 from pdfkrams.core.pdfa import als_pdfa_markieren
+from pdfkrams.gui.widgets.datei_dialoge import einzeln_oeffnen_dialog, speichern_dialog
 from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
 from pdfkrams.gui.widgets.hintergrund import im_hintergrund_ausfuehren
 from pdfkrams.gui.widgets.page_list import PageListWidget
@@ -149,12 +147,9 @@ class VerkleinernToolWidget(QWidget):
 
     def _exportieren(self) -> None:
         vorschlag = self.liste.dateiname_vorschlag() or self.tr("verkleinert.pdf")
-        ziel, _ = QFileDialog.getSaveFileName(
-            self, self.tr("PDF speichern unter"), vorschlag, self.tr("PDF-Datei (*.pdf)")
-        )
-        if not ziel:
+        ziel_pfad = speichern_dialog(self, self.tr("PDF speichern unter"), vorschlag, self.tr("PDF-Datei (*.pdf)"))
+        if ziel_pfad is None:
             return
-        ziel_pfad = Path(ziel)
         max_dpi = self._dpi_feld.value() if self._dpi_aktiv_feld.isChecked() else None
 
         seiten = self.liste.seiten()
@@ -203,19 +198,19 @@ class VerkleinernToolWidget(QWidget):
                 "Höchstauflösung."
             )
         QMessageBox.information(self, self.tr("Fertig"), text)
+        self.liste.alsExportiertMarkiert.emit(ziel_pfad)
 
     # -- PDF/A eigenstaendig / PDF/A standalone ----------------------------
 
     def _pdfa_eigenstaendig(self) -> None:
-        quelle, _ = QFileDialog.getOpenFileName(self, self.tr("PDF-Datei wählen"), "", self.tr("PDF-Datei (*.pdf)"))
-        if not quelle:
+        quelle_pfad = einzeln_oeffnen_dialog(self, self.tr("PDF-Datei wählen"), self.tr("PDF-Datei (*.pdf)"))
+        if quelle_pfad is None:
             return
-        ziel, _ = QFileDialog.getSaveFileName(
-            self, self.tr("PDF/A speichern unter"), Path(quelle).stem + "_pdfa.pdf", self.tr("PDF-Datei (*.pdf)")
+        ziel_pfad = speichern_dialog(
+            self, self.tr("PDF/A speichern unter"), quelle_pfad.stem + "_pdfa.pdf", self.tr("PDF-Datei (*.pdf)")
         )
-        if not ziel:
+        if ziel_pfad is None:
             return
-        quelle_pfad, ziel_pfad = Path(quelle), Path(ziel)
         try:
             im_hintergrund_ausfuehren(
                 self, self.tr("PDF/A-Kennzeichnung wird erstellt …"),
@@ -224,21 +219,20 @@ class VerkleinernToolWidget(QWidget):
         except Exception as exc:  # noqa: BLE001 -- Fehler dem Nutzer verstaendlich zeigen
             QMessageBox.critical(self, self.tr("Fehlgeschlagen"), str(exc))
             return
-        QMessageBox.information(self, self.tr("Fertig"), self.tr("PDF/A-2b-Kennzeichnung gespeichert unter:\n{0}").format(ziel))
+        QMessageBox.information(self, self.tr("Fertig"), self.tr("PDF/A-2b-Kennzeichnung gespeichert unter:\n{0}").format(ziel_pfad))
 
     # -- Struktur-Kompression eigenstaendig / structural compression standalone --
 
     def _struktur_komprimieren(self) -> None:
-        quelle, _ = QFileDialog.getOpenFileName(self, self.tr("PDF-Datei wählen"), "", self.tr("PDF-Datei (*.pdf)"))
-        if not quelle:
+        quelle_pfad = einzeln_oeffnen_dialog(self, self.tr("PDF-Datei wählen"), self.tr("PDF-Datei (*.pdf)"))
+        if quelle_pfad is None:
             return
-        ziel, _ = QFileDialog.getSaveFileName(
-            self, self.tr("Komprimierte PDF speichern unter"), Path(quelle).stem + "_komprimiert.pdf",
+        ziel_pfad = speichern_dialog(
+            self, self.tr("Komprimierte PDF speichern unter"), quelle_pfad.stem + "_komprimiert.pdf",
             self.tr("PDF-Datei (*.pdf)"),
         )
-        if not ziel:
+        if ziel_pfad is None:
             return
-        quelle_pfad, ziel_pfad = Path(quelle), Path(ziel)
         try:
             vorher, nachher = im_hintergrund_ausfuehren(
                 self, self.tr("PDF wird komprimiert …"),
@@ -251,6 +245,6 @@ class VerkleinernToolWidget(QWidget):
         QMessageBox.information(
             self, self.tr("Fertig"),
             self.tr("Gespeichert unter:\n{0}\n\n{1} → {2} ({3} % kleiner)").format(
-                ziel, _lesbare_groesse(vorher), _lesbare_groesse(nachher), f"{ersparnis:.0f}"
+                ziel_pfad, _lesbare_groesse(vorher), _lesbare_groesse(nachher), f"{ersparnis:.0f}"
             ),
         )

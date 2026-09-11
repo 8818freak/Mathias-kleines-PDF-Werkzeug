@@ -10,13 +10,10 @@ EN: "Create PDF" tool: exports the shared page list (see DateiListenPanel)
 
 from __future__ import annotations
 
-from pathlib import Path
+from PySide6.QtWidgets import QLabel, QPushButton, QVBoxLayout, QWidget
 
-from PySide6.QtWidgets import QFileDialog, QLabel, QMessageBox, QPushButton, QVBoxLayout, QWidget
-
-from pdfkrams.core.combine import export_pdf
-from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
 from pdfkrams.gui.widgets.page_list import PageListWidget
+from pdfkrams.gui.widgets.pdf_export import seitenliste_als_pdf_exportieren
 
 
 class CombineToolWidget(QWidget):
@@ -49,20 +46,13 @@ class CombineToolWidget(QWidget):
         layout.addWidget(self._btn_export)
 
     def _exportieren(self) -> None:
-        ziel, _ = QFileDialog.getSaveFileName(
-            self, self.tr("PDF speichern unter"), self.tr("zusammengefuegt.pdf"), self.tr("PDF-Datei (*.pdf)")
+        seitenliste_als_pdf_exportieren(
+            self, self.liste,
+            dialog_titel=self.tr("PDF speichern unter"),
+            dateiname_vorschlag=self.tr("zusammengefuegt.pdf"),
+            dialog_filter=self.tr("PDF-Datei (*.pdf)"),
+            fortschritt_text=self.tr("PDF wird erstellt …"),
+            fehler_titel=self.tr("Export fehlgeschlagen"),
+            erfolg_titel=self.tr("Fertig"),
+            erfolg_text_vorlage=self.tr("PDF gespeichert unter:\n{0}"),
         )
-        if not ziel:
-            return
-        seiten = self.liste.seiten()
-        anzeige = Fortschrittsanzeige(self, self.tr("PDF wird erstellt …"), len(seiten))
-        try:
-            export_pdf(seiten, Path(ziel), fortschritt=anzeige.callback)
-        except Abgebrochen:
-            return
-        except Exception as exc:  # noqa: BLE001 -- Fehler dem Nutzer verstaendlich zeigen
-            QMessageBox.critical(self, self.tr("Export fehlgeschlagen"), str(exc))
-            return
-        finally:
-            anzeige.schliessen()
-        QMessageBox.information(self, self.tr("Fertig"), self.tr("PDF gespeichert unter:\n{0}").format(ziel))

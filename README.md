@@ -113,6 +113,26 @@ internet connection and no additional software required.*
   *Substantially shrink file size via JPEG encoding (detects already
   efficiently compressed black-and-white pages and leaves them untouched),
   lossless structural compression, and PDF/A-2b marking for archival.*
+- **PDF reparieren & entsperren** -- drei getrennte Funktionen: eine
+  beschädigte PDF-Datei reparieren, die sich nicht mehr öffnen lässt;
+  den Passwortschutz einer Datei entfernen, wenn das Passwort bekannt
+  ist; oder ein vergessenes Passwort wiederherstellen (Wörterbuch-Angriff
+  oder Brute-Force nach Zeichenart und Länge, mit Zeitschätzung und
+  Abbrechen-Knopf).
+  *Three separate functions: repair a damaged PDF file that can no
+  longer be opened; remove a file's password protection when the
+  password is known; or recover a forgotten password (dictionary attack
+  or brute force by character type and length, with a time estimate and
+  a cancel button).*
+- **Passwortschutz** -- vier getrennte Funktionen mit gemeinsamen
+  Verschlüsselungseinstellungen (RC4/AES, Rechte-Passwort,
+  Berechtigungen): eine einzelne Datei schützen, einen ganzen Ordner
+  samt Unterordnern verschlüsseln, Dateien nach einer CSV-Liste
+  verschlüsseln, sowie ein exportierbares Log der vergebenen Passwörter.
+  *Four separate functions with shared encryption settings (RC4/AES,
+  permissions password, permissions): protect a single file, encrypt an
+  entire folder including subfolders, encrypt files from a CSV list, and
+  an exportable log of passwords that have been set.*
 - **Lesezeichen setzen** -- für Broschüren/Bücher jeder Seite optional
   einen Kapitel- oder Unterkapitel-Titel geben, wird beim Speichern
   automatisch zu einem Lesezeichen/Inhaltsverzeichnis in der PDF-Datei.

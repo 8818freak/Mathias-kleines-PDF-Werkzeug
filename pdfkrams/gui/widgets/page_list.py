@@ -33,6 +33,7 @@ import copy
 from contextlib import contextmanager
 from datetime import date
 from functools import lru_cache
+from pathlib import Path
 from typing import Callable
 
 from PySide6.QtCore import QCoreApplication, QRectF, QSize, Qt, Signal
@@ -205,6 +206,25 @@ class PageListWidget(QListWidget):
     # DE: Wird gesendet, wenn sich verfuegbares Rueckgaengig/Wiederholen aendert.
     # EN: Emitted whenever available undo/redo changes.
     verlaufGeaendert = Signal()
+    # DE: Wird gesendet, wenn ein Werkzeug die KOMPLETTE aktuelle Seitenliste
+    #     erfolgreich als eine PDF-Datei exportiert hat (siehe
+    #     gui/widgets/pdf_export.py) -- das Hauptfenster nutzt das, um
+    #     diese Datei als neues Speicherziel fuer "Speichern" (Cmd+S) zu
+    #     merken und die Markierung "ungespeicherte Aenderungen"
+    #     zurueckzusetzen. Ohne das dachte das Hauptfenster nach einem
+    #     Export ueber ein Werkzeug-eigenes "Als PDF exportieren" faelsch-
+    #     licherweise weiterhin, es gaebe ungespeicherte Aenderungen, und
+    #     Cmd+S schrieb nicht in die frisch exportierte Datei, sondern
+    #     fragte wieder nach einem Speicherort.
+    # EN: Emitted when a tool has successfully exported the ENTIRE current
+    #     page list as one PDF file (see gui/widgets/pdf_export.py) -- the
+    #     main window uses this to remember that file as the new save
+    #     target for "Save" (Cmd+S) and to clear the "unsaved changes"
+    #     flag. Without this, the main window kept incorrectly thinking
+    #     there were unsaved changes after an export via a tool's own "Save
+    #     as PDF" button, and Cmd+S asked for a save location again
+    #     instead of writing into the freshly exported file.
+    alsExportiertMarkiert = Signal(Path)
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)

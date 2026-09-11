@@ -17,9 +17,10 @@ from __future__ import annotations
 from pathlib import Path
 
 from PySide6.QtCore import QCoreApplication, Signal
-from PySide6.QtWidgets import QFileDialog, QFrame, QHBoxLayout, QLabel, QMessageBox, QPushButton, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QMessageBox, QPushButton, QVBoxLayout, QWidget
 
 from pdfkrams.core.document import UNTERSTUETZTE_ENDUNGEN, datei_aufschluesseln, ist_unterstuetzt
+from pdfkrams.gui.widgets.datei_dialoge import oeffnen_dialog
 from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
 from pdfkrams.gui.widgets.page_list import PageListWidget
 
@@ -114,8 +115,8 @@ class DateiListenPanel(QWidget):
         layout.addWidget(self.liste, 1)
 
     def dateien_hinzufuegen_dialog(self) -> None:
-        pfade, _ = QFileDialog.getOpenFileNames(self, self.tr("Dateien auswählen"), "", _dateifilter())
-        self._pfade_verarbeiten([Path(p) for p in pfade])
+        pfade = oeffnen_dialog(self, self.tr("Dateien auswählen"), _dateifilter())
+        self._pfade_verarbeiten(pfade)
 
     def _pfade_verarbeiten(self, pfade: list[Path], einfuege_index: int | None = None) -> None:
         """DE: Ausgewaehlte/gezogene Dateien in Seiten aufschluesseln und

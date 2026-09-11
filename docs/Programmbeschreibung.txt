@@ -20,7 +20,9 @@ nachträglich in Ordnung zu bringen:
 - Seiten zuschneiden - Seiten von allen vier Rändern aus um ein frei wählbares Maß beschneiden (z. B. einen Lochrandstreifen oder Heftrand entfernen), mit ziehbaren Linien in der Vorschau und Live-Anzeige der Ergebnisgröße inkl. Formatvorschlag.
 - Schwärzen - beliebig viele Bereiche einer Seite dauerhaft unkenntlich machen (frei gezeichnete, verschiebbare Rechtecke, die beim Speichern wirklich in die Bildpixel eingebrannt werden, nicht nur optisch überdeckt), mit wählbarer Farbe und einem Knopf zum Übertragen auf weitere Seiten.
 - PDF in Bilder teilen - als einzelne durchnummerierte Bilddateien oder als eine mehrseitige TIFF-Datei exportieren.
-- PDF verkleinern & PDF/A - Dateigröße durch JPEG-Kodierung deutlich verringern (erkennt bereits effizient komprimierte Schwarzweißseiten und lässt sie unverändert), verlustfreie Struktur-Komprimierung, sowie PDF/A-2b-Kennzeichnung für die Archivierung.
+- PDF verkleinern & PDF/A - Drei getrennte Funktionen: Dateigröße durch JPEG-Kodierung deutlich verringern (erkennt bereits effizient komprimierte Schwarzweißseiten und lässt sie unverändert), verlustfreie Struktur-Komprimierung, sowie PDF/A-2b-Kennzeichnung für die Archivierung.
+- PDF reparieren & entsperren - Drei getrennte Funktionen: eine beschädigte PDF-Datei reparieren, die sich nicht mehr öffnen lässt; den Passwortschutz einer Datei mit bekanntem Passwort entfernen; oder ein vergessenes Passwort wiederherstellen (Wörterbuch-Angriff oder Brute-Force mit vorheriger Zeitschätzung).
+- Passwortschutz - Vier getrennte Funktionen: eine einzelne Datei mit einem Passwort versehen (Verfahren, Rechte-Passwort und Berechtigungen wählbar), einen ganzen Ordner samt Unterordnern verschlüsseln, Dateien anhand einer Liste verschlüsseln, sowie ein Log der vergebenen Passwörter führen (Export/Import als CSV).
 - Metadaten bearbeiten - dokumentweite PDF-Metadaten (Titel, Autor, Anbieter, Produkt, Version, Releasedatum, Stichwörter) statt pro Seite; wird beim Speichern automatisch übernommen, inkl. automatischem Dateinamen-Vorschlag beim Speichern unter.
 
 Alle Funktionen arbeiten in einer einzigen App: Dateien einmal laden

@@ -15,12 +15,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from PySide6.QtGui import QKeySequence, QShortcut
 from PySide6.QtWidgets import (
     QCheckBox,
     QComboBox,
     QDialog,
     QDialogButtonBox,
-    QFileDialog,
     QFormLayout,
     QHBoxLayout,
     QLabel,
@@ -33,6 +33,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from pdfkrams.gui.widgets.datei_dialoge import ordner_dialog
 from pdfkrams.core.datei_umbenennen import (
     NACH_DATUM,
     NACH_NAME,
@@ -59,6 +60,11 @@ class _UmbenennenDialog(QDialog):
         self.setWindowTitle(self.tr("Dateien auf der Platte umbenennen"))
         self.resize(700, 600)
         self._plan = []
+        # DE: Cmd+W schliesst dieses Fenster -- siehe die ausfuehrliche
+        #     Begruendung in gui/einstellungen_dialog.py.
+        # EN: Cmd+W closes this window -- see the detailed rationale in
+        #     gui/einstellungen_dialog.py.
+        QShortcut(QKeySequence.StandardKey.Close, self, activated=self.close)
 
         self._ordner_feld = QLineEdit()
         self._ordner_feld.setReadOnly(True)
@@ -141,17 +147,17 @@ class _UmbenennenDialog(QDialog):
             self._zielordner_feld.clear()
 
     def _ordner_waehlen(self) -> None:
-        ordner = QFileDialog.getExistingDirectory(self, self.tr("Ordner wählen"))
-        if ordner:
-            self._ordner_feld.setText(ordner)
+        ordner = ordner_dialog(self, self.tr("Ordner wählen"))
+        if ordner is not None:
+            self._ordner_feld.setText(str(ordner))
             self._plan = []
             self._btn_ausfuehren.setEnabled(False)
             self._vorschau_liste.clear()
 
     def _zielordner_waehlen(self) -> None:
-        ordner = QFileDialog.getExistingDirectory(self, self.tr("Zielordner wählen"))
-        if ordner:
-            self._zielordner_feld.setText(ordner)
+        ordner = ordner_dialog(self, self.tr("Zielordner wählen"))
+        if ordner is not None:
+            self._zielordner_feld.setText(str(ordner))
 
     def _vorschau_aktualisieren(self) -> None:
         self._plan = []

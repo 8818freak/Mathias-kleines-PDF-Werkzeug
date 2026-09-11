@@ -4,6 +4,117 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 
 *All notable changes to this project are documented here.*
 
+## [1.10] – 2026-09-11
+
+### Hinzugefügt / Added
+
+- Neues Werkzeug „PDF reparieren & entsperren“, mit drei getrennten,
+  unabhängig nutzbaren Funktionen:
+  - **Reparieren:** rekonstruiert eine defekte Querverweistabelle bzw.
+    einen fehlerhaften Dateiabschluss in einer PDF-Datei, die sich nicht
+    mehr öffnen lässt (probiert dafür sowohl pikepdf/qpdf als auch
+    PyMuPDF, je nachdem, welche Bibliothek mit dem konkreten Schaden
+    zurechtkommt).
+  - **Passwort entfernen:** entfernt den Passwortschutz einer Datei, wenn
+    das Passwort bereits bekannt ist.
+  - **Passwort wiederherstellen:** für ein wirklich vergessenes Passwort
+    -- Wörterbuch-Angriff (eigenes Passwort-Log und/oder eine Wortliste)
+    oder Brute-Force nach Zeichenart und Länge, mit vorheriger Schätzung
+    von Kombinationsanzahl und Dauer sowie einem jederzeit wirksamen
+    Abbrechen-Knopf.
+  *New "Repair & unlock PDF" tool, with three separate, independently
+  usable functions:*
+  - *Repair: reconstructs a broken cross-reference table or a faulty
+    file ending in a PDF file that can no longer be opened (tries both
+    pikepdf/qpdf and PyMuPDF, depending on which library can handle the
+    specific damage).*
+  - *Remove password: removes a file's password protection when the
+    password is already known.*
+  - *Recover password: for a genuinely forgotten password -- dictionary
+    attack (own password log and/or a wordlist) or brute force by
+    character type and length, with an upfront estimate of the
+    combination count and duration, plus a cancel button that always
+    works.*
+- Neues Werkzeug „Passwortschutz“, mit vier getrennten Funktionen, die
+  sich eine gemeinsame Verschlüsselungseinstellung (Verfahren RC4/AES,
+  Rechte-Passwort, Berechtigungen für Drucken/Kopieren/Bearbeiten)
+  teilen:
+  - **Einzelne Datei schützen:** ein Passwort zu einer einzelnen PDF
+    hinzufügen.
+  - **Ordner verschlüsseln:** alle PDF-Dateien in einem Ordner samt
+    Unterordnern mit demselben Passwort direkt verschlüsseln.
+  - **Nach Liste verschlüsseln:** Dateien anhand einer CSV-Liste
+    (Dateipfad;Passwort) jeweils mit ihrem eigenen Passwort verschlüsseln.
+  - **Passwort-Log:** merkt sich automatisch, welche Datei mit welchem
+    Passwort versehen wurde -- Klartext, nur zur eigenen Ablage, als CSV
+    export-/importierbar.
+  *New "Password protection" tool, with four separate functions that
+  share one set of encryption settings (RC4/AES method, permissions
+  password, print/copy/edit permissions):*
+  - *Protect a single file: add a password to a single PDF.*
+  - *Encrypt folder: encrypt all PDF files in a folder, including
+    subfolders, with the same password, directly.*
+  - *Encrypt from list: encrypt files based on a CSV list (file
+    path;password), each with its own password.*
+  - *Password log: automatically remembers which file was given which
+    password -- plaintext, for your own records only, exportable/
+    importable as CSV.*
+- Passwortfelder haben jetzt überall im Programm einen „anzeigen“-
+  Umschalter zwischen verdecktem und Klartext-Passwort.
+  *Password fields throughout the program now have a "show" toggle
+  between masked and plaintext display.*
+- „Seiten drehen“ wärmt beim Durchklicken die Vorschau der Nachbarseiten
+  im Hintergrund vor -- spürbar flüssigeres Weiterblättern.
+  *"Rotate pages" warms the preview of neighboring pages in the
+  background while clicking through -- noticeably smoother paging.*
+- Datei-Dialoge (Öffnen/Speichern/Ordner wählen) merken sich jetzt den
+  zuletzt verwendeten Ordner, programmübergreifend.
+  *File dialogs (open/save/choose folder) now remember the last-used
+  folder, across the whole program.*
+- Die Spaltenbreiten des Hauptfensters (Werkzeugliste/Dateiliste/
+  Werkzeug-Bereich) werden zwischen Programmstarts gemerkt; die
+  Trennlinie ist breiter (leichter zu treffen) und lässt sich nicht mehr
+  versehentlich auf 0 zusammenziehen.
+  *The main window's column widths (tool list/file list/tool area) are
+  now remembered between launches; the divider is wider (easier to grab)
+  and can no longer be accidentally collapsed to 0.*
+
+### Behoben / Fixed
+
+- Cmd+V (Einfügen) funktionierte in Textfeldern von Dialogen (z. B.
+  einer Passwort-Abfrage) nicht -- nur Einfügen per Rechtsklick ging.
+  Ursache: ohne ein Bearbeiten-Menü mit den Standard-Tastenkürzeln
+  Ausschneiden/Kopieren/Einfügen/Alles auswählen registriert macOS diese
+  Kürzel gar nicht erst.
+  *Cmd+V (paste) didn't work in dialog text fields (e.g. a password
+  prompt) -- only right-click paste worked. Cause: without an Edit menu
+  registering the standard Cut/Copy/Paste/Select All shortcuts, macOS
+  never registers them at all.*
+- Nach einem Export über ein werkzeug-eigenes „Als PDF exportieren“
+  (PDF erstellen, Seiten drehen, Seiten teilen, Seiten nummerieren)
+  dachte das Hauptfenster weiterhin, es gäbe ungespeicherte Änderungen,
+  und Cmd+S schrieb nicht in die gerade exportierte Datei, sondern fragte
+  erneut nach einem Speicherort. Dasselbe machte „Datei schließen“
+  (Cmd+W) unnötig oft nach ungespeicherten Änderungen zurückfragen.
+  *After exporting via a tool's own "Export as PDF" button (Create PDF,
+  Rotate pages, Split pages, Number pages), the main window kept
+  thinking there were unsaved changes, and Cmd+S didn't write into the
+  just-exported file but asked for a save location again. This also
+  made "Close file" (Cmd+W) prompt about unsaved changes unnecessarily
+  often.*
+- Cmd+W schloss die Einstellungen und andere Dialogfenster nicht.
+  *Cmd+W didn't close Preferences and other dialog windows.*
+- Vorschau-Träge­heit beim Wechsel zwischen Seiten: alle acht Werkzeuge
+  mit eigener großer Vorschau (Drehen, Zuschneiden, Schwärzen,
+  Seitenmaß, Teilen, Nummerieren, Lesezeichen, Bildbereinigung)
+  rendierten bei jedem Seitenwechsel mit, unabhängig davon, welches
+  gerade sichtbar war -- bei vielen Seiten spürbar langsam.
+  *Preview sluggishness when switching between pages: all eight tools
+  with their own large preview (Rotate, Crop, Redact, Page size, Split,
+  Number, Bookmarks, Image cleanup) re-rendered on every page change,
+  regardless of which one was actually visible -- noticeably slow with
+  many pages.*
+
 ## [1.9.1] – 2026-09-11
 
 ### Behoben / Fixed
