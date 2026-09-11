@@ -317,7 +317,7 @@
 <div class="schema" lang="en">
   <nav class="werkzeugliste">
     <p class="marke">Mathias' kleines<br>PDF-Werkzeug
-      <small>Manual · Version 1.10</small>
+      <small>Manual · Version 1.11</small>
     </p>
     <ol>
       <li><a href="#pdf-erstellen">Create PDF</a></li>
@@ -359,6 +359,13 @@
         <div><strong>DE / EN</strong><span>Switchable language</span></div>
         <div><strong>GPL-3.0</strong><span>Free software</span></div>
       </div>
+      <div class="hinweis" style="margin-top: 1.8rem;">
+        <span class="label">Tools also reachable via menu</span>
+        All tools are also available from the <b class="ui">Tools</b> menu, in addition
+        to the sidebar. The sidebar itself can be shown/hidden via
+        <b class="ui">View → Show tool list</b> resp. <b class="ui">Cmd+Alt+L (⌘⌥L)</b> --
+        handy for gaining more room for the file list and tool area on smaller screens.
+      </div>
     </div>
 
     <section class="werkzeug" id="pdf-erstellen">
@@ -399,7 +406,7 @@
       </figure>
       <ol class="schritte">
         <li><span class="txt">Click a page in the list, then drag with the mouse button held down in the preview until the content lines up with the red lines.</span></li>
-        <li><span class="txt">For exact values: use the number field below the preview, or fine-tune with the arrow keys in <b class="ui">0.1°</b> steps (<b class="ui">Shift</b>+arrow = <b class="ui">1°</b> steps).</span></li>
+        <li><span class="txt">For exact values: use the number field below the preview, or fine-tune with the arrow keys in <b class="ui">0.1°</b> steps (<b class="ui">Shift (⇧)</b>+arrow = <b class="ui">1°</b> steps).</span></li>
         <li><span class="txt">For right angles/mirroring: use the quick-action buttons.</span></li>
         <li><span class="txt">Set the scope (current page / selection / all) above the list before applying a quick action.</span></li>
         <li><span class="txt">For sideways-scanned double-page spreads with alternating orientation: apply <b class="ui">Rotate alternately by 90°</b> to the whole selection.</span></li>
@@ -474,7 +481,7 @@
       </figure>
       <ol class="schritte">
         <li><span class="txt">Set the number of columns and/or rows, click <b class="ui">Apply</b> — the lines appear evenly distributed.</span></li>
-        <li><span class="txt">Drag each line individually with the mouse; to hit precisely, zoom in with <b class="ui">Ctrl/Cmd</b>+scroll resp. a pinch gesture.</span></li>
+        <li><span class="txt">Drag each line individually with the mouse; to hit precisely, zoom in with <b class="ui">Ctrl/Cmd (⌃/⌘)</b>+scroll resp. a pinch gesture.</span></li>
         <li><span class="txt"><b class="ui">Auto-align</b> pulls each line to the quietest (emptiest) nearby image area — good for a booklet's gutter instead of the middle of the text.</span></li>
         <li><span class="txt"><b class="ui">Apply split now</b> actually cuts the page apart; the parts replace the page as independent, further-editable entries in the list.</span></li>
       </ol>
@@ -497,7 +504,7 @@
         <figcaption><b>Fig. 6</b> — Four parts in a 2×2 grid; the top-left tile is selected, fine-rotated by 3°, and cropped on the left/top.</figcaption>
       </figure>
       <ol class="schritte">
-        <li><span class="txt">Select the parts in the file list in the desired reading order (<b class="ui">Cmd</b>/<b class="ui">Shift</b>-click).</span></li>
+        <li><span class="txt">Select the parts in the file list in the desired reading order (<b class="ui">Cmd (⌘)</b>/<b class="ui">Shift (⇧)</b>-click).</span></li>
         <li><span class="txt">Set the number of columns (e.g. <b class="ui">2</b> for a 2×2 grid from four parts) and click <b class="ui">Generate layout from selection</b>.</span></li>
         <li><span class="txt">Click each part in the preview (selects it) and drag it to the right place with the mouse.</span></li>
         <li><span class="txt">For the selected part, set a <b>fine rotation</b> (0.1° steps) and a <b>crop per edge</b> in % on the right, to compensate for slightly different scan edges or a deliberate overlap.</span></li>
@@ -637,7 +644,7 @@
       </figure>
       <ol class="schritte">
         <li><span class="txt">Enter the four margins as number fields (Left, Top, Right, Bottom) — or drag the yellow lines directly in the preview with the mouse.</span></li>
-        <li><span class="txt">To hit precisely with small margins: zoom in with <b class="ui">Ctrl/Cmd</b>+scroll resp. a pinch gesture.</span></li>
+        <li><span class="txt">To hit precisely with small margins: zoom in with <b class="ui">Ctrl/Cmd (⌃/⌘)</b>+scroll resp. a pinch gesture.</span></li>
         <li><span class="txt">The resulting size is shown live below the margin fields, including a format suggestion if one fits.</span></li>
         <li><span class="txt">Choose the scope and click <b class="ui">Apply</b> — the same margins are applied to every page within the selected scope.</span></li>
       </ol>
@@ -809,8 +816,8 @@
     <section class="werkzeug" id="einstellungen">
       <p class="abschnitt-titel">Preferences</p>
       <p class="intro">The menu <b class="ui">Edit → Preferences …</b> (on macOS
-        automatically moved into the application menu, keyboard shortcut <b class="ui">Cmd+,</b>
-        resp. <b class="ui">Ctrl+,</b>) lets you set the interface language, measurement unit,
+        automatically moved into the application menu, keyboard shortcut <b class="ui">Cmd+, (⌘,)</b>
+        resp. <b class="ui">Ctrl+, (⌃,)</b>) lets you set the interface language, measurement unit,
         date format, default provider, and redaction color. Language and measurement unit stay
         deliberately switched <strong>by hand</strong> instead of being taken automatically
         from the system settings, since the PDFs being edited can come from any country,
@@ -869,7 +876,7 @@
     </section>
 
     <div class="fussleiste">
-      <span>Mathias' kleines PDF-Werkzeug · Version 1.10</span>
+      <span>Mathias' kleines PDF-Werkzeug · Version 1.11</span>
       <span>Provided free of charge by <a href="https://www.telefonanleitungen.de">Telefonanleitungen.de</a></span>
     </div>
   </main>

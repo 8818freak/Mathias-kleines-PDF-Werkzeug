@@ -225,6 +225,17 @@ class _Einstellungen(QObject):
     def splitter_groessen_setzen(self, groessen: list[int]) -> None:
         self._settings.setValue("splitterGroessen", groessen)
 
+    def werkzeugliste_sichtbar(self) -> bool:
+        """DE: Ob die linke Werkzeugliste eingeblendet ist (F4 bzw.
+            Ansicht-Menue) -- ueber Programmstarts hinweg gemerkt.
+        EN: Whether the left tool list is shown (F4 resp. the View menu)
+            -- remembered across program launches."""
+        wert = self._settings.value("werkzeuglisteSichtbar", True)
+        return wert in (True, "true", "1", 1)
+
+    def werkzeugliste_sichtbar_setzen(self, sichtbar: bool) -> None:
+        self._settings.setValue("werkzeuglisteSichtbar", sichtbar)
+
     def passwort_log(self) -> list[dict]:
         """DE: Liste vergebener PDF-Passwoerter (siehe core/passwort_log.py) --
             als Klartext in QSettings abgelegt, bewusst nicht verschluesselt

@@ -4,6 +4,44 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 
 *All notable changes to this project are documented here.*
 
+## [1.11] – 2026-09-11
+
+### Hinzugefügt / Added
+
+- Neues Menü „Werkzeuge“ -- listet alle 17 Werkzeuge zusätzlich zur
+  Seitenleiste zum Anklicken auf (mit Haken beim jeweils aktiven).
+  *New "Tools" menu -- lists all 17 tools for clicking, in addition to
+  the sidebar (with a checkmark on whichever is active).*
+- Neues Menü „Ansicht“ mit „Werkzeugliste einblenden“ (Tastenkürzel
+  F4) -- blendet die linke Seitenleiste aus/ein, um mehr Platz für
+  Dateiliste und Werkzeugbereich zu schaffen; der Zustand wird über
+  Programmstarts hinweg gemerkt.
+  *New "View" menu with "Show tool list" (shortcut F4) -- hides/shows
+  the left sidebar to make more room for the file list and tool area;
+  the state is remembered across program launches.*
+
+### Behoben / Fixed
+
+- Die mittlere Spalte (Dateiliste) ließ sich über den Splitter kaum
+  verschieben: `QStackedWidget` bemisst seine Mindestbreite
+  standardmäßig am BREITESTEN aller enthaltenen Werkzeuge, auch
+  unsichtbarer -- das breiteste Werkzeug blockierte dadurch den
+  Splitter für alle anderen. Berichtet jetzt nur noch die Größe des
+  aktuell sichtbaren Werkzeugs.
+  *The middle column (file list) could barely be resized via the
+  splitter: `QStackedWidget` sizes its minimum width from the WIDEST of
+  all contained tools by default, even invisible ones -- the widest
+  tool therefore blocked the splitter for every other tool. Now
+  reports only the currently visible tool's size.*
+- Die drei Knöpfe „Dateien hinzufügen …“/„Auswahl entfernen“/„Liste
+  leeren“ oben in der Dateiliste standen in einer nicht umbrechenden
+  Zeile und erzwangen dadurch selbst eine Mindestbreite der mittleren
+  Spalte -- jetzt ein zweizeiliges Raster.
+  *The three "Add files …"/"Remove selection"/"Clear list" buttons at
+  the top of the file list sat in a non-wrapping row and thereby
+  forced a minimum width on the middle column themselves -- now a
+  two-row grid.*
+
 ## [1.10] – 2026-09-11
 
 ### Hinzugefügt / Added

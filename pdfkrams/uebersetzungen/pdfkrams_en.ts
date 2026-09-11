@@ -170,22 +170,22 @@
         <translation>Clear list</translation>
     </message>
     <message>
-        <location filename="../gui/widgets/file_tool_base.py" line="118"/>
+        <location filename="../gui/widgets/file_tool_base.py" line="131"/>
         <source>Dateien auswählen</source>
         <translation>Select files</translation>
     </message>
     <message>
-        <location filename="../gui/widgets/file_tool_base.py" line="153"/>
+        <location filename="../gui/widgets/file_tool_base.py" line="166"/>
         <source>Dateien werden geladen …</source>
         <translation>Loading files …</translation>
     </message>
     <message>
-        <location filename="../gui/widgets/file_tool_base.py" line="181"/>
+        <location filename="../gui/widgets/file_tool_base.py" line="194"/>
         <source>Nicht unterstütztes Format</source>
         <translation>Unsupported format</translation>
     </message>
     <message>
-        <location filename="../gui/widgets/file_tool_base.py" line="182"/>
+        <location filename="../gui/widgets/file_tool_base.py" line="195"/>
         <source>Diese Dateien wurden übersprungen:
 {0}</source>
         <translation>These files were skipped:
@@ -513,97 +513,112 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../gui/main_window.py" line="113"/>
+        <location filename="../gui/main_window.py" line="143"/>
         <source>„{0}“ kommt in einem der nächsten Schritte.</source>
         <translation>“{0}” is coming in one of the next steps.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="199"/>
+        <location filename="../gui/main_window.py" line="240"/>
         <source>Datei</source>
         <translation>File</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="201"/>
+        <location filename="../gui/main_window.py" line="242"/>
         <source>Dateien öffnen …</source>
         <translation>Open files …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="206"/>
+        <location filename="../gui/main_window.py" line="247"/>
         <source>Datei schließen</source>
         <translation>Close file</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="217"/>
+        <location filename="../gui/main_window.py" line="258"/>
         <source>Speichern</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="222"/>
+        <location filename="../gui/main_window.py" line="263"/>
         <source>Speichern unter …</source>
         <translation>Save as …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="227"/>
+        <location filename="../gui/main_window.py" line="268"/>
         <source>Bearbeiten</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="229"/>
+        <location filename="../gui/main_window.py" line="270"/>
         <source>Rückgängig</source>
         <translation>Undo</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="234"/>
+        <location filename="../gui/main_window.py" line="275"/>
         <source>Wiederholen</source>
         <translation>Redo</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="270"/>
+        <location filename="../gui/main_window.py" line="311"/>
         <source>Ausschneiden</source>
         <translation>Cut</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="275"/>
+        <location filename="../gui/main_window.py" line="316"/>
         <source>Kopieren</source>
         <translation>Copy</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="280"/>
+        <location filename="../gui/main_window.py" line="321"/>
         <source>Einfügen</source>
         <translation>Paste</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="285"/>
+        <location filename="../gui/main_window.py" line="326"/>
         <source>Alles auswählen</source>
         <translation>Select All</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="292"/>
+        <location filename="../gui/main_window.py" line="333"/>
         <source>Einstellungen …</source>
         <translation>Preferences …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="302"/>
+        <location filename="../gui/main_window.py" line="343"/>
+        <source>Ansicht</source>
+        <translation>View</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="345"/>
+        <source>Werkzeugliste einblenden</source>
+        <translation>Show tool list</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="352"/>
+        <source>Werkzeuge</source>
+        <translation>Tools</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="373"/>
         <source>Hilfe</source>
         <translation>Help</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="304"/>
+        <location filename="../gui/main_window.py" line="375"/>
         <source>Bedienungsanleitung</source>
         <translation>User Manual</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="316"/>
+        <location filename="../gui/main_window.py" line="387"/>
         <source>Über {0} …</source>
         <translation>About {0} …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="337"/>
+        <location filename="../gui/main_window.py" line="408"/>
         <source>Über {0}</source>
         <translation>About {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="343"/>
+        <location filename="../gui/main_window.py" line="414"/>
         <source>Kostenlos bereitgestellt von {0}&lt;br&gt;&lt;a href=&quot;{1}&quot;&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;Dieses Programm kommt OHNE JEDE GEWÄHRLEISTUNG. Es ist freie Software, und Sie dürfen es unter bestimmten Bedingungen weiterverbreiten -- siehe die Lizenz GNU GPL 3.0 (Datei LICENSE) für Details.&lt;br&gt;&lt;br&gt;Entwickelt und getestet wird ausschließlich auf macOS -- die Windows-Version wird nicht selbst getestet, funktioniert aber hoffentlich fehlerfrei. Bei Fehlern bitte mit einer genauen, nachvollziehbaren Beschreibung an &lt;a href=&quot;mailto:telefonmann@telefonanleitungen.de&quot;&gt;telefonmann@telefonanleitungen.de&lt;/a&gt; schreiben, dann wird so schnell wie möglich korrigiert.</source>
         <translation>Provided free of charge by {0}&lt;br&gt;&lt;a href=&quot;{1}&quot;&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;This program comes WITH ABSOLUTELY NO WARRANTY. It is free software, and you are welcome to redistribute it under certain conditions -- see the GNU GPL 3.0 license (file LICENSE) for details.&lt;br&gt;&lt;br&gt;Developed and tested exclusively on macOS -- the Windows version is not tested by the author, but hopefully works correctly. If you run into a bug, please report it with a precise, reproducible description to &lt;a href=&quot;mailto:telefonmann@telefonanleitungen.de&quot;&gt;telefonmann@telefonanleitungen.de&lt;/a&gt;, and it will be fixed as soon as possible.</translation>
     </message>
@@ -612,63 +627,63 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
         <translation>Provided free of charge by {0}&lt;br&gt;&lt;a href=&quot;{1}&quot;&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;This program comes WITH ABSOLUTELY NO WARRANTY. It is free software, and you are welcome to redistribute it under certain conditions -- see the GNU GPL 3.0 license (file LICENSE) for details.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="491"/>
+        <location filename="../gui/main_window.py" line="573"/>
         <source>PDF speichern unter</source>
         <translation>Save PDF as</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="490"/>
+        <location filename="../gui/main_window.py" line="572"/>
         <source>dokument.pdf</source>
         <translation>document.pdf</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="466"/>
-        <location filename="../gui/main_window.py" line="476"/>
+        <location filename="../gui/main_window.py" line="548"/>
+        <location filename="../gui/main_window.py" line="558"/>
         <source>Ungespeicherte Änderungen</source>
         <translation>Unsaved changes</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="467"/>
+        <location filename="../gui/main_window.py" line="549"/>
         <source>Diese Datei hat ungespeicherte Änderungen. Trotzdem schließen?</source>
         <translation>This file has unsaved changes. Close anyway?</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="477"/>
+        <location filename="../gui/main_window.py" line="559"/>
         <source>Es gibt ungespeicherte Änderungen. Trotzdem beenden?</source>
         <translation>There are unsaved changes. Quit anyway?</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="491"/>
+        <location filename="../gui/main_window.py" line="573"/>
         <source>PDF-Datei (*.pdf)</source>
         <translation>PDF file (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="500"/>
+        <location filename="../gui/main_window.py" line="582"/>
         <source>Keine Seiten</source>
         <translation>No pages</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="500"/>
+        <location filename="../gui/main_window.py" line="582"/>
         <source>Die Dateiliste ist leer.</source>
         <translation>The file list is empty.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="502"/>
+        <location filename="../gui/main_window.py" line="584"/>
         <source>PDF wird erstellt …</source>
         <translation>Creating PDF …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="509"/>
+        <location filename="../gui/main_window.py" line="591"/>
         <source>Speichern fehlgeschlagen</source>
         <translation>Save failed</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="514"/>
+        <location filename="../gui/main_window.py" line="596"/>
         <source>Gespeichert</source>
         <translation>Saved</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="514"/>
+        <location filename="../gui/main_window.py" line="596"/>
         <source>PDF gespeichert unter:
 {0}</source>
         <translation>PDF saved to:
@@ -1041,302 +1056,302 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
         <translation>Timestamp</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="97"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="108"/>
         <source>wie Nutzerpasswort, falls leer</source>
         <translation>same as user password, if left blank</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="99"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="110"/>
         <source>Drucken erlauben</source>
         <translation>Allow printing</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="101"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="112"/>
         <source>Kopieren/Extrahieren erlauben</source>
         <translation>Allow copying/extracting</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="103"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="114"/>
         <source>Bearbeiten erlauben</source>
         <translation>Allow editing</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="110"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="121"/>
         <source>Verschlüsselungseinstellungen (gelten für alle drei Aktionen unten)</source>
         <translation>Encryption settings (apply to all three actions below)</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="112"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="123"/>
         <source>Verfahren:</source>
         <translation>Method:</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="114"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="125"/>
         <source>Rechte-Passwort (Eigentümer -- darf trotz Einschränkungen alles):</source>
         <translation>Permissions password (owner -- can do everything despite restrictions):</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="132"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="143"/>
         <source>Versieht eine einzelne, bereits vorhandene PDF-Datei mit einem Passwort.</source>
         <translation>Adds a password to a single, already existing PDF file.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="135"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="146"/>
         <source>Nutzerpasswort (zum Öffnen)</source>
         <translation>User password (to open)</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="136"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="147"/>
         <source>Datei wählen &amp;&amp; schützen …</source>
         <translation>Choose file &amp;&amp; protect …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="139"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="150"/>
         <source>Einzelne Datei schützen</source>
         <translation>Protect a single file</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="149"/>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="195"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="160"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="206"/>
         <source>Passwort fehlt</source>
         <translation>Password missing</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="149"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="160"/>
         <source>Bitte ein Nutzerpasswort eingeben.</source>
         <translation>Please enter a user password.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="151"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="162"/>
         <source>PDF-Datei wählen</source>
         <translation>Choose PDF file</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="151"/>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="156"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="162"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="167"/>
         <source>PDF-Datei (*.pdf)</source>
         <translation>PDF file (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="155"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="166"/>
         <source>Geschützte PDF speichern unter</source>
         <translation>Save protected PDF as</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="163"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="174"/>
         <source>PDF wird geschützt …</source>
         <translation>Protecting PDF …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="167"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="178"/>
         <source>Fehlgeschlagen</source>
         <translation>Failed</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="170"/>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="279"/>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="345"/>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="356"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="181"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="290"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="363"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="374"/>
         <source>Fertig</source>
         <translation>Done</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="170"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="181"/>
         <source>Geschützte PDF gespeichert unter:
 {0}</source>
         <translation>Protected PDF saved to:
 {0}</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="176"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="187"/>
         <source>Verschlüsselt ALLE PDF-Dateien in einem Ordner samt Unterordnern mit demselben Passwort -- direkt in den Originaldateien (nicht als Kopie). Vorher ein Backup anlegen, falls die Dateien noch woanders gebraucht werden.</source>
         <translation>Encrypts ALL PDF files in a folder, including subfolders, with the same password -- directly in the original files (not as a copy). Make a backup first if the files are still needed elsewhere unencrypted.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="181"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="192"/>
         <source>Passwort für alle Dateien in diesem Ordner</source>
         <translation>Password for all files in this folder</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="182"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="193"/>
         <source>Ordner wählen &amp;&amp; verschlüsseln …</source>
         <translation>Choose folder &amp;&amp; encrypt …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="185"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="196"/>
         <source>Ordner verschlüsseln (inkl. Unterordner)</source>
         <translation>Encrypt folder (incl. subfolders)</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="195"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="206"/>
         <source>Bitte ein Passwort eingeben.</source>
         <translation>Please enter a password.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="197"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="208"/>
         <source>Ordner wählen</source>
         <translation>Choose folder</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="202"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="213"/>
         <source>Keine PDF-Dateien</source>
         <translation>No PDF files</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="202"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="213"/>
         <source>In diesem Ordner (und Unterordnern) liegen keine PDF-Dateien.</source>
         <translation>There are no PDF files in this folder (or its subfolders).</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="205"/>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="251"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="216"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="262"/>
         <source>Wirklich verschlüsseln?</source>
         <translation>Really encrypt?</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="206"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="217"/>
         <source>{0} PDF-Datei(en) in &quot;{1}&quot; (samt Unterordnern) werden DIREKT verschlüsselt, nicht als Kopie. Fortfahren?</source>
         <translation>{0} PDF file(s) in &quot;{1}&quot; (including subfolders) will be encrypted DIRECTLY, not as a copy. Continue?</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="215"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="226"/>
         <source>Ordner wird verschlüsselt …</source>
         <translation>Encrypting folder …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="228"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="239"/>
         <source>Verschlüsselt Dateien anhand einer CSV-Liste (Spalten &quot;Dateipfad;Passwort&quot;, eine exportierte Log-Datei unten passt direkt) -- jede Datei DIREKT mit ihrem eigenen Passwort, nicht als Kopie.</source>
         <translation>Encrypts files based on a CSV list (columns &quot;file path;password&quot;, an exported log file below fits directly) -- each file DIRECTLY with its own password, not as a copy.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="233"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="244"/>
         <source>Listendatei wählen &amp;&amp; verschlüsseln …</source>
         <translation>Choose list file &amp;&amp; encrypt …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="236"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="247"/>
         <source>Nach Liste verschlüsseln</source>
         <translation>Encrypt from list</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="243"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="254"/>
         <source>Liste wählen</source>
         <translation>Choose list</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="243"/>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="341"/>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="348"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="254"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="359"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="366"/>
         <source>CSV-Datei (*.csv)</source>
         <translation>CSV file (*.csv)</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="248"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="259"/>
         <source>Leere Liste</source>
         <translation>Empty list</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="248"/>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="353"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="259"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="371"/>
         <source>In dieser Datei stehen keine gültigen Zeilen.</source>
         <translation>This file contains no valid rows.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="252"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="263"/>
         <source>{0} Datei(en) aus der Liste werden DIREKT verschlüsselt, nicht als Kopie. Fortfahren?</source>
         <translation>{0} file(s) from the list will be encrypted DIRECTLY, not as a copy. Continue?</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="261"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="272"/>
         <source>Dateien werden verschlüsselt …</source>
         <translation>Encrypting files …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="272"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="283"/>
         <source>{0} Datei(en) erfolgreich verschlüsselt.</source>
         <translation>{0} file(s) successfully encrypted.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="274"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="285"/>
         <source>{0} Datei(en) fehlgeschlagen:
 {1}</source>
         <translation>{0} file(s) failed:
 {1}</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="277"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="288"/>
         <source>Teilweise fehlgeschlagen</source>
         <translation>Partially failed</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="284"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="295"/>
         <source>Passwörter anzeigen</source>
         <translation>Show passwords</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="292"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="310"/>
         <source>Log exportieren …</source>
         <translation>Export log …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="294"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="312"/>
         <source>Log importieren …</source>
         <translation>Import log …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="296"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="314"/>
         <source>Log leeren</source>
         <translation>Clear log</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="306"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="324"/>
         <source>Passwort-Log (Klartext -- nur zur eigenen Ablage, nicht verschlüsselt gespeichert)</source>
         <translation>Password log (plaintext -- for your own records only, not stored encrypted)</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="339"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="357"/>
         <source>Leeres Log</source>
         <translation>Empty log</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="339"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="357"/>
         <source>Es gibt noch keine Log-Einträge.</source>
         <translation>There are no log entries yet.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="341"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="359"/>
         <source>Log exportieren als</source>
         <translation>Export log as</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="345"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="363"/>
         <source>Log exportiert nach:
 {0}</source>
         <translation>Log exported to:
 {0}</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="348"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="366"/>
         <source>Log importieren</source>
         <translation>Import log</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="353"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="371"/>
         <source>Leere Datei</source>
         <translation>Empty file</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="356"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="374"/>
         <source>{0} Einträge importiert.</source>
         <translation>{0} entries imported.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="362"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="380"/>
         <source>Log leeren?</source>
         <translation>Clear log?</translation>
     </message>
     <message>
-        <location filename="../gui/tools/passwortschutz_tool.py" line="362"/>
+        <location filename="../gui/tools/passwortschutz_tool.py" line="380"/>
         <source>Alle Log-Einträge unwiderruflich entfernen?</source>
         <translation>Remove all log entries irrevocably?</translation>
     </message>

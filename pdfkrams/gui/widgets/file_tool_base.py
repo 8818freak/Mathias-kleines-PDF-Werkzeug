@@ -17,7 +17,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from PySide6.QtCore import QCoreApplication, Signal
-from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QMessageBox, QPushButton, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QFrame, QGridLayout, QLabel, QMessageBox, QPushButton, QVBoxLayout, QWidget
 
 from pdfkrams.core.document import UNTERSTUETZTE_ENDUNGEN, datei_aufschluesseln, ist_unterstuetzt
 from pdfkrams.gui.widgets.datei_dialoge import oeffnen_dialog
@@ -104,10 +104,23 @@ class DateiListenPanel(QWidget):
         btn_leeren = QPushButton(self.tr("Liste leeren"))
         btn_leeren.clicked.connect(self.liste.alle_entfernen)
 
-        knopfzeile = QHBoxLayout()
-        knopfzeile.addWidget(btn_hinzufuegen)
-        knopfzeile.addWidget(btn_entfernen)
-        knopfzeile.addWidget(btn_leeren)
+        # DE: Zweizeiliges Raster statt einer Zeile mit allen drei Knoepfen
+        #     -- eine einzelne nicht umbrechende Zeile erzwingt eine
+        #     Mindestbreite der gesamten mittleren Spalte (Splitter liess
+        #     sich dadurch nicht schmaler ziehen als die Summe aller drei
+        #     Knopfbreiten). "Dateien hinzufuegen" (haeufigste Aktion)
+        #     bekommt seine eigene Zeile, die beiden selteneren teilen sich
+        #     die zweite.
+        # EN: Two-row grid instead of one row with all three buttons -- a
+        #     single non-wrapping row forces a minimum width on the whole
+        #     middle column (the splitter couldn't be dragged narrower
+        #     than the sum of all three button widths). "Add files" (the
+        #     most common action) gets its own row, the two rarer ones
+        #     share the second.
+        knopfzeile = QGridLayout()
+        knopfzeile.addWidget(btn_hinzufuegen, 0, 0, 1, 2)
+        knopfzeile.addWidget(btn_entfernen, 1, 0)
+        knopfzeile.addWidget(btn_leeren, 1, 1)
 
         layout = QVBoxLayout(self)
         layout.addWidget(hinweis)

@@ -28,8 +28,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PySide6.QtCore import QCoreApplication, Qt
-from PySide6.QtGui import QAction, QKeySequence, QPixmap
+from PySide6.QtCore import QCoreApplication, QSize, Qt
+from PySide6.QtGui import QAction, QActionGroup, QKeySequence, QPixmap
 from PySide6.QtWidgets import (
     QApplication,
     QLabel,
@@ -107,6 +107,36 @@ _WERKZEUGE: list[tuple[str, type[QWidget] | None]] = [
 ]
 
 
+class _WerkzeugStack(QStackedWidget):
+    """
+    DE: QStackedWidget berechnet seine Mindestgroesse standardmaessig aus
+        dem GROESSTEN aller enthaltenen Werkzeuge -- auch der gerade
+        unsichtbaren. Ein einziges besonders breites Werkzeug (z. B. eine
+        Zeile mit mehreren Kontrollkaestchen ohne Zeilenumbruch) blockiert
+        dadurch den Splitter zwischen Dateiliste und Werkzeugbereich fuer
+        ALLE Werkzeuge, nicht nur fuer sich selbst -- genau das hat der
+        Nutzer als "Verschieben der Spaltenbreite geht nicht" gemeldet.
+        Diese Unterklasse berichtet stattdessen nur die Groesse des
+        AKTUELL sichtbaren Werkzeugs.
+    EN: QStackedWidget computes its minimum size from the LARGEST of all
+        contained tools by default -- even ones currently invisible. One
+        single especially wide tool (e.g. a row of several checkboxes
+        with no line wrap) therefore blocks the splitter between the
+        file list and the tool area for ALL tools, not just itself --
+        exactly what the user reported as "moving the column width
+        doesn't work". This subclass instead reports only the size of
+        the CURRENTLY visible tool.
+    """
+
+    def sizeHint(self) -> QSize:  # noqa: N802 (Qt-Namenskonvention)
+        aktuell = self.currentWidget()
+        return aktuell.sizeHint() if aktuell is not None else super().sizeHint()
+
+    def minimumSizeHint(self) -> QSize:  # noqa: N802 (Qt-Namenskonvention)
+        aktuell = self.currentWidget()
+        return aktuell.minimumSizeHint() if aktuell is not None else super().minimumSizeHint()
+
+
 def _platzhalter(name: str) -> QWidget:
     """DE: Hinweisseite fuer ein noch nicht gebautes Werkzeug.
     EN: Placeholder page for a tool that hasn't been built yet."""
@@ -144,7 +174,7 @@ class MainWindow(QMainWindow):
         self._liste.alsExportiertMarkiert.connect(self._exportziel_uebernehmen)
 
         self._seitenleiste = QListWidget()
-        self._werkzeuge = QStackedWidget()
+        self._werkzeuge = _WerkzeugStack()
 
         for name, widget_klasse in _WERKZEUGE:
             # DE: self.tr(name) statt eines literalen Strings -- pyside6-lupdate
@@ -161,6 +191,14 @@ class MainWindow(QMainWindow):
             self._werkzeuge.addWidget(widget_klasse(self._liste) if widget_klasse else _platzhalter(name))
 
         self._seitenleiste.currentRowChanged.connect(self._werkzeuge.setCurrentIndex)
+        # DE: Qt merkt von selbst nicht, dass sich minimumSizeHint() durch
+        #     den Wechsel des sichtbaren Werkzeugs geaendert hat (siehe
+        #     _WerkzeugStack) -- updateGeometry() stoesst die Neuberechnung
+        #     im Splitter darueber an.
+        # EN: Qt doesn't notice on its own that minimumSizeHint() changed
+        #     because the visible tool changed (see _WerkzeugStack) --
+        #     updateGeometry() triggers the splitter's recalculation above it.
+        self._werkzeuge.currentChanged.connect(lambda _i: self._werkzeuge.updateGeometry())
         self._seitenleiste.setCurrentRow(0)
         self._seitenleiste.setFixedWidth(180)
 
@@ -187,6 +225,9 @@ class MainWindow(QMainWindow):
         if gemerkte_groessen and len(gemerkte_groessen) == 3:
             splitter.setSizes(gemerkte_groessen)
         splitter.splitterMoved.connect(lambda *_: einstellungen.splitter_groessen_setzen(splitter.sizes()))
+
+        self._splitter = splitter
+        self._seitenleiste.setVisible(einstellungen.werkzeugliste_sichtbar())
 
         self.setCentralWidget(splitter)
         self._menu_erstellen()
@@ -299,6 +340,61 @@ class MainWindow(QMainWindow):
         action_einstellungen.triggered.connect(self._einstellungen_anzeigen)
         bearbeiten_menu.addAction(action_einstellungen)
 
+        ansicht_menu = menu.addMenu(self.tr("Ansicht"))
+
+        self._action_werkzeugliste = QAction(self.tr("Werkzeugliste einblenden"), self)
+        self._action_werkzeugliste.setCheckable(True)
+        # DE: NICHT self._seitenleiste.isVisible() -- das Fenster wurde an
+        #     dieser Stelle noch nicht angezeigt (show() passiert erst
+        #     spaeter von aussen), weshalb isVisible() hier IMMER False
+        #     liefert, ganz unabhaengig vom tatsaechlich per setVisible()
+        #     gesetzten Zustand. Direkt aus der Einstellung lesen.
+        # EN: NOT self._seitenleiste.isVisible() -- the window hasn't been
+        #     shown yet at this point (show() only happens later from the
+        #     outside), so isVisible() ALWAYS returns False here,
+        #     regardless of the state actually set via setVisible(). Read
+        #     directly from the setting instead.
+        self._action_werkzeugliste.setChecked(einstellungen.werkzeugliste_sichtbar())
+        # DE: NICHT F4 (macOS faengt das systemweit fuer Spotlight ab,
+        #     bevor es die App je erreicht) und NICHT Cmd+\ (Symbol-
+        #     Tasten wie "\" liegen auf nicht-US-Tastaturlayouts an ganz
+        #     anderen physischen Positionen bzw. brauchen andere
+        #     Zusatztasten, wodurch QKeySequence("Ctrl+\\") dort ins
+        #     Leere lief -- beides nutzerseitig bestaetigt). Eine reine
+        #     Buchstaben-Kombination ist ueber alle Tastaturlayouts hinweg
+        #     zuverlaessig.
+        # EN: NOT F4 (macOS intercepts that system-wide for Spotlight
+        #     before it ever reaches the app) and NOT Cmd+\ (symbol keys
+        #     like "\" sit at entirely different physical positions on
+        #     non-US keyboard layouts resp. need different modifier keys,
+        #     which made QKeySequence("Ctrl+\\") a no-op there -- both
+        #     confirmed by the user). A plain letter combination is
+        #     reliable across every keyboard layout.
+        self._action_werkzeugliste.setShortcut(QKeySequence("Ctrl+Alt+L"))
+        self._action_werkzeugliste.toggled.connect(self._werkzeugliste_umschalten)
+        ansicht_menu.addAction(self._action_werkzeugliste)
+
+        werkzeuge_menu = menu.addMenu(self.tr("Werkzeuge"))
+        werkzeuge_gruppe = QActionGroup(self)
+        werkzeuge_gruppe.setExclusive(True)
+        for i, (name, _widget_klasse) in enumerate(_WERKZEUGE):
+            # DE: self.tr(name) -- dieselben Zeichenketten wie in der
+            #     Seitenleiste oben, daher bereits uebersetzt vorhanden
+            #     (siehe der Kommentar dort), keine neuen .ts-Eintraege
+            #     noetig.
+            # EN: self.tr(name) -- the same strings as in the sidebar
+            #     above, so already translated (see the comment there),
+            #     no new .ts entries needed.
+            action = QAction(self.tr(name), self)
+            action.setCheckable(True)
+            action.setChecked(i == self._seitenleiste.currentRow())
+            action.triggered.connect(lambda _checked=False, i=i: self._seitenleiste.setCurrentRow(i))
+            werkzeuge_gruppe.addAction(action)
+            werkzeuge_menu.addAction(action)
+        self._seitenleiste.currentRowChanged.connect(
+            lambda zeile: werkzeuge_gruppe.actions()[zeile].setChecked(True)
+        )
+
         hilfe_menu = menu.addMenu(self.tr("Hilfe"))
 
         action_anleitung = QAction(self.tr("Bedienungsanleitung"), self)
@@ -395,6 +491,17 @@ class MainWindow(QMainWindow):
     def _verlauf_aktualisieren(self) -> None:
         self._action_rueckgaengig.setEnabled(self._liste.kann_rueckgaengig())
         self._action_wiederholen.setEnabled(self._liste.kann_wiederholen())
+
+    def _werkzeugliste_umschalten(self, sichtbar: bool) -> None:
+        """DE: Blendet die linke Werkzeugliste ein/aus (F4 bzw. Ansicht-
+            Menue) -- mehr Platz fuer Dateiliste und Werkzeugbereich, wenn
+            man sie nicht braucht. Merkt sich den Zustand fuer den
+            naechsten Programmstart.
+        EN: Shows/hides the left tool list (F4 resp. the View menu) --
+            more room for the file list and tool area when it's not
+            needed. Remembers the state for the next program launch."""
+        self._seitenleiste.setVisible(sichtbar)
+        einstellungen.werkzeugliste_sichtbar_setzen(sichtbar)
 
     # -- Speichern / saving -------------------------------------------------
 
