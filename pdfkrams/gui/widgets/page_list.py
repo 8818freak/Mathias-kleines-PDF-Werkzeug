@@ -36,9 +36,11 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Callable
 
-from PySide6.QtCore import QCoreApplication, QRectF, QSize, Qt, Signal
+from PySide6.QtCore import QCoreApplication, QRect, QRectF, QSize, Qt, Signal
 from PySide6.QtGui import QColor, QIcon, QImage, QPainter, QPixmap, QTransform
-from PySide6.QtWidgets import QListWidget, QListWidgetItem
+from PySide6.QtWidgets import (
+    QApplication, QListWidget, QListWidgetItem, QStyle, QStyledItemDelegate, QStyleOptionViewItem,
+)
 
 from pdfkrams.core.document import PageSource, WorkingPage, render_rgb
 from pdfkrams.core.metadaten import dateiname_vorschlagen, leere_rohdaten, pdf_felder
@@ -190,6 +192,86 @@ def _text(wp: WorkingPage) -> str:
     return f"{wp.source.label} ({', '.join(zusatz)})"
 
 
+class _GestapelteDarstellung(QStyledItemDelegate):
+    """
+    DE: Zeichnet Miniatur und Beschriftungstext UNTEREINANDER (Text unter
+        dem Bild), statt wie es Qts ListMode-Standarddarstellung sonst tut
+        -- Text rechts neben dem Icon. ListMode wird fuer die Liste
+        gebraucht, damit Drag&Drop zum Neuordnen funktioniert (siehe
+        PageListWidget.__init__): IconMode+Movement.Static war auf dieser
+        Qt/PySide6/macOS-Kombination nachweislich kaputt fuer internes
+        Drag&Drop. Damit die Beschriftung trotzdem wie gewohnt UNTER der
+        Miniatur erscheint (wie vor diesem Drag&Drop-Fix), zeichnet dieses
+        Delegate Icon und Text selbst, gestapelt, statt Qts eingebautes
+        Nebeneinander-Layout von ListMode zu verwenden.
+
+    EN: Draws thumbnail and caption text STACKED (text below the image),
+        instead of Qt's ListMode default -- text to the right of the icon.
+        ListMode is needed for the list so drag&drop reordering works (see
+        PageListWidget.__init__): IconMode+Movement.Static was demonstrably
+        broken for internal drag&drop on this Qt/PySide6/macOS combination.
+        So the caption still appears UNDERNEATH the thumbnail as before
+        (pre drag&drop fix), this delegate draws icon and text itself,
+        stacked, instead of using ListMode's built-in side-by-side layout.
+    """
+
+    # DE: Abstand zwischen Miniatur und Text sowie Rand um die Zelle, in Pixeln.
+    # EN: Gap between thumbnail and text, and margin around the cell, in pixels.
+    _ABSTAND = 4
+    _RAND = 6
+    # DE: Maximale Texthoehe (mehrzeilig, bei langer Beschriftung), in Pixeln.
+    # EN: Maximum text height (multi-line, for a long caption), in pixels.
+    _TEXT_HOEHE_MAX = 54
+
+    def _text_rect_breite(self, option: QStyleOptionViewItem) -> int:
+        return max(option.decorationSize.width(), THUMB_GROESSE) + 2 * self._RAND
+
+    def paint(self, painter: QPainter, option: QStyleOptionViewItem, index) -> None:
+        painter.save()
+        # DE: Auswahl-/Hover-Hintergrund normal ueber die ganze Zelle
+        #     zeichnen lassen, aber OHNE Icon/Text -- die zeichnen wir
+        #     selbst, gestapelt, direkt danach.
+        # EN: Let the normal selection/hover background be drawn over the
+        #     whole cell, but WITHOUT icon/text -- we draw those ourselves,
+        #     stacked, right after.
+        nackte_optionen = QStyleOptionViewItem(option)
+        nackte_optionen.text = ""
+        nackte_optionen.icon = QIcon()
+        stil = option.widget.style() if option.widget else QApplication.style()
+        stil.drawControl(QStyle.ControlElement.CE_ItemViewItem, nackte_optionen, painter, option.widget)
+
+        rect = option.rect
+        icon = index.data(Qt.ItemDataRole.DecorationRole)
+        if icon:
+            pixmap = icon.pixmap(option.decorationSize)
+            x = rect.x() + (rect.width() - pixmap.width()) // 2
+            y = rect.y() + self._RAND
+            painter.drawPixmap(x, y, pixmap)
+
+        text = index.data(Qt.ItemDataRole.DisplayRole) or ""
+        text_rect = QRect(
+            rect.x() + self._RAND, rect.y() + option.decorationSize.height() + self._ABSTAND,
+            rect.width() - 2 * self._RAND, self._TEXT_HOEHE_MAX,
+        )
+        ausgewaehlt = bool(option.state & QStyle.StateFlag.State_Selected)
+        farbrolle = option.palette.ColorRole.HighlightedText if ausgewaehlt else option.palette.ColorRole.Text
+        painter.setPen(option.palette.color(farbrolle))
+        painter.setFont(option.font)
+        painter.drawText(text_rect, Qt.AlignmentFlag.AlignHCenter | Qt.TextFlag.TextWordWrap, text)
+        painter.restore()
+
+    def sizeHint(self, option: QStyleOptionViewItem, index) -> QSize:
+        text = index.data(Qt.ItemDataRole.DisplayRole) or ""
+        breite = self._text_rect_breite(option)
+        text_rect = option.fontMetrics.boundingRect(
+            QRect(0, 0, breite - 2 * self._RAND, 1000),
+            Qt.AlignmentFlag.AlignHCenter | Qt.TextFlag.TextWordWrap, text,
+        )
+        text_hoehe = min(text_rect.height(), self._TEXT_HOEHE_MAX)
+        hoehe = option.decorationSize.height() + self._ABSTAND + text_hoehe + 2 * self._RAND
+        return QSize(breite, hoehe)
+
+
 class PageListWidget(QListWidget):
     """
     DE: Liste von Seiten mit Miniaturansicht, Mehrfachauswahl,
@@ -257,6 +339,13 @@ class PageListWidget(QListWidget):
         self.setWrapping(True)
         self.setIconSize(QSize(THUMB_GROESSE, THUMB_GROESSE))
         self.setResizeMode(QListWidget.ResizeMode.Adjust)
+        # DE: Eigenes Delegate, damit die Beschriftung UNTER der Miniatur
+        #     erscheint statt (ListMode-Standard) daneben -- siehe
+        #     _GestapelteDarstellung.
+        # EN: Custom delegate so the caption appears BELOW the thumbnail
+        #     instead of (ListMode's default) beside it -- see
+        #     _GestapelteDarstellung.
+        self.setItemDelegate(_GestapelteDarstellung(self))
         self.setDragDropMode(QListWidget.DragDropMode.InternalMove)
         self.setSelectionMode(QListWidget.SelectionMode.ExtendedSelection)
         self.setSpacing(8)

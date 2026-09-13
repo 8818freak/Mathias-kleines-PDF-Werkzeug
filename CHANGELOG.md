@@ -4,6 +4,55 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 
 *All notable changes to this project are documented here.*
 
+## [1.13.1] – 2026-09-13
+
+### Behoben / Fixed
+
+- Nach dem Speichern zeigte die Liste gedrehte/gespiegelte Seiten wieder
+  wie vor der Drehung an (die Datei war korrekt gespeichert, nur die
+  Miniatur-Anzeige veraltet) -- verursacht durch einen zwischengespeicherten
+  Vorschau-Cache, der beim Neuladen nach dem Speichern denselben
+  Datei-Pfad+Seite-Schlüssel wie vor der Bearbeitung wiederverwendete.
+  Cache wird jetzt an dieser Stelle explizit geleert.
+  *After saving, the list showed rotated/mirrored pages as they looked
+  before rotating again (the file itself was saved correctly, only the
+  thumbnail display was stale) -- caused by a cached preview reusing the
+  same file-path+page key as before editing when reloading after save.
+  The cache is now explicitly cleared at that point.*
+- Seite mit rechtwinkliger Drehung (90°/180°/270°) verlor beim Speichern
+  eine ggf. bereits vorhandene native PDF-Rotation der Quellseite (z. B.
+  von der Scan-Software gesetzt) -- die Vorschau zeigt native Rotation +
+  eigene Drehung immer korrekt zusammen an, das verlustfreie Speichern
+  überschrieb die native Rotation aber statt sie zu addieren. Seite
+  erschien nach dem Speichern (teilweise) zurückgedreht. Betraf sowohl
+  normales Speichern als auch die verlustfreie Komprimierung.
+  *A page with a right-angle rotation (90°/180°/270°) lost any native PDF
+  rotation the source page already had (e.g. set by scanning software)
+  when saving -- the preview always correctly shows native rotation +
+  the page's own rotation combined, but lossless saving overwrote the
+  native rotation instead of adding to it. The page appeared (partially)
+  rotated back after saving. Affected both normal saving and lossless
+  compression.*
+- „Heftseiten teilen“ erkannte nicht, wenn eine einzeln gedrehte Seite
+  dadurch schmaler wurde als eine normale Doppelseite (z. B. weil sie vor
+  dem Teilen über „Seiten drehen“ korrigiert wurde) -- eine solche Seite
+  wurde stillschweigend wie eine normale Doppelseite in der Mitte
+  durchgeschnitten, mit falschem Ergebnis. Warnt jetzt vorher und lässt
+  abbrechen.
+  *"Split booklet pages" didn't detect when an individually rotated page
+  became narrower than a normal double-page spread as a result (e.g.
+  because it was corrected via "Rotate pages" before splitting) -- such a
+  page was silently cut in half in the middle like a normal double page,
+  producing a wrong result. Now warns beforehand and allows cancelling.*
+- Seitenliste: Beschriftungstext stand seit dem Drag&Drop-Fix (1.12) neben
+  statt unter der Miniatur (Nebeneffekt der dortigen Umstellung von
+  IconMode auf ListMode) -- eigenes Anzeige-Delegate zeichnet Text jetzt
+  wieder darunter.
+  *Page list: caption text appeared beside instead of below the thumbnail
+  since the drag&drop fix (1.12), a side effect of that switch from
+  IconMode to ListMode -- a custom display delegate now draws the text
+  below it again.*
+
 ## [1.13] – 2026-09-13
 
 ### Hinzugefügt / Added

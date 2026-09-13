@@ -119,6 +119,41 @@ class HeftseitenToolWidget(QWidget):
 
         abwechselnd = self._dreh_feld.isChecked()
 
+        # DE: "Abwechselnd um 90° drehen" geht davon aus, dass die Scans
+        #     noch UNVERAENDERT (Rotation 0°) sind -- ist eine der
+        #     ausgewaehlten Seiten bereits gedreht (z. B. schon vorher per
+        #     "Seiten drehen" korrigiert, auch dessen eigener "Abwechselnd
+        #     90° drehen"-Knopf), addiert sich diese Checkbox-Drehung
+        #     einfach dazu, statt die Seite zu ersetzen. Bei genau
+        #     gegenlaeufigen Vorkorrekturen kann sich das exakt zu 0°
+        #     aufheben (Seite wirkt "wie vor dem Drehen") oder zu 180°
+        #     aufaddieren (Seite auf dem Kopf) -- beides ueberraschend statt
+        #     hilfreich. Deshalb hier warnen statt stillschweigend
+        #     draufzurechnen.
+        # EN: "Rotate alternately by 90°" assumes the scans are still
+        #     UNCHANGED (0° rotation) -- if one of the selected pages is
+        #     already rotated (e.g. already corrected via "Rotate pages",
+        #     including its own "Rotate alternately by 90°" button), this
+        #     checkbox's rotation simply adds on top instead of replacing
+        #     it. With exactly opposing prior corrections, this can cancel
+        #     out to exactly 0° (page looks "like before rotating") or add
+        #     up to 180° (page upside down) -- both surprising rather than
+        #     helpful. So warn here instead of silently adding on top.
+        if abwechselnd and any(item.data(Qt.ItemDataRole.UserRole).rotation != 0.0 for item in items):
+            antwort = QMessageBox.warning(
+                self, self.tr("Seiten sind bereits gedreht"),
+                self.tr("Mindestens eine der ausgewählten Seiten ist bereits gedreht (z. B. über "
+                       "„Seiten drehen“). „Scans sind quer eingescannt“ dreht zusätzlich "
+                       "abwechselnd um 90° -- das addiert sich zur vorhandenen Drehung, statt "
+                       "sie zu ersetzen, und kann sich bei bereits korrigierten Seiten ganz "
+                       "aufheben (Seite erscheint wieder wie vor dem Drehen) oder verdoppeln.\n\n"
+                       "Trotzdem fortfahren?"),
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.Cancel,
+                QMessageBox.StandardButton.Cancel,
+            )
+            if antwort != QMessageBox.StandardButton.Yes:
+                return
+
         try:
             self._verarbeiten_inner(items, abwechselnd)
         except Abgebrochen:
@@ -159,6 +194,59 @@ class HeftseitenToolWidget(QWidget):
         breiten = [bild.width for bild, _ in gerendert]
         referenzbreite = statistics.median(breiten)
         arbeits_unterordner = arbeitsordner.pfad() / uuid.uuid4().hex
+
+        # DE: Warnen, wenn ein Block nach seiner (bereits angewendeten)
+        #     Drehung deutlich SCHMALER ist als die uebrigen -- typischerweise,
+        #     weil genau dieser eine Scan vorher einzeln ueber "Seiten drehen"
+        #     um 90/270 Grad korrigiert wurde und dadurch von einer breiten
+        #     Doppelseite zu einer schmalen Einzelseite geworden ist. Die
+        #     bestehende "ueberbreit"-Erkennung weiter unten prueft nur auf
+        #     zu GROSSE Breite und greift hier nicht -- ohne diese Warnung
+        #     wuerde ein solcher Block stillschweigend wie eine normale
+        #     Doppelseite behandelt und in der Mitte durchgeschnitten, was
+        #     mit hoher Wahrscheinlichkeit falsche/zerschnittene Ausgabeseiten
+        #     erzeugt (der eigentliche Grund fuer den vom Nutzer gemeldeten
+        #     Bug: die Seite wirkte danach wie "vor dem Drehen", weil nur
+        #     noch eine Haelfte des bereits korrekt gedrehten Bildes uebrig
+        #     blieb).
+        # EN: Warn if a block, after its (already applied) rotation, is
+        #     noticeably NARROWER than the rest -- typically because this
+        #     one scan was individually corrected via "Rotate pages" by
+        #     90/270 degrees beforehand, turning it from a wide double page
+        #     into a narrow single page. The existing "overwide" detection
+        #     below only checks for TOO WIDE, not this case -- without this
+        #     warning such a block would silently be treated as a normal
+        #     double page and cut in half, most likely producing wrong/
+        #     chopped-up output pages (the actual cause of the bug reported
+        #     by the user: the page looked "like before rotating" afterward,
+        #     because only half of the already-correctly-rotated image
+        #     remained).
+        schmale_bloecke = [idx for idx, (bild, _) in enumerate(gerendert)
+                           if bild.width * _UEBERBREITE_SCHWELLE < referenzbreite]
+        if schmale_bloecke:
+            namen = ", ".join(
+                f"{items[idx].data(Qt.ItemDataRole.UserRole).source.path.name} "
+                f"({self.tr('Seite')} {items[idx].data(Qt.ItemDataRole.UserRole).source.index + 1})"
+                for idx in schmale_bloecke
+            )
+            antwort = QMessageBox.warning(
+                self, self.tr("Scan sieht nicht wie eine Doppelseite aus"),
+                self.tr("Mindestens ein ausgewählter Scan ist nach seiner Drehung deutlich "
+                       "schmaler als die übrigen (vermutlich weil er einzeln über „Seiten "
+                       "drehen“ korrigiert wurde, statt über die Auswahl „Scans sind quer "
+                       "eingescannt“ oben). Er wird trotzdem wie eine normale Doppelseite in "
+                       "der Mitte geteilt -- das Ergebnis ist mit hoher Wahrscheinlichkeit "
+                       "falsch.\n\n"
+                       "Betroffen: {0}\n\n"
+                       "Tipp: Einzelne Seiten am besten ERST NACH dem Teilen drehen, nicht "
+                       "vorher -- außer alle Scans sind gleichermaßen quer eingescannt, dafür "
+                       "gibt es die Auswahl oben.\n\n"
+                       "Trotzdem fortfahren?").format(namen),
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.Cancel,
+                QMessageBox.StandardButton.Cancel,
+            )
+            if antwort != QMessageBox.StandardButton.Yes:
+                return
 
         # DE: Volle Lesereihenfolge im Voraus berechnen -- daraus ergibt sich
         #     fuer jeden Block, auf welche Zielseite seine "west"- bzw.

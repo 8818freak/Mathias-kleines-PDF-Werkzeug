@@ -72,7 +72,7 @@ from pdfkrams.gui.widgets.datei_dialoge import speichern_dialog
 from pdfkrams.gui.widgets.file_tool_base import DateiListenPanel
 from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
 from pdfkrams.gui.widgets.hintergrund import im_hintergrund_ausfuehren, im_hintergrund_still_ausfuehren
-from pdfkrams.gui.widgets.page_list import PageListWidget
+from pdfkrams.gui.widgets.page_list import PageListWidget, basis_pixmap
 from pdfkrams.info import ANBIETER, VERSION, WEBSITE, copyright_zeile, voller_programmname
 
 # DE: Logo des Anbieters (Telefonanleitungen.de) -- im Ueber-Dialog
@@ -751,6 +751,32 @@ class MainWindow(QMainWindow):
         #     freshly written file, exactly like closing and reopening it
         #     -- as ONE undo step, with the current row preserved.
         if any(wp.source.path == ziel for wp in seiten):
+            # DE: WICHTIG: basis_pixmap() ist per (PageSource, max_dim)
+            #     gecacht, unter der Annahme, dass ein PageSource-Pfad
+            #     NIE nachtraeglich anderen Inhalt bekommt (siehe dessen
+            #     Docstring). Genau das passiert hier aber: Speichern
+            #     ueberschreibt `ziel` in-place, und die neu erzeugten
+            #     PageSource-Objekte fuer die neu geladene Liste haben
+            #     denselben Pfad+Index wie die ALTEN, VOR dem Speichern
+            #     bereits gecachten (unrotierten/unbearbeiteten)
+            #     Vorschaubilder. Ohne diesen Cache-Reset zeigten
+            #     Miniaturen/Vorschau nach dem Speichern wieder den alten
+            #     Stand, obwohl die Datei korrekt aktualisiert wurde --
+            #     der eigentliche Fehler wirkte wie ein "Drehung nach dem
+            #     Speichern rueckgaengig gemacht".
+            # EN: IMPORTANT: basis_pixmap() is cached by (PageSource,
+            #     max_dim), under the assumption that a PageSource path
+            #     never gets different content later (see its docstring).
+            #     But that's exactly what happens here: saving overwrites
+            #     `ziel` in place, and the freshly created PageSource
+            #     objects for the reloaded list have the SAME path+index
+            #     as the OLD ones already cached before saving (showing
+            #     the unrotated/unedited state). Without this cache
+            #     reset, thumbnails/preview kept showing the old state
+            #     after saving, even though the file itself was updated
+            #     correctly -- the resulting symptom looked like "rotation
+            #     undone after saving".
+            basis_pixmap.cache_clear()
             aktuelle_zeile = self._liste.currentRow()
             alle_eintraege = [self._liste.item(i) for i in range(self._liste.count())]
             neue_quellen = datei_aufschluesseln(ziel)

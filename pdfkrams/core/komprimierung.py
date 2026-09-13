@@ -241,7 +241,20 @@ def export_pdf_komprimiert(seiten: list[WorkingPage], ziel: Path, jpeg_qualitaet
                     neue_seite_nr = ausgabe.page_count
                     ausgabe.insert_pdf(quelle, from_page=source.index, to_page=source.index)
                     if abs(grad) > 1e-6:
-                        ausgabe[neue_seite_nr].set_rotation(round(grad) % 360)
+                        # DE: Siehe ausfuehrlicher Kommentar in
+                        #     core/combine.py's export_pdf an derselben
+                        #     Stelle -- `insert_pdf` uebernimmt eine
+                        #     ggf. bereits vorhandene native Rotation der
+                        #     Quellseite, deshalb hier ADDIEREN statt
+                        #     `grad` absolut zu setzen.
+                        # EN: See the detailed comment in
+                        #     core/combine.py's export_pdf at the same
+                        #     spot -- `insert_pdf` also carries over any
+                        #     native rotation the source page may already
+                        #     have, so ADD here instead of setting `grad`
+                        #     as an absolute value.
+                        neue_seite = ausgabe[neue_seite_nr]
+                        neue_seite.set_rotation(round(neue_seite.rotation + grad) % 360)
                     anzahl_seiten += 1
                     if wp.lesezeichen_titel:
                         toc_rohdaten.append((wp.lesezeichen_ebene, wp.lesezeichen_titel, erste_ausgabeseite + 1))

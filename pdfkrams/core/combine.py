@@ -121,7 +121,31 @@ def export_pdf(seiten: list[WorkingPage], ziel: Path,
                 neue_seite_nr = ausgabe.page_count
                 ausgabe.insert_pdf(quelle, from_page=source.index, to_page=source.index)
                 if abs(grad) > 1e-6:
-                    ausgabe[neue_seite_nr].set_rotation(round(grad) % 360)
+                    # DE: `insert_pdf` uebernimmt auch eine ggf. bereits
+                    #     vorhandene native Rotation der Quellseite (z. B.
+                    #     von der Scan-Software gesetzt) -- deshalb hier
+                    #     ADDIEREN statt `grad` als absoluten Wert zu
+                    #     setzen. Sonst wuerde eine vorhandene native
+                    #     Rotation stillschweigend verworfen: Vorschau und
+                    #     Bearbeitungswerkzeuge zeigen/verarbeiten immer
+                    #     native Rotation + wp.rotation zusammen (siehe
+                    #     core/rotate.py's rotiertes_bild), die gespeicherte
+                    #     Datei enthielte sonst nur `grad` allein -- die
+                    #     Seite erschiene nach dem Speichern (teilweise)
+                    #     zurueckgedreht.
+                    # EN: `insert_pdf` also carries over any native
+                    #     rotation the source page may already have (e.g.
+                    #     set by the scanning software) -- so ADD here
+                    #     instead of setting `grad` as an absolute value.
+                    #     Otherwise an existing native rotation would be
+                    #     silently discarded: the preview and editing tools
+                    #     always show/process native rotation + wp.rotation
+                    #     combined (see core/rotate.py's rotiertes_bild),
+                    #     but the saved file would then only contain `grad`
+                    #     alone -- the page would appear (partially)
+                    #     rotated back after saving.
+                    neue_seite = ausgabe[neue_seite_nr]
+                    neue_seite.set_rotation(round(neue_seite.rotation + grad) % 360)
 
             elif not wp.schwaerzungen and wp.unveraendert and source.kind == "image":
                 # DE: Unveraendertes Bild -- einfache Platzierung ohne Umweg
