@@ -4,6 +4,26 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 
 *All notable changes to this project are documented here.*
 
+## [1.13.2] – 2026-09-13
+
+### Behoben / Fixed
+
+- Update-Prüfung fand nie ein Update, selbst wenn eines vorlag -- die
+  HTTPS-Anfrage an GitHub scheiterte still an einem auf manchen
+  Mac-Installationen fehlenden/unvollständigen Zertifikatsbündel
+  (`CERTIFICATE_VERIFY_FAILED`), was die absichtlich grosszuegige
+  Fehlerbehandlung ("darf die App nie stören") ununterscheidbar von
+  "kein Update gefunden" behandelte. Verwendet jetzt explizit `certifi`s
+  eigenes Zertifikatsbündel statt sich auf das der Systeminstallation zu
+  verlassen.
+  *Update check never found an update, even when one existed -- the
+  HTTPS request to GitHub silently failed due to a missing/incomplete
+  certificate bundle on some Mac installations (`CERTIFICATE_VERIFY_
+  FAILED`), which the deliberately lenient error handling ("must never
+  disrupt the app") treated indistinguishably from "no update found".
+  Now explicitly uses certifi's own certificate bundle instead of
+  relying on the system installation's.*
+
 ## [1.13.1] – 2026-09-13
 
 ### Behoben / Fixed

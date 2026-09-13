@@ -23,10 +23,34 @@ from __future__ import annotations
 
 import json
 import re
+import ssl
 import urllib.request
 from dataclasses import dataclass
 
+import certifi
+
 from ..info import VERSION
+
+# DE: Explizit certifi's Zertifikatsbuendel verwenden statt sich auf das
+#     vom Betriebssystem/der Python-Installation bereitgestellte zu
+#     verlassen -- auf etlichen Mac-Installationen (insbesondere ein
+#     python.org-Python, bei dem "Install Certificates.command" nie
+#     ausgefuehrt wurde) fehlt dieses Bündel oder ist leer, was JEDE
+#     HTTPS-Anfrage mit CERTIFICATE_VERIFY_FAILED scheitern liesse. Ohne
+#     dieses explizite Buendel wuerde neueste_version_pruefen() das dann
+#     still als "kein Update gefunden" behandeln (siehe deren except
+#     Exception) -- die Pruefung waere auf solchen Rechnern dauerhaft
+#     wirkungslos, ohne dass das je auffiele.
+# EN: Explicitly use certifi's certificate bundle instead of relying on
+#     the one provided by the OS/Python installation -- on quite a few Mac
+#     setups (especially a python.org Python where "Install Certificates.
+#     command" was never run) that bundle is missing or empty, which would
+#     make EVERY HTTPS request fail with CERTIFICATE_VERIFY_FAILED.
+#     Without this explicit bundle, neueste_version_pruefen() would then
+#     silently treat that as "no update found" (see its except Exception)
+#     -- the check would be permanently ineffective on such machines,
+#     without that ever becoming apparent.
+_SSL_KONTEXT = ssl.create_default_context(cafile=certifi.where())
 
 # DE: Oeffentliche, unauthentifizierte GitHub-API -- kein Token noetig,
 #     funktioniert auch fuer ein privates Repo NICHT (dafuer braeuchte es
@@ -77,7 +101,7 @@ def neueste_version_pruefen(_fortschritt=None) -> UpdateInfo | None:
         anfrage = urllib.request.Request(
             _API_URL, headers={"Accept": "application/vnd.github+json", "User-Agent": "pdfkrams-update-check"}
         )
-        with urllib.request.urlopen(anfrage, timeout=_TIMEOUT_SEKUNDEN) as antwort:
+        with urllib.request.urlopen(anfrage, timeout=_TIMEOUT_SEKUNDEN, context=_SSL_KONTEXT) as antwort:
             daten = json.loads(antwort.read().decode("utf-8"))
         tag = daten.get("tag_name") or ""
         url = daten.get("html_url") or ""
