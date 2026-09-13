@@ -195,62 +195,77 @@
 <context>
     <name>EinstellungenDialog</name>
     <message>
-        <location filename="../gui/einstellungen_dialog.py" line="29"/>
+        <location filename="../gui/einstellungen_dialog.py" line="39"/>
         <source>Einstellungen</source>
         <translation>Preferences</translation>
     </message>
     <message>
-        <location filename="../gui/einstellungen_dialog.py" line="76"/>
+        <location filename="../gui/einstellungen_dialog.py" line="86"/>
         <source>Betrifft das Werkzeug „Seitenmaß normieren“ -- wird bewusst nicht aus den Systemeinstellungen übernommen, da die bearbeiteten PDFs aus jedem Land stammen können, unabhängig davon, wie dieser Rechner eingestellt ist.</source>
         <translation>Affects the “Normalize page size” tool -- deliberately not taken from the system settings, since the PDFs being edited can come from any country, regardless of how this computer is set up.</translation>
     </message>
     <message>
-        <location filename="../gui/einstellungen_dialog.py" line="91"/>
+        <location filename="../gui/einstellungen_dialog.py" line="101"/>
         <source>Betrifft das Releasedatum im Werkzeug „Metadaten bearbeiten“ (Dateiname-Vorschlag und Stichwörter).</source>
         <translation>Affects the release date in the &quot;Edit metadata&quot; tool (filename suggestion and keywords).</translation>
     </message>
     <message>
-        <location filename="../gui/einstellungen_dialog.py" line="100"/>
+        <location filename="../gui/einstellungen_dialog.py" line="110"/>
         <source>Vorbelegung für „Anbieter“ im Werkzeug „Metadaten bearbeiten“ -- leer lassen, um stattdessen immer den zuletzt dort eingetragenen Anbieter vorzuschlagen.</source>
         <translation>Prefill for &quot;Provider&quot; in the &quot;Edit metadata&quot; tool -- leave blank to always suggest the provider most recently entered there instead.</translation>
     </message>
     <message>
-        <location filename="../gui/einstellungen_dialog.py" line="111"/>
+        <location filename="../gui/einstellungen_dialog.py" line="121"/>
         <source>Farbe für neu eingebrannte Schwärzungen im Werkzeug „Schwärzen“ -- deckend, keine Transparenz. Ändert nur die Farbe, nicht, dass darunterliegender Inhalt dauerhaft zerstört wird.</source>
         <translation>Color for newly burned-in redactions in the &quot;Redact&quot; tool -- fully opaque, no transparency. Only changes the color, not the fact that underlying content is permanently destroyed.</translation>
     </message>
     <message>
-        <location filename="../gui/einstellungen_dialog.py" line="119"/>
+        <location filename="../gui/einstellungen_dialog.py" line="128"/>
+        <source>Beim Start nach neuen Versionen suchen</source>
+        <translation>Check for new versions on startup</translation>
+    </message>
+    <message>
+        <location filename="../gui/einstellungen_dialog.py" line="133"/>
+        <source>Aus (Standard): Die App stellt dann überhaupt keine Internetverbindung her. Ein (angeschaltet): einmal beim Start eine einzelne, anonyme Anfrage an GitHub, ob eine neuere Version vorliegt -- bei Erfolg ein Hinweis mit Link zur Downloadseite, sonst bleibt es unbemerkt im Hintergrund.</source>
+        <translation>Off (default): the app then makes no internet connection at all. On: once on startup, a single, anonymous request to GitHub to check whether a newer version is available -- if so, a notice with a link to the download page, otherwise it stays unnoticed in the background.</translation>
+    </message>
+    <message>
+        <location filename="../gui/einstellungen_dialog.py" line="142"/>
         <source>Sprache:</source>
         <translation>Language:</translation>
     </message>
     <message>
-        <location filename="../gui/einstellungen_dialog.py" line="121"/>
+        <location filename="../gui/einstellungen_dialog.py" line="144"/>
         <source>Maßeinheit:</source>
         <translation>Measurement unit:</translation>
     </message>
     <message>
-        <location filename="../gui/einstellungen_dialog.py" line="123"/>
+        <location filename="../gui/einstellungen_dialog.py" line="146"/>
         <source>Datumsformat:</source>
         <translation>Date format:</translation>
     </message>
     <message>
-        <location filename="../gui/einstellungen_dialog.py" line="125"/>
+        <location filename="../gui/einstellungen_dialog.py" line="148"/>
         <source>Anbieter (Standard):</source>
         <translation>Provider (default):</translation>
     </message>
     <message>
-        <location filename="../gui/einstellungen_dialog.py" line="127"/>
+        <location filename="../gui/einstellungen_dialog.py" line="150"/>
         <source>Schwärzungsfarbe:</source>
         <translation>Redaction color:</translation>
     </message>
     <message>
-        <location filename="../gui/einstellungen_dialog.py" line="140"/>
+        <location filename="../gui/einstellungen_dialog.py" line="152"/>
+        <source>Updates:</source>
+        <translation>Updates:</translation>
+    </message>
+    <message>
+        <location filename="../gui/einstellungen_dialog.py" line="165"/>
         <source>Schwärzungsfarbe wählen</source>
         <translation>Choose redaction color</translation>
     </message>
     <message>
-        <location filename="../gui/einstellungen_dialog.py" line="155"/>
+        <location filename="../gui/einstellungen_dialog.py" line="180"/>
         <source>Wird erst nach einem Neustart des Programms wirksam.</source>
         <translation>Takes effect only after restarting the program.</translation>
     </message>
@@ -513,117 +528,142 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../gui/main_window.py" line="145"/>
+        <location filename="../gui/main_window.py" line="149"/>
         <source>„{0}“ kommt in einem der nächsten Schritte.</source>
         <translation>“{0}” is coming in one of the next steps.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="242"/>
+        <location filename="../gui/main_window.py" line="246"/>
         <source>Datei</source>
         <translation>File</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="244"/>
+        <location filename="../gui/main_window.py" line="248"/>
         <source>Dateien öffnen …</source>
         <translation>Open files …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="249"/>
+        <location filename="../gui/main_window.py" line="253"/>
         <source>Datei schließen</source>
         <translation>Close file</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="260"/>
+        <location filename="../gui/main_window.py" line="264"/>
         <source>Speichern</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="265"/>
+        <location filename="../gui/main_window.py" line="269"/>
         <source>Speichern unter …</source>
         <translation>Save as …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="270"/>
+        <location filename="../gui/main_window.py" line="274"/>
         <source>Bearbeiten</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="272"/>
+        <location filename="../gui/main_window.py" line="276"/>
         <source>Rückgängig</source>
         <translation>Undo</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="277"/>
+        <location filename="../gui/main_window.py" line="281"/>
         <source>Wiederholen</source>
         <translation>Redo</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="318"/>
+        <location filename="../gui/main_window.py" line="322"/>
         <source>Ausschneiden</source>
         <translation>Cut</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="323"/>
+        <location filename="../gui/main_window.py" line="327"/>
         <source>Kopieren</source>
         <translation>Copy</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="328"/>
+        <location filename="../gui/main_window.py" line="332"/>
         <source>Einfügen</source>
         <translation>Paste</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="333"/>
+        <location filename="../gui/main_window.py" line="337"/>
         <source>Alles auswählen</source>
         <translation>Select All</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="350"/>
+        <location filename="../gui/main_window.py" line="354"/>
         <source>Reihenfolge umkehren</source>
         <translation>Reverse order</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="356"/>
+        <location filename="../gui/main_window.py" line="360"/>
         <source>Einstellungen …</source>
         <translation>Preferences …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="366"/>
+        <location filename="../gui/main_window.py" line="370"/>
         <source>Ansicht</source>
         <translation>View</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="368"/>
+        <location filename="../gui/main_window.py" line="372"/>
         <source>Werkzeugliste einblenden</source>
         <translation>Show tool list</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="400"/>
+        <location filename="../gui/main_window.py" line="404"/>
         <source>Werkzeuge</source>
         <translation>Tools</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="421"/>
+        <location filename="../gui/main_window.py" line="425"/>
         <source>Hilfe</source>
         <translation>Help</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="423"/>
+        <location filename="../gui/main_window.py" line="427"/>
         <source>Bedienungsanleitung</source>
         <translation>User Manual</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="435"/>
+        <location filename="../gui/main_window.py" line="439"/>
         <source>Über {0} …</source>
         <translation>About {0} …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="456"/>
+        <location filename="../gui/main_window.py" line="448"/>
+        <source>Nach Updates suchen …</source>
+        <translation>Check for Updates …</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="476"/>
+        <source>Suche nach Updates …</source>
+        <translation>Checking for updates …</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="478"/>
+        <source>Prüfung fehlgeschlagen</source>
+        <translation>Check failed</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="482"/>
+        <source>Kein Update verfügbar</source>
+        <translation>No update available</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="483"/>
+        <source>Keine neuere Version gefunden (aktuelle Version: {0}). Falls keine Internetverbindung besteht, lässt sich das nicht von „bereits aktuell“ unterscheiden.</source>
+        <translation>No newer version found (current version: {0}). If there's no internet connection, this can't be distinguished from "already up to date".</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="502"/>
         <source>Über {0}</source>
         <translation>About {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="462"/>
+        <location filename="../gui/main_window.py" line="508"/>
         <source>Kostenlos bereitgestellt von {0}&lt;br&gt;&lt;a href=&quot;{1}&quot;&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;Dieses Programm kommt OHNE JEDE GEWÄHRLEISTUNG. Es ist freie Software, und Sie dürfen es unter bestimmten Bedingungen weiterverbreiten -- siehe die Lizenz GNU GPL 3.0 (Datei LICENSE) für Details.&lt;br&gt;&lt;br&gt;Entwickelt und getestet wird ausschließlich auf macOS -- die Windows-Version wird nicht selbst getestet, funktioniert aber hoffentlich fehlerfrei. Bei Fehlern bitte mit einer genauen, nachvollziehbaren Beschreibung an &lt;a href=&quot;mailto:telefonmann@telefonanleitungen.de&quot;&gt;telefonmann@telefonanleitungen.de&lt;/a&gt; schreiben, dann wird so schnell wie möglich korrigiert.</source>
         <translation>Provided free of charge by {0}&lt;br&gt;&lt;a href=&quot;{1}&quot;&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;This program comes WITH ABSOLUTELY NO WARRANTY. It is free software, and you are welcome to redistribute it under certain conditions -- see the GNU GPL 3.0 license (file LICENSE) for details.&lt;br&gt;&lt;br&gt;Developed and tested exclusively on macOS -- the Windows version is not tested by the author, but hopefully works correctly. If you run into a bug, please report it with a precise, reproducible description to &lt;a href=&quot;mailto:telefonmann@telefonanleitungen.de&quot;&gt;telefonmann@telefonanleitungen.de&lt;/a&gt;, and it will be fixed as soon as possible.</translation>
     </message>
@@ -632,63 +672,77 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
         <translation>Provided free of charge by {0}&lt;br&gt;&lt;a href=&quot;{1}&quot;&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;This program comes WITH ABSOLUTELY NO WARRANTY. It is free software, and you are welcome to redistribute it under certain conditions -- see the GNU GPL 3.0 license (file LICENSE) for details.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="621"/>
+        <location filename="../gui/main_window.py" line="703"/>
         <source>PDF speichern unter</source>
         <translation>Save PDF as</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="620"/>
+        <location filename="../gui/main_window.py" line="702"/>
         <source>dokument.pdf</source>
         <translation>document.pdf</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="596"/>
-        <location filename="../gui/main_window.py" line="606"/>
+        <location filename="../gui/main_window.py" line="571"/>
+        <source>Update verfügbar</source>
+        <translation>Update available</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="572"/>
+        <source>Version {0} ist verfügbar (installiert: {1}).
+
+Jetzt die Release-Seite öffnen?</source>
+        <translation>Version {0} is available (installed: {1}).
+
+Open the release page now?</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="678"/>
+        <location filename="../gui/main_window.py" line="688"/>
         <source>Ungespeicherte Änderungen</source>
         <translation>Unsaved changes</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="597"/>
+        <location filename="../gui/main_window.py" line="679"/>
         <source>Diese Datei hat ungespeicherte Änderungen. Trotzdem schließen?</source>
         <translation>This file has unsaved changes. Close anyway?</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="607"/>
+        <location filename="../gui/main_window.py" line="689"/>
         <source>Es gibt ungespeicherte Änderungen. Trotzdem beenden?</source>
         <translation>There are unsaved changes. Quit anyway?</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="621"/>
+        <location filename="../gui/main_window.py" line="703"/>
         <source>PDF-Datei (*.pdf)</source>
         <translation>PDF file (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="630"/>
+        <location filename="../gui/main_window.py" line="712"/>
         <source>Keine Seiten</source>
         <translation>No pages</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="630"/>
+        <location filename="../gui/main_window.py" line="712"/>
         <source>Die Dateiliste ist leer.</source>
         <translation>The file list is empty.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="632"/>
+        <location filename="../gui/main_window.py" line="714"/>
         <source>PDF wird erstellt …</source>
         <translation>Creating PDF …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="639"/>
+        <location filename="../gui/main_window.py" line="721"/>
         <source>Speichern fehlgeschlagen</source>
         <translation>Save failed</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="679"/>
+        <location filename="../gui/main_window.py" line="761"/>
         <source>Gespeichert</source>
         <translation>Saved</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="679"/>
+        <location filename="../gui/main_window.py" line="761"/>
         <source>PDF gespeichert unter:
 {0}</source>
         <translation>PDF saved to:
@@ -2119,6 +2173,138 @@ Add it to the password log (see “Password protection” tool)?</translation>
     <message>
         <source>Alle Seiten</source>
         <translation>All pages</translation>
+    </message>
+</context>
+<context>
+    <name>SeitenbeschriftungToolWidget</name>
+    <message>
+        <source>1, 2, 3, …</source>
+        <translation>1, 2, 3, …</translation>
+    </message>
+    <message>
+        <source>I, II, III, …</source>
+        <translation>I, II, III, …</translation>
+    </message>
+    <message>
+        <source>i, ii, iii, …</source>
+        <translation>i, ii, iii, …</translation>
+    </message>
+    <message>
+        <source>A, B, C, …</source>
+        <translation>A, B, C, …</translation>
+    </message>
+    <message>
+        <source>a, b, c, …</source>
+        <translation>a, b, c, …</translation>
+    </message>
+    <message>
+        <source>Kein (nur Präfix)</source>
+        <translation>None (prefix only)</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="71"/>
+        <source>Vergibt PDF-native Seitenbeschriftungen (wie in Acrobats Seiten-Navigator) -- unabhängig von der tatsächlichen Blattreihenfolge, z. B. Umschlagseiten in römischen Ziffern (I, II, …) vor und nach einem in arabischen Ziffern (1, 2, …) durchnummerierten Buchblock. Seite links auswählen, die eine neue Gruppe beginnen soll, Stil/Präfix/Startnummer wählen und „Gruppe hier setzen“ klicken. Seiten ohne eigene Markierung setzen einfach die Zählung der vorherigen Gruppe fort.</source>
+        <translation>Assigns PDF-native page labels (like in Acrobat&apos;s page navigator) -- independent of the actual sheet order, e.g. cover pages in roman numerals (I, II, …) before and after a book block numbered in arabic numerals (1, 2, …). Select a page on the left that should start a new group, choose style/prefix/start number, and click &quot;Set group here&quot;. Pages without their own marker simply continue the previous group&apos;s count.</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="83"/>
+        <source>Von Seite </source>
+        <translation>From page </translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="86"/>
+        <source>bis Seite </source>
+        <translation>to page </translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="88"/>
+        <source>Bereich in der Liste markieren</source>
+        <translation>Select range in the list</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="90"/>
+        <source>Praktisch bei langen Bereichen, statt einzeln durchzuscrollen -- markiert nur, die eigentliche Gruppe entsteht erst mit „Gruppe hier setzen“.</source>
+        <translation>Handy for long ranges instead of scrolling through one by one -- only selects, the actual group is only created with &quot;Set group here&quot;.</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="98"/>
+        <source>Neue Gruppe auf der aktuellen Seite beginnen</source>
+        <translation>Start new group on the current page</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="112"/>
+        <source>Präfix, z. B. „Anhang “ (optional)</source>
+        <translation>Prefix, e.g. &quot;Appendix &quot; (optional)</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="114"/>
+        <source>Start bei </source>
+        <translation>Start at </translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="122"/>
+        <source>Gruppe hier setzen</source>
+        <translation>Set group here</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="124"/>
+        <source>Vorlage hier fortsetzen</source>
+        <translation>Continue template here</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="126"/>
+        <source>Übernimmt Stil und Präfix der unten in der Übersicht ausgewählten Gruppe, mit der passenden Startnummer, um sie hier fortlaufend weiterzuführen -- z. B. um Umschlagseiten am Anfang UND Ende eines Buchblocks einheitlich fortlaufend zu benennen.</source>
+        <translation>Takes over the style and prefix of the group selected below in the overview, with the matching start number, to continue it here seamlessly -- e.g. to consistently number cover pages at the start AND end of a book block in sequence.</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="132"/>
+        <source>Markierung hier entfernen</source>
+        <translation>Remove marker here</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="145"/>
+        <source>Bisher definierte Gruppen (anklicken springt zur Seite, lädt sie zum Bearbeiten und als Vorlage zum Fortsetzen):</source>
+        <translation>Groups defined so far (clicking jumps to the page, loads it for editing and as a template to continue):</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="180"/>
+        <source>Keine Seite ausgewählt.</source>
+        <translation>No page selected.</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="202"/>
+        <source>Seite {0} beginnt bereits eine Gruppe -- Werte oben übernommen, „Gruppe hier setzen“ überschreibt sie.</source>
+        <translation>Page {0} already starts a group -- values above loaded from it, &quot;Set group here&quot; overwrites it.</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="207"/>
+        <source>Seite {0} beginnt noch keine Gruppe -- setzt einfach die Zählung der vorherigen Gruppe fort (falls vorhanden).</source>
+        <translation>Page {0} doesn&apos;t start a group yet -- simply continues the previous group&apos;s count (if any).</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="254"/>
+        <source>Keine Vorlage gewählt</source>
+        <translation>No template selected</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="255"/>
+        <source>Zuerst unten in der Übersicht eine Gruppe anklicken, die fortgesetzt werden soll.</source>
+        <translation>First click a group in the overview below that should be continued.</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="270"/>
+        <source>Seite {0}</source>
+        <translation>Page {0}</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="271"/>
+        <source>Seiten {0}–{1}</source>
+        <translation>Pages {0}–{1}</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/seitenbeschriftung_tool.py" line="273"/>
+        <source>{0}: {1}–{2} ({3})</source>
+        <translation>{0}: {1}–{2} ({3})</translation>
     </message>
 </context>
 <context>

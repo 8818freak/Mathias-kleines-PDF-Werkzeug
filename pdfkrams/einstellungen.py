@@ -250,6 +250,23 @@ class _Einstellungen(QObject):
     def rotationslinien_farbe_setzen(self, farbe_hex: str) -> None:
         self._settings.setValue("rotationslinienFarbe", farbe_hex)
 
+    def updates_pruefen(self) -> bool:
+        """DE: Ob beim Programmstart im Hintergrund einmal geprueft wird,
+            ob eine neuere Version auf GitHub verfuegbar ist (siehe
+            core/update_check.py) -- STANDARDMAESSIG AUS. Ist diese
+            Einstellung aus, stellt die App ueberhaupt keine
+            Internetverbindung her, wie im README beworben.
+        EN: Whether the app checks once in the background on startup for
+            a newer version on GitHub (see core/update_check.py) --
+            OFF BY DEFAULT. With this setting off, the app makes no
+            internet connection whatsoever, as advertised in the
+            README."""
+        wert = self._settings.value("updatesPruefen", False)
+        return wert in (True, "true", "1", 1)
+
+    def updates_pruefen_setzen(self, aktiv: bool) -> None:
+        self._settings.setValue("updatesPruefen", aktiv)
+
     def passwort_log(self) -> list[dict]:
         """DE: Liste vergebener PDF-Passwoerter (siehe core/passwort_log.py) --
             als Klartext in QSettings abgelegt, bewusst nicht verschluesselt

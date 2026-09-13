@@ -337,6 +337,7 @@
       <li><a href="#pdf-reparieren-entsperren">Repair &amp; unlock PDF</a></li>
       <li><a href="#passwortschutz">Password protection</a></li>
       <li><a href="#metadaten-bearbeiten">Edit metadata</a></li>
+      <li><a href="#seiten-benennen">Name pages</a></li>
     </ol>
     <div class="stufe">
       <a href="#einstellungen">Preferences</a>
@@ -354,7 +355,7 @@
         reassemble, bring to a standard size, shrink. This manual walks through every tool
         using a real example.</p>
       <div class="kennzahlen">
-        <div><strong>17</strong><span>Tools</span></div>
+        <div><strong>18</strong><span>Tools</span></div>
         <div><strong>1</strong><span>Shared file list</span></div>
         <div><strong>DE / EN</strong><span>Switchable language</span></div>
         <div><strong>GPL-3.0</strong><span>Free software</span></div>
@@ -829,6 +830,31 @@
       </div>
     </section>
 
+    <section class="werkzeug" id="seiten-benennen">
+      <p class="nr">Tool 18</p>
+      <h2>Name pages</h2>
+      <p class="intro">Assigns PDF-native page labels (like in Acrobat's page navigator) --
+        independent of the actual sheet order. Handy e.g. for cover pages in roman numerals
+        (I, II, …) before and after a book block numbered in arabic numerals (1, 2, …).</p>
+      <figure class="platte">
+        <img src="bilder_en/18_seiten_benennen.jpg" alt="Name pages tool: cover pages in roman numerals before and after a book block numbered in arabic numerals">
+        <figcaption><b>Fig. 18</b> — Three defined groups: pages 1–2 as cover (i–ii), pages 3–6 as book block (1–4), pages 7–8 as cover continuation (iii–iv).</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Select a page on the left that should start a new group (or use "Select range in the list" for a longer from-to range).</span></li>
+        <li><span class="txt">Choose a style -- decimal (1, 2, 3), roman upper/lower (I/i, II/ii, …), letters upper/lower (A/a, B/b, …), or "None" (a fixed prefix only, no number) -- plus an optional prefix and the start number.</span></li>
+        <li><span class="txt">Click <b class="ui">Set group here</b>. Pages without their own marker simply continue the previous group's count.</span></li>
+        <li><span class="txt">For cover pages at the start AND end of a book block: click the first group in the overview below, select the last desired page, and click <b class="ui">Continue template here</b> -- takes over style/prefix and automatically computes the matching continuation number.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Stays with the page, not the position</span>
+        A group marker is attached to the page itself, not its position in the list -- if the
+        page sequence is later reordered or extended, the marker travels along; the actual
+        start number in the PDF is only computed at export time, from whatever order is
+        current then.
+      </div>
+    </section>
+
     <section class="werkzeug" id="einstellungen">
       <p class="abschnitt-titel">Preferences</p>
       <p class="intro">The menu <b class="ui">Edit → Preferences …</b> (on macOS
@@ -840,7 +866,7 @@
         regardless of how this computer is set up.</p>
       <figure class="platte">
         <img src="bilder_en/9_einstellungen.jpg" alt="Preferences dialog with the Language and Measurement unit fields">
-        <figcaption><b>Fig. 19</b> — The Preferences dialog with all five fields.</figcaption>
+        <figcaption><b>Fig. 20</b> — The Preferences dialog with all six fields.</figcaption>
       </figure>
       <ol class="schritte">
         <li><span class="txt"><b class="ui">Language:</b> German (default) or English — takes effect only after restarting the program.</span></li>
@@ -848,7 +874,14 @@
         <li><span class="txt"><b class="ui">Date format:</b> for the release date in the "Edit metadata" tool (filename suggestion and keywords) — YY-MM, YYYY-MM-DD, or DD.MM.YYYY.</span></li>
         <li><span class="txt"><b class="ui">Provider (default):</b> prefill for "Provider" in the "Edit metadata" tool — leave blank to always suggest the provider most recently entered there instead.</span></li>
         <li><span class="txt"><b class="ui">Redaction color:</b> color for newly burned-in redactions in the "Redact" tool — clicking it opens the system's own color picker (a color wheel on macOS).</span></li>
+        <li><span class="txt"><b class="ui">Updates:</b> check for new versions on startup — <b>off</b> by default; with this off, the app makes no internet connection whatsoever. Enabled: once on startup, a single, anonymous request to GitHub to check whether a newer version is available.</span></li>
       </ol>
+      <div class="hinweis">
+        <span class="label">Can also be checked manually</span>
+        Regardless of this setting, you can check by hand at any time: menu
+        <b class="ui">Mathias' kleines PDF-Werkzeug → Check for Updates …</b> (in the
+        application menu, right next to "About …").
+      </div>
       <div class="hinweis">
         <span class="label">Why not automatic?</span>
         A computer bought in the US but set to German just as often processes European

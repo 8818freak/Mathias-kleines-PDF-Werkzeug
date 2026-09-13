@@ -4,6 +4,75 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 
 *All notable changes to this project are documented here.*
 
+## [1.13] – 2026-09-13
+
+### Hinzugefügt / Added
+
+- Neues Werkzeug „Seiten benennen“ -- vergibt PDF-native
+  Seitenbeschriftungen (page labels, wie in Acrobats Seiten-Navigator),
+  unabhängig von der tatsächlichen Blattreihenfolge. Praktisch z. B. für
+  Umschlagseiten in römischen Ziffern vor und nach einem in arabischen
+  Ziffern durchnummerierten Buchblock -- eine Gruppen-Vorlage lässt sich
+  dabei mit passender Fortsetzungsnummer auf weitere, auch weiter hinten
+  liegende Seiten ausdehnen. Eine Markierung hängt an der Seite selbst,
+  nicht an ihrer Listenposition -- übersteht Umsortieren/Einfügen.
+  *New "Name pages" tool -- assigns PDF-native page labels (like in
+  Acrobat's page navigator), independent of the actual sheet order.
+  Useful e.g. for cover pages in roman numerals before and after a book
+  block numbered in arabic numerals -- a group template can be extended
+  with the matching continuation number onto further, even later-lying
+  pages. A marker is attached to the page itself, not its list position
+  -- survives reordering/insertion.*
+- Optionale Update-Prüfung (Einstellungen → „Beim Start nach neuen
+  Versionen suchen“, standardmäßig **aus**) -- ist sie aus, stellt die
+  App überhaupt keine Internetverbindung her. Zusätzlich jederzeit
+  manuell auslösbar über „Nach Updates suchen …“ im Anwendungsmenü,
+  unabhängig von dieser Einstellung.
+  *Optional update check (Preferences → "Check for new versions on
+  startup", **off** by default) -- with it off, the app makes no
+  internet connection at all. Additionally triggerable manually at any
+  time via "Check for Updates …" in the application menu, independent
+  of this setting.*
+- Verteilung zusätzlich über PyPI vorbereitet (`pyproject.toml`,
+  `pip install pdfkrams`) -- für Nutzer mit vorhandener Python-
+  Installation, die einen kleineren Download bevorzugen. Die
+  vorgefertigte App/exe bleibt der empfohlene Weg für alle anderen.
+  *Distribution additionally prepared via PyPI (`pyproject.toml`,
+  `pip install pdfkrams`) -- for users with an existing Python
+  installation who prefer a smaller download. The pre-built app/exe
+  remains the recommended path for everyone else.*
+- `build_linux.sh` u. README-Ergänzungen zur Linux-Unterstützung (aus
+  einer vorherigen Runde nachgetragen, siehe dortiger Changelog-
+  Eintrag).
+
+### Behoben / Fixed
+
+- README: Hero-Screenshot zeigte abgeschnittene Dateinamen und keine
+  Werkzeugleiste (zu schmale Spaltenbreite bei der Aufnahme) -- neu
+  erzeugt mit sinnvoller Spaltenaufteilung.
+  *README: hero screenshot showed truncated filenames and no tool
+  sidebar (column width too narrow when captured) -- regenerated with
+  sensible column proportions.*
+- README: Formulierung „kein Python nötig“ konnte als sachlich falsch
+  missverstanden werden (die App benötigt intern durchaus Python, bringt
+  es aber fest eingebaut mit) -- präzisiert, plus die tatsächlich
+  genutzten Bibliotheken explizit benannt statt „keine Abhängigkeiten“
+  zu behaupten.
+  *README: the phrase "no Python needed" could be misread as factually
+  wrong (the app does need Python internally, but ships it built in) --
+  clarified, plus the actually used libraries now named explicitly
+  instead of claiming "no dependencies".*
+- Absturz (SIGABRT, "QThread: Destroyed while thread is still running")
+  in der neuen, stillen Hintergrund-Ausführung möglich, wenn der Python-
+  Garbage-Collector Thread/Worker vor Abschluss einsammelte, da der
+  Qt-Elternbezug allein dafür nicht zuverlässig ausreicht -- behoben,
+  indem eine Python-Referenz bis zum Abschluss explizit gehalten wird.
+  *Crash (SIGABRT, "QThread: Destroyed while thread is still running")
+  possible in the new silent background execution when Python's garbage
+  collector collected thread/worker before completion, since the Qt
+  parent relationship alone isn't reliably enough -- fixed by explicitly
+  holding a Python reference until completion.*
+
 ## [1.12] – 2026-09-12
 
 ### Hinzugefügt / Added

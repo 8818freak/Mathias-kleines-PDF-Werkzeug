@@ -147,6 +147,13 @@ internet connection and no additional software required.*
   *For booklets/books, optionally give each page a chapter or
   sub-chapter title -- automatically becomes a bookmark/table of
   contents in the PDF file when saving.*
+- **Seiten benennen** -- vergibt PDF-native Seitenbeschriftungen (wie in
+  Acrobats Seiten-Navigator), unabhängig von der tatsächlichen
+  Blattreihenfolge -- z. B. Umschlagseiten in römischen Ziffern vor und
+  nach einem in arabischen Ziffern durchnummerierten Buchblock.
+  *Assigns PDF-native page labels (like in Acrobat's page navigator),
+  independent of the actual sheet order -- e.g. cover pages in roman
+  numerals before and after a book block numbered in arabic numerals.*
 - **Metadaten bearbeiten** -- dokumentweite PDF-Metadaten (Titel, Autor,
   Anbieter, Produkt, Version, Releasedatum, Stichwörter) statt pro
   Seite; wird beim Speichern automatisch übernommen, inkl. automatischem
@@ -209,10 +216,29 @@ from any country.*
   *About 250 MB free disk space for the app, plus free space for temporary
   files while working (roughly 2--3x the size of the PDF files being
   processed).*
-- Keine Internetverbindung nötig, keine zusätzliche Software (kein
-  Python, kein ImageMagick/Ghostscript o. ä.) -- vollständig eigenständig.
-  *No internet connection needed, no additional software (no Python, no
-  ImageMagick/Ghostscript etc.) -- fully self-contained.*
+- Keine Internetverbindung nötig (optional zuschaltbare Update-Prüfung
+  ausgenommen, siehe unten -- standardmäßig aus), nichts selbst zu
+  installieren: die fertige App/exe bringt Python und alle Bibliotheken
+  (siehe [Technik](#technik--tech-stack) unten) bereits fest eingebaut
+  mit -- eigenständig lauffähig, ohne dass auf dem Zielrechner vorher
+  Python oder externe Programme wie ImageMagick/Ghostscript vorhanden
+  sein müssen.
+  *No internet connection needed (optional, off-by-default update check
+  excepted, see below), nothing to install yourself: the ready-to-run
+  app/exe already has Python and all libraries (see
+  [Tech stack](#technik--tech-stack) below) built in -- runs
+  standalone, without Python or external programs like ImageMagick/
+  Ghostscript needing to be present on the target machine beforehand.*
+- Optionale Update-Prüfung (standardmäßig **aus**): einmal beim
+  Programmstart eine einzelne, anonyme Anfrage an GitHub, ob eine
+  neuere Version vorliegt -- ein-/ausschaltbar in den Einstellungen,
+  zusätzlich jederzeit manuell auslösbar über das Menü "Nach Updates
+  suchen …" im Anwendungsmenü.
+  *Optional update check (**off** by default): once on program startup,
+  a single, anonymous request to GitHub to check whether a newer
+  version is available -- can be toggled in Preferences, and can
+  additionally be triggered manually at any time via "Check for
+  Updates …" in the application menu.*
 
 ## Hinweis zu Windows / Note on Windows
 
@@ -233,14 +259,41 @@ and it will be fixed as soon as possible.*
 ### Vorgefertigte Version / Pre-built version
 
 Siehe [Releases](../../releases) für eine fertige macOS-App (.dmg) bzw.
-Windows-exe, falls vorhanden.
+Windows-exe, falls vorhanden. Empfohlen für alle, die einfach nur die App
+benutzen möchten, ohne sich um Python o. ä. zu kümmern -- alles ist
+bereits enthalten (siehe Systemvoraussetzungen oben).
 
 *See [Releases](../../releases) for a ready-to-run macOS app (.dmg) or
-Windows exe, if available.*
+Windows exe, if available. Recommended for anyone who just wants to use
+the app without dealing with Python etc. -- everything is already
+included (see System requirements above).*
+
+### Über PyPI / Via PyPI
+
+Alternative für alle mit vorhandener Python-Installation, die einen
+kleineren Download bevorzugen (die vorgefertigte App bringt Python und
+alle Bibliotheken gebündelt mit, ein pip-Install lädt stattdessen nur die
+Pakete, die nicht schon vorhanden sind):
+
+```bash
+pip install pdfkrams
+pdfkrams
+```
+
+*Alternative for anyone with an existing Python installation who prefers
+a smaller download (the pre-built app bundles Python and all libraries,
+a pip install instead only downloads the packages not already present):*
+
+```bash
+pip install pdfkrams
+pdfkrams
+```
 
 ### Selbst bauen / Build from source
 
-Voraussetzung: Python 3.11--3.13.
+Voraussetzung: Python 3.11--3.13 (entwickelt/gebaut mit 3.12).
+
+*Requirement: Python 3.11--3.13 (developed/built with 3.12).*
 
 ```bash
 git clone <URL dieses Repositories>

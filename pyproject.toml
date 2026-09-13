@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pdfkrams"
+dynamic = ["version"]
+description = "Mathias' kleines PDF-Werkzeug -- PDF/Scan-Nachbearbeitung (Drehen, Teilen, Zusammenfuegen, Normieren, Passwortschutz, u.v.m.)"
+readme = "README.md"
+license = "GPL-3.0-only"
+requires-python = ">=3.11,<3.14"
+authors = [
+    { name = "Mathias Herbers (8818freak)", email = "telefonmann@telefonanleitungen.de" },
+]
+classifiers = [
+    "Environment :: X11 Applications :: Qt",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Office/Business",
+    "Topic :: Multimedia :: Graphics",
+]
+dependencies = [
+    "numpy==2.5.3",
+    "pikepdf==10.13.0.post1",
+    "pillow==12.3.0",
+    "pymupdf==1.28.2",
+    "PySide6==6.11.2",
+]
+
+[project.urls]
+Homepage = "https://www.telefonanleitungen.de"
+Repository = "https://github.com/8818freak/Mathias-kleines-PDF-Werkzeug"
+
+[project.gui-scripts]
+pdfkrams = "pdfkrams.main:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "pdfkrams.info.VERSION" }
+
+[tool.setuptools.packages.find]
+include = ["pdfkrams*"]
+
+[tool.setuptools.package-data]
+pdfkrams = [
+    "hilfe/**/*",
+    "logo/**/*",
+    "uebersetzungen/*.qm",
+]

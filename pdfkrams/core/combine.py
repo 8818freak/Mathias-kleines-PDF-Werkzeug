@@ -85,6 +85,7 @@ def export_pdf(seiten: list[WorkingPage], ziel: Path,
     #     reopened redundantly.
     offene_pdfs: dict[Path, fitz.Document] = {}
     toc_rohdaten: list[tuple[int, str, int]] = []
+    beschriftungs_eintraege: list[dict] = []
     try:
         for nummer, wp in enumerate(seiten, start=1):
             source = wp.source
@@ -149,11 +150,19 @@ def export_pdf(seiten: list[WorkingPage], ziel: Path,
             if wp.lesezeichen_titel:
                 toc_rohdaten.append((wp.lesezeichen_ebene, wp.lesezeichen_titel, erste_ausgabeseite + 1))
 
+            if wp.beschriftung_stil is not None:
+                beschriftungs_eintraege.append({
+                    "startpage": erste_ausgabeseite, "prefix": wp.beschriftung_praefix,
+                    "style": wp.beschriftung_stil, "firstpagenum": wp.beschriftung_start,
+                })
+
             if fortschritt is not None:
                 fortschritt(nummer, len(seiten))
 
         if toc_rohdaten:
             ausgabe.set_toc(toc_erzeugen(toc_rohdaten))
+        if beschriftungs_eintraege:
+            ausgabe.set_page_labels(beschriftungs_eintraege)
         ausgabe.set_metadata(pdf_metadaten(dokument_metadaten))
         ausgabe.save(ziel)
     finally:

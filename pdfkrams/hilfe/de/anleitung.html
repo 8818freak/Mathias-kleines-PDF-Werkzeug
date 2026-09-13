@@ -415,6 +415,7 @@
       <li><a href="#pdf-reparieren-entsperren">PDF reparieren &amp; entsperren</a></li>
       <li><a href="#passwortschutz">Passwortschutz</a></li>
       <li><a href="#metadaten-bearbeiten">Metadaten bearbeiten</a></li>
+      <li><a href="#seiten-benennen">Seiten benennen</a></li>
     </ol>
     <div class="stufe">
       <a href="#einstellungen">Einstellungen</a>
@@ -432,7 +433,7 @@
         ziehen, zerlegen, wieder zusammensetzen, auf Normmaß bringen, verkleinern. Diese
         Anleitung zeigt jedes Werkzeug an einem echten Beispiel.</p>
       <div class="kennzahlen">
-        <div><strong>17</strong><span>Werkzeuge</span></div>
+        <div><strong>18</strong><span>Werkzeuge</span></div>
         <div><strong>1</strong><span>Gemeinsame Dateiliste</span></div>
         <div><strong>DE / EN</strong><span>Sprache umstellbar</span></div>
         <div><strong>GPL-3.0</strong><span>Freie Software</span></div>
@@ -916,6 +917,32 @@
       </div>
     </section>
 
+    <section class="werkzeug" id="seiten-benennen">
+      <p class="nr">Werkzeug 18</p>
+      <h2>Seiten benennen</h2>
+      <p class="intro">Vergibt PDF-native Seitenbeschriftungen (wie in Acrobats Seiten-
+        Navigator) — unabhängig von der tatsächlichen Blattreihenfolge. Praktisch z. B. für
+        Umschlagseiten in römischen Ziffern (I, II, …) vor und nach einem in arabischen
+        Ziffern (1, 2, …) durchnummerierten Buchblock.</p>
+      <figure class="platte">
+        <img src="bilder/18_seiten_benennen.jpg" alt="Seiten-benennen-Werkzeug: Umschlagseiten in römischen Ziffern vor und nach einem in arabischen Ziffern nummerierten Buchblock">
+        <figcaption><b>Abb. 18</b> — Drei definierte Gruppen: Seiten 1–2 als Umschlag (i–ii), Seiten 3–6 als Buchblock (1–4), Seiten 7–8 als Umschlag-Fortsetzung (iii–iv).</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Seite links auswählen, die eine neue Gruppe beginnen soll (oder „Bereich in der Liste markieren“ für einen längeren Von-bis-Bereich nutzen).</span></li>
+        <li><span class="txt">Stil wählen — Dezimal (1, 2, 3), römisch groß/klein (I/i, II/ii, …), Buchstaben groß/klein (A/a, B/b, …) oder „Kein“ (nur ein fester Präfix, ohne Zahl) — dazu optional einen Präfix und die Startnummer.</span></li>
+        <li><span class="txt"><b class="ui">Gruppe hier setzen</b> klicken. Seiten ohne eigene Markierung setzen einfach die Zählung der vorherigen Gruppe fort.</span></li>
+        <li><span class="txt">Für Umschlagseiten am Anfang UND Ende eines Buchblocks: in der Übersicht unten die erste Gruppe anklicken, die letzte gewünschte Seite auswählen und <b class="ui">Vorlage hier fortsetzen</b> klicken — übernimmt Stil/Präfix und rechnet die passende Fortsetzungsnummer automatisch aus.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Bleibt an der Seite, nicht an der Position</span>
+        Eine Gruppen-Markierung hängt an der jeweiligen Seite selbst, nicht an ihrer Listen-
+        Position — wird die Seitenfolge später umsortiert oder erweitert, wandert die
+        Markierung mit; die tatsächliche Startnummer im PDF wird erst beim Export aus der
+        dann aktuellen Reihenfolge berechnet.
+      </div>
+    </section>
+
     <section class="werkzeug" id="einstellungen">
       <p class="abschnitt-titel">Einstellungen</p>
       <p class="intro">Über das Menü <b class="ui">Bearbeiten → Einstellungen …</b> (unter
@@ -927,7 +954,7 @@
         können, unabhängig davon, wie dieser Rechner eingestellt ist.</p>
       <figure class="platte">
         <img src="bilder/9_einstellungen.jpg" alt="Einstellungen-Dialog mit den Auswahlfeldern Sprache und Maßeinheit">
-        <figcaption><b>Abb. 19</b> — Der Einstellungen-Dialog mit allen fünf Feldern.</figcaption>
+        <figcaption><b>Abb. 20</b> — Der Einstellungen-Dialog mit allen sechs Feldern.</figcaption>
       </figure>
       <ol class="schritte">
         <li><span class="txt"><b class="ui">Sprache:</b> Deutsch (Vorgabe) oder Englisch — wirkt sich erst nach einem Neustart des Programms aus.</span></li>
@@ -935,7 +962,14 @@
         <li><span class="txt"><b class="ui">Datumsformat:</b> für das Releasedatum im Werkzeug „Metadaten bearbeiten“ (Dateiname-Vorschlag und Stichwörter) — JJ-MM, JJJJ-MM-TT oder TT.MM.JJJJ.</span></li>
         <li><span class="txt"><b class="ui">Anbieter (Standard):</b> Vorbelegung für „Anbieter“ im Werkzeug „Metadaten bearbeiten“ — leer lassen, um stattdessen immer den zuletzt dort eingetragenen Anbieter vorzuschlagen.</span></li>
         <li><span class="txt"><b class="ui">Schwärzungsfarbe:</b> Farbe für neu eingebrannte Schwärzungen im Werkzeug „Schwärzen“ — Klick öffnet den systemeigenen Farbwähler (unter macOS mit Farbkreis).</span></li>
+        <li><span class="txt"><b class="ui">Updates:</b> Beim Start nach neuen Versionen suchen — standardmäßig <b>aus</b>; ist diese Einstellung aus, stellt die App überhaupt keine Internetverbindung her. Eingeschaltet: einmal beim Start eine einzelne, anonyme Anfrage an GitHub, ob eine neuere Version vorliegt.</span></li>
       </ol>
+      <div class="hinweis">
+        <span class="label">Auch manuell prüfbar</span>
+        Unabhängig von dieser Einstellung lässt sich jederzeit von Hand nachsehen: Menü
+        <b class="ui">Mathias' kleines PDF-Werkzeug → Nach Updates suchen …</b> (im
+        Anwendungsmenü, direkt neben „Über …“).
+      </div>
       <div class="hinweis">
         <span class="label">Warum nicht automatisch?</span>
         Ein in den USA gekaufter, aber auf Deutsch eingestellter Rechner verarbeitet

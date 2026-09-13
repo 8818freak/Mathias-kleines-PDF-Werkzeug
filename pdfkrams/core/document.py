@@ -126,6 +126,33 @@ class WorkingPage:
     #     Fully opaque black, PERMANENTLY burned into the pixels on
     #     export (not just visually covered), see there.
     schwaerzungen: list[tuple[float, float, float, float]] = field(default_factory=list)
+    # DE: Beginn einer neuen PDF-Seitenbeschriftungs-Gruppe HIER (siehe
+    #     Werkzeug "Seiten benennen", core/seitenbeschriftung.py). None =
+    #     keine Markierung, diese Seite setzt einfach die Zaehlung der
+    #     vorherigen Gruppe fort. Ist ein Stil gesetzt, beginnt ab dieser
+    #     Seite eine neue Gruppe mit `beschriftung_praefix` und
+    #     `beschriftung_start` als erster Nummer -- gueltige Stile:
+    #     "D" (1,2,3), "R"/"r" (roemisch gross/klein), "A"/"a" (Buchstaben
+    #     gross/klein), "" (keine Nummer, nur Praefix). Absichtlich an der
+    #     WorkingPage selbst haengend (nicht an einer Listenposition), wie
+    #     bei Lesezeichen: bleibt beim Umsortieren/Einfuegen an der
+    #     richtigen physischen Seite haengen, die tatsaechliche
+    #     Startnummer im PDF wird erst beim Export aus der dann aktuellen
+    #     Reihenfolge berechnet.
+    # EN: Start a new PDF page-label group HERE (see the "Name pages"
+    #     tool, core/seitenbeschriftung.py). None = no marker, this page
+    #     simply continues the previous group's count. If a style is set,
+    #     a new group starts at this page with `beschriftung_praefix` and
+    #     `beschriftung_start` as its first number -- valid styles: "D"
+    #     (1,2,3), "R"/"r" (roman upper/lower), "A"/"a" (letters upper/
+    #     lower), "" (no number, prefix only). Deliberately attached to
+    #     the WorkingPage itself (not a list position), like bookmarks:
+    #     stays with the correct physical page when reordering/inserting,
+    #     the actual start number in the PDF is computed at export time
+    #     from whatever order is current then.
+    beschriftung_stil: str | None = None
+    beschriftung_praefix: str = ""
+    beschriftung_start: int = 1
 
     @property
     def unveraendert(self) -> bool:

@@ -18,7 +18,17 @@ EN: Preferences window (macOS: "Preferences …" in the application menu,
 from __future__ import annotations
 
 from PySide6.QtGui import QColor, QKeySequence, QShortcut
-from PySide6.QtWidgets import QColorDialog, QComboBox, QDialog, QFormLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout
+from PySide6.QtWidgets import (
+    QCheckBox,
+    QColorDialog,
+    QComboBox,
+    QDialog,
+    QFormLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QVBoxLayout,
+)
 
 from pdfkrams.einstellungen import DATUMSFORMATE, MASSEINHEITEN, SPRACHEN, einstellungen
 
@@ -115,6 +125,19 @@ class EinstellungenDialog(QDialog):
         schwaerzungsfarbe_hinweis.setWordWrap(True)
         schwaerzungsfarbe_hinweis.setStyleSheet("color: gray;")
 
+        self._updates_feld = QCheckBox(self.tr("Beim Start nach neuen Versionen suchen"))
+        self._updates_feld.setChecked(einstellungen.updates_pruefen())
+        self._updates_feld.toggled.connect(einstellungen.updates_pruefen_setzen)
+
+        updates_hinweis = QLabel(
+            self.tr("Aus (Standard): Die App stellt dann überhaupt keine Internetverbindung "
+                   "her. Ein (angeschaltet): einmal beim Start eine einzelne, anonyme Anfrage "
+                   "an GitHub, ob eine neuere Version vorliegt -- bei Erfolg ein Hinweis mit "
+                   "Link zur Downloadseite, sonst bleibt es unbemerkt im Hintergrund.")
+        )
+        updates_hinweis.setWordWrap(True)
+        updates_hinweis.setStyleSheet("color: gray;")
+
         formular = QFormLayout()
         formular.addRow(self.tr("Sprache:"), self._sprache_feld)
         formular.addRow("", self._sprache_hinweis)
@@ -126,6 +149,8 @@ class EinstellungenDialog(QDialog):
         formular.addRow("", anbieter_hinweis)
         formular.addRow(self.tr("Schwärzungsfarbe:"), self._schwaerzungsfarbe_feld)
         formular.addRow("", schwaerzungsfarbe_hinweis)
+        formular.addRow(self.tr("Updates:"), self._updates_feld)
+        formular.addRow("", updates_hinweis)
 
         layout = QVBoxLayout(self)
         layout.addLayout(formular)

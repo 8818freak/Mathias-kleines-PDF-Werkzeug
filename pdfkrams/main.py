@@ -126,6 +126,7 @@ def main() -> None:
         fenster.dateien_oeffnen(argv_pfade)
 
     fenster.show()
+    fenster.update_pruefen_falls_aktiviert()
     sys.exit(app.exec())
 
 

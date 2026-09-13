@@ -28,8 +28,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PySide6.QtCore import QCoreApplication, QSize, Qt
-from PySide6.QtGui import QAction, QActionGroup, QKeySequence, QPixmap
+from PySide6.QtCore import QCoreApplication, QSize, Qt, QUrl
+from PySide6.QtGui import QAction, QActionGroup, QDesktopServices, QKeySequence, QPixmap
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QApplication,
@@ -46,6 +46,7 @@ from PySide6.QtWidgets import (
 
 from pdfkrams.core.combine import export_pdf
 from pdfkrams.core.document import datei_aufschluesseln
+from pdfkrams.core.update_check import neueste_version_pruefen
 from pdfkrams.einstellungen import einstellungen
 from pdfkrams.gui.einstellungen_dialog import EinstellungenDialog
 from pdfkrams.gui.hilfe_fenster import HilfeFenster
@@ -61,6 +62,7 @@ from pdfkrams.gui.tools.pdf_zu_bildern_tool import PdfZuBildernToolWidget
 from pdfkrams.gui.tools.reparatur_tool import ReparaturToolWidget
 from pdfkrams.gui.tools.rotate_tool import RotateToolWidget
 from pdfkrams.gui.tools.schwaerzung_tool import SchwaerzungToolWidget
+from pdfkrams.gui.tools.seitenbeschriftung_tool import SeitenbeschriftungToolWidget
 from pdfkrams.gui.tools.seitenmass_tool import SeitenmassToolWidget
 from pdfkrams.gui.tools.split_tool import SplitToolWidget
 from pdfkrams.gui.tools.verkleinern_tool import VerkleinernToolWidget
@@ -69,8 +71,9 @@ from pdfkrams.gui.tools.zusammenfuegen_tool import ZusammenfuegenToolWidget
 from pdfkrams.gui.widgets.datei_dialoge import speichern_dialog
 from pdfkrams.gui.widgets.file_tool_base import DateiListenPanel
 from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
+from pdfkrams.gui.widgets.hintergrund import im_hintergrund_ausfuehren, im_hintergrund_still_ausfuehren
 from pdfkrams.gui.widgets.page_list import PageListWidget
-from pdfkrams.info import ANBIETER, WEBSITE, copyright_zeile, voller_programmname
+from pdfkrams.info import ANBIETER, VERSION, WEBSITE, copyright_zeile, voller_programmname
 
 # DE: Logo des Anbieters (Telefonanleitungen.de) -- im Ueber-Dialog
 #     gezeigt, damit direkt erkennbar ist, wer dieses Programm
@@ -98,6 +101,7 @@ _WERKZEUGE: list[tuple[str, type[QWidget] | None]] = [
     ("Heftseiten teilen", HeftseitenToolWidget),
     ("Seiten nummerieren", NummerierenToolWidget),
     ("Lesezeichen setzen", LesezeichenToolWidget),
+    ("Seiten benennen", SeitenbeschriftungToolWidget),
     ("Seitenmaß normieren", SeitenmassToolWidget),
     ("Seiten zuschneiden", ZuschneidenToolWidget),
     ("Schwärzen", SchwaerzungToolWidget),
@@ -441,6 +445,48 @@ class MainWindow(QMainWindow):
         action_ueber.triggered.connect(self._ueber_anzeigen)
         hilfe_menu.addAction(action_ueber)
 
+        action_update_suchen = QAction(self.tr("Nach Updates suchen …"), self)
+        # DE: ApplicationSpecificRole -- macOS ordnet diesen Eintrag
+        #     ebenfalls im nativen Anwendungsmenü ein, direkt neben
+        #     "Über ..." (macOS-uebliche Stelle fuer manuelle Update-
+        #     Pruefungen, z. B. bei allen Sparkle-basierten Apps).
+        # EN: ApplicationSpecificRole -- macOS also places this entry in
+        #     the native application menu, right next to "About ..."
+        #     (the macOS-conventional spot for manual update checks,
+        #     e.g. in all Sparkle-based apps).
+        action_update_suchen.setMenuRole(QAction.MenuRole.ApplicationSpecificRole)
+        action_update_suchen.triggered.connect(self._update_manuell_pruefen)
+        hilfe_menu.addAction(action_update_suchen)
+
+    def _update_manuell_pruefen(self) -> None:
+        """DE: Manuelle, vom Nutzer angestossene Update-Pruefung (Menue
+            "Nach Updates suchen …") -- anders als
+            update_pruefen_falls_aktiviert() UNABHAENGIG von der
+            Einstellung "Beim Start nach neuen Versionen suchen" (die
+            betrifft nur die stille Pruefung beim Programmstart) und MIT
+            sichtbarer Fortschrittsanzeige sowie einer Rueckmeldung auch
+            dann, wenn keine neuere Version gefunden wurde.
+        EN: Manual, user-initiated update check (menu "Check for
+            updates …") -- unlike update_pruefen_falls_aktiviert(),
+            INDEPENDENT of the "Check for new versions on startup" setting
+            (which only concerns the silent check on program start) and
+            WITH a visible progress indicator plus feedback even when no
+            newer version was found."""
+        try:
+            info = im_hintergrund_ausfuehren(self, self.tr("Suche nach Updates …"), neueste_version_pruefen)
+        except Exception as exc:  # noqa: BLE001 -- Fehler dem Nutzer verstaendlich zeigen
+            QMessageBox.warning(self, self.tr("Prüfung fehlgeschlagen"), str(exc))
+            return
+        if info is None:
+            QMessageBox.information(
+                self, self.tr("Kein Update verfügbar"),
+                self.tr("Keine neuere Version gefunden (aktuelle Version: {0}). Falls keine "
+                       "Internetverbindung besteht, lässt sich das nicht von „bereits aktuell“ "
+                       "unterscheiden.").format(VERSION),
+            )
+            return
+        self._update_gefunden(info)
+
     def _ueber_anzeigen(self) -> None:
         # DE: Eigene QMessageBox statt der .about()-Kurzform -- die
         #     Kurzform stellt unter macOS den GESAMTEN Text fett dar (dort
@@ -494,6 +540,42 @@ class MainWindow(QMainWindow):
         self._hilfe_fenster.show()
         self._hilfe_fenster.raise_()
         self._hilfe_fenster.activateWindow()
+
+    # -- Update-Pruefung / update check --------------------------------------
+
+    def update_pruefen_falls_aktiviert(self) -> None:
+        """DE: Prueft still im Hintergrund auf eine neuere Version, aber
+            NUR wenn der Nutzer das in den Einstellungen ausdruecklich
+            eingeschaltet hat (Standard: aus, siehe einstellungen.py's
+            updates_pruefen() -- dann stellt die App ueberhaupt keine
+            Internetverbindung her). Ohne sichtbaren Fortschrittsdialog
+            (im_hintergrund_still_ausfuehren) -- ein Hinweisfenster
+            erscheint nur, falls tatsaechlich eine neuere Version
+            gefunden wurde, sonst bleibt der Vorgang unbemerkt.
+        EN: Silently checks in the background for a newer version, but
+            ONLY if the user has explicitly enabled it in Preferences
+            (default: off, see einstellungen.py's updates_pruefen() --
+            with it off, the app makes no internet connection at all).
+            Without a visible progress dialog
+            (im_hintergrund_still_ausfuehren) -- a notice only appears if
+            a newer version was actually found, otherwise the check
+            stays unnoticed."""
+        if not einstellungen.updates_pruefen():
+            return
+        im_hintergrund_still_ausfuehren(self, neueste_version_pruefen, self._update_gefunden)
+
+    def _update_gefunden(self, info) -> None:
+        if info is None:
+            return
+        antwort = QMessageBox.information(
+            self, self.tr("Update verfügbar"),
+            self.tr("Version {0} ist verfügbar (installiert: {1}).\n\n"
+                   "Jetzt die Release-Seite öffnen?").format(info.version, VERSION),
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.Yes,
+        )
+        if antwort == QMessageBox.StandardButton.Yes and info.url:
+            QDesktopServices.openUrl(QUrl(info.url))
 
     def dateien_oeffnen(self, pfade: list[Path]) -> None:
         """DE: Von aussen uebergebene Dateien in die Dateiliste laden --

@@ -121,3 +121,70 @@ def im_hintergrund_ausfuehren(parent: QWidget, titel: str, funktion: Callable):
     if "fehler" in ergebnis_box:
         raise ergebnis_box["fehler"]
     return ergebnis_box.get("wert")
+
+
+def im_hintergrund_still_ausfuehren(
+    parent: QObject, funktion: Callable, bei_fertig: Callable, bei_fehler: Callable | None = None,
+) -> None:
+    """
+    DE: Wie im_hintergrund_ausfuehren(), aber OHNE Fortschrittsdialog und
+        OHNE zu blockieren -- fuer beilaeufige Hintergrundarbeit, bei der
+        die Oberflaeche normal weiter bedienbar bleiben soll (z. B. eine
+        stille Update-Pruefung beim Programmstart, siehe
+        core/update_check.py). `bei_fertig(ergebnis)` bzw. `bei_fehler(exc)`
+        werden im Hauptthread aufgerufen, sobald `funktion` (die KEINE
+        Qt-Widgets anfassen darf) fertig ist; ohne `bei_fehler` werden
+        Fehler stillschweigend verworfen (fuer beilaeufige Arbeit wie eine
+        Update-Pruefung angemessen -- kein Netz/kein GitHub erreichbar soll
+        nicht mit einer Fehlermeldung stoeren).
+
+    EN: Like im_hintergrund_ausfuehren(), but WITHOUT a progress dialog and
+        WITHOUT blocking -- for incidental background work where the UI
+        should stay normally usable (e.g. a silent update check on program
+        startup, see core/update_check.py). `bei_fertig(ergebnis)` resp.
+        `bei_fehler(exc)` are called on the main thread once `funktion`
+        (which must NOT touch Qt widgets) is done; without `bei_fehler`,
+        errors are silently discarded (appropriate for incidental work
+        like an update check -- no network/no GitHub reachable shouldn't
+        interrupt with an error message).
+    """
+    thread = QThread(parent)
+    worker = _Worker(funktion)
+    worker.moveToThread(thread)
+    thread.started.connect(worker.start)
+
+    # DE: OHNE eine gehaltene Python-Referenz sammelt Pythons Garbage
+    #     Collector thread/worker oft schon ein, bevor der Hintergrund-
+    #     Thread ueberhaupt fertig ist -- der Qt-Elternbezug (parent)
+    #     allein reicht dafuer nicht zuverlaessig aus (PySide6-Eigenheit).
+    #     Ergebnis waere ein Absturz ("QThread: Destroyed while thread is
+    #     still running"). Deshalb hier an einer Liste auf `parent`
+    #     festgehalten, bis thread.finished feuert.
+    # EN: WITHOUT a held Python reference, Python's garbage collector often
+    #     collects thread/worker before the background thread is even
+    #     done -- the Qt parent relationship alone isn't reliably enough
+    #     (a PySide6 quirk). The result would be a crash ("QThread:
+    #     Destroyed while thread is still running"). So it's kept alive
+    #     here in a list on `parent` until thread.finished fires.
+    if not hasattr(parent, "_stille_hintergrund_threads"):
+        parent._stille_hintergrund_threads = []
+    parent._stille_hintergrund_threads.append((thread, worker))
+
+    def _aufraeumen() -> None:
+        parent._stille_hintergrund_threads.remove((thread, worker))
+
+    def _fertig(ergebnis) -> None:
+        bei_fertig(ergebnis)
+        thread.quit()
+
+    def _fehler(exc: Exception) -> None:
+        if bei_fehler is not None:
+            bei_fehler(exc)
+        thread.quit()
+
+    worker.fertig.connect(_fertig)
+    worker.fehler.connect(_fehler)
+    thread.finished.connect(worker.deleteLater)
+    thread.finished.connect(thread.deleteLater)
+    thread.finished.connect(_aufraeumen)
+    thread.start()
