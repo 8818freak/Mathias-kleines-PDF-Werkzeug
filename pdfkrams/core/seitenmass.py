@@ -170,6 +170,33 @@ def naheliegendes_format(breite_mm: float, hoehe_mm: float, toleranz: float = 0.
     return beste
 
 
+def naechstes_format(breite_mm: float, hoehe_mm: float) -> str:
+    """
+    DE: Liefert IMMER den Namen des am naechsten liegenden Papierformats
+        (DIN oder US), unabhaengig von der Abweichung -- anders als
+        naheliegendes_format() ohne Toleranzschwelle, die None liefern
+        koennte. Fuer den Automatik-Modus des Normieren-Werkzeugs: jede
+        Seite bekommt ein Zielformat zugeordnet, auch wenn keins wirklich
+        gut passt (dann eben das relativ naechste).
+
+    EN: ALWAYS returns the name of the nearest paper format (DIN or US),
+        regardless of the deviation -- unlike naheliegendes_format(),
+        which has a tolerance threshold and can return None. For the
+        normalize tool's automatic mode: every page gets a target format
+        assigned, even if none really fits well (then just the relatively
+        closest one).
+    """
+    kurz, lang = min(breite_mm, hoehe_mm), max(breite_mm, hoehe_mm)
+    beste = next(iter(PAPIERFORMATE))
+    beste_abweichung = None
+    for name, (k, l) in PAPIERFORMATE.items():
+        abweichung = max(abs(kurz - k) / k, abs(lang - l) / l)
+        if beste_abweichung is None or abweichung < beste_abweichung:
+            beste = name
+            beste_abweichung = abweichung
+    return beste
+
+
 def seite_normieren(wp: WorkingPage, ziel_breite_mm: float, ziel_hoehe_mm: float,
                     dpi: float, rand_abschneiden: bool = True) -> tuple[Image.Image, float]:
     """
@@ -212,3 +239,53 @@ def seite_normieren(wp: WorkingPage, ziel_breite_mm: float, ziel_hoehe_mm: float
         bild = bild.resize((ziel_px_breite, ziel_px_hoehe), Image.LANCZOS)
 
     return bild, dpi
+
+
+def seite_automatisch_normieren(wp: WorkingPage, dpi: float,
+                                rand_abschneiden: bool = True) -> tuple[Image.Image, float, str]:
+    """
+    DE: Wie seite_normieren(), aber ohne vorgegebenes Zielformat -- die
+        Seite wird gerendert, ihr schwarzer Rand optional abgeschnitten,
+        und aus der so gemessenen Groesse automatisch das naheliegendste
+        bekannte Format bestimmt (naechstes_format()), auf das dann
+        skaliert wird. Wichtig: die Seite wird dabei nur EINMAL gerendert
+        -- eine getrennte Messung ueber aktuelle_groesse_mm() VOR diesem
+        Aufruf wuerde jede Seite zweimal komplett rastern (spuerbar
+        langsamer bei vielen Seiten, da PDF-Rendering der teuerste Schritt
+        ist). Liefert (Bild, dpi, Name des erkannten Zielformats).
+
+    EN: Like seite_normieren(), but without a given target format -- the
+        page is rendered, its black border optionally cropped, and the
+        nearest known format is determined automatically from the
+        measured size (naechstes_format()), which it's then scaled to.
+        Important: the page is rendered only ONCE here -- a separate
+        measurement via aktuelle_groesse_mm() before this call would fully
+        rasterize each page twice (noticeably slower for many pages,
+        since PDF rendering is the most expensive step). Returns (image,
+        dpi, name of the detected target format).
+    """
+    bild, render_dpi = rotiertes_bild(wp.source, wp.rotation, wp.spiegel_h, wp.spiegel_v)
+    bild = schwaerzungen_anwenden(bild, wp.schwaerzungen)
+
+    if rand_abschneiden:
+        links, oben, rechts, unten = schwarzen_rand_erkennen(bild)
+        breite, hoehe = bild.size
+        box = (
+            round(links * breite), round(oben * hoehe),
+            breite - round(rechts * breite), hoehe - round(unten * hoehe),
+        )
+        if box[2] > box[0] and box[3] > box[1]:
+            bild = bild.crop(box)
+
+    gemessen_breite_mm = bild.width / render_dpi * _MM_PRO_ZOLL
+    gemessen_hoehe_mm = bild.height / render_dpi * _MM_PRO_ZOLL
+    ziel_format = naechstes_format(gemessen_breite_mm, gemessen_hoehe_mm)
+    kurz, lang = PAPIERFORMATE[ziel_format]
+    ziel_breite_mm, ziel_hoehe_mm = (lang, kurz) if bild.width > bild.height else (kurz, lang)
+
+    ziel_px_breite = max(1, round(ziel_breite_mm / _MM_PRO_ZOLL * dpi))
+    ziel_px_hoehe = max(1, round(ziel_hoehe_mm / _MM_PRO_ZOLL * dpi))
+    if bild.size != (ziel_px_breite, ziel_px_hoehe):
+        bild = bild.resize((ziel_px_breite, ziel_px_hoehe), Image.LANCZOS)
+
+    return bild, dpi, ziel_format

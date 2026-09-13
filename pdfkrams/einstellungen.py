@@ -236,6 +236,20 @@ class _Einstellungen(QObject):
     def werkzeugliste_sichtbar_setzen(self, sichtbar: bool) -> None:
         self._settings.setValue("werkzeuglisteSichtbar", sichtbar)
 
+    def rotationslinien_farbe(self) -> str:
+        """DE: Farbe der Referenzlinien im Dreh-Werkzeug, als Hex-String
+            (z. B. "#ff4646") -- ueber Programmstarts hinweg gemerkt, damit
+            eine einmal gewaehlte, zur eigenen Seitenfarbe passende Farbe
+            nicht bei jedem Start neu gesetzt werden muss.
+        EN: Color of the reference lines in the rotate tool, as a hex
+            string (e.g. "#ff4646") -- remembered across program launches,
+            so a color once chosen to match one's own page color doesn't
+            need to be reset on every start."""
+        return str(self._settings.value("rotationslinienFarbe", "#ff4646"))
+
+    def rotationslinien_farbe_setzen(self, farbe_hex: str) -> None:
+        self._settings.setValue("rotationslinienFarbe", farbe_hex)
+
     def passwort_log(self) -> list[dict]:
         """DE: Liste vergebener PDF-Passwoerter (siehe core/passwort_log.py) --
             als Klartext in QSettings abgelegt, bewusst nicht verschluesselt

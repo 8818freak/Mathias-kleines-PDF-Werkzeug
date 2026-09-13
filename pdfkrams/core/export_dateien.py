@@ -169,17 +169,32 @@ def bild_materialisieren(bild: Image.Image, dpi: float, ordner: Path, name: str)
     """
     DE: Ein bereits fertig gerendertes Bild als PNG in `ordner` ablegen und
         als PageSource liefern -- der Grundbaustein, um Zwischenergebnisse
-        (Teilungen, Heftseiten-Zerlegung) als eigenstaendige, weiter
-        bearbeitbare Seiten in die gemeinsame Liste einzusetzen.
-
+        (Teilungen, Heftseiten-Zerlegung, Seitenmaß normieren, ...) als
+        eigenstaendige, weiter bearbeitbare Seiten in die gemeinsame Liste
+        einzusetzen. `compress_level=1` statt PILs Standard (6) --
+        PNG ist bei JEDER Kompressionsstufe verlustfrei (pixelidentisch,
+        per Test bestaetigt), nur die Stufe entscheidet, wie viel Rechenzeit
+        fuers Verkleinern der Datei investiert wird. Bei den hier typischen
+        grossen Scan-Bildern spart Stufe 1 gegenueber der Standardstufe
+        rund die Haelfte der Zeit -- relevant bei vielseitigen Dokumenten,
+        wo diese Funktion einmal pro Seite laeuft. Die etwas groesseren
+        Dateien liegen ohnehin nur im internen, temporaeren Arbeitsordner.
     EN: Save an already-rendered image as a PNG in `ordner` and return it
         as a PageSource -- the basic building block for turning
-        intermediate results (splits, booklet decomposition) into
-        independent, further-editable pages in the shared list.
+        intermediate results (splits, booklet decomposition, normalize
+        page size, ...) into independent, further-editable pages in the
+        shared list. `compress_level=1` instead of PIL's default (6) --
+        PNG is lossless at ANY compression level (pixel-identical,
+        confirmed by testing), the level only decides how much compute
+        time gets spent shrinking the file. For the large scan images
+        typical here, level 1 cuts roughly half the time compared to the
+        default level -- relevant for many-page documents, where this
+        function runs once per page. The somewhat larger files only live
+        in the internal, temporary working folder anyway.
     """
     ordner.mkdir(parents=True, exist_ok=True)
     dateipfad = ordner / f"{name}.png"
-    bild.save(dateipfad, dpi=(dpi, dpi))
+    bild.save(dateipfad, dpi=(dpi, dpi), compress_level=1)
     return PageSource(path=dateipfad, index=0, kind="image")
 
 

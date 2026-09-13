@@ -5,18 +5,20 @@ DE: Werkzeug "Seitenmaß normieren": Seiten auf eine exakte physische
     Scannerglas war) werden dabei automatisch erkannt und abgeschnitten;
     ohne erkennbaren Rand wird die Seite direkt skaliert. Wie bei den
     anderen Werkzeugen wahlweise auf die aktuelle Seite, eine Auswahl
-    oder alle Seiten anwendbar -- für ein Dokument mit mehreren
-    Abschnitten unterschiedlicher Zielgröße das Werkzeug entsprechend
-    mehrfach mit jeweils passender Auswahl anwenden.
+    oder alle Seiten anwendbar. Alternativ per Automatik-Modus: jede
+    Seite wird einzeln vermessen und auf ihr eigenes naheliegendstes
+    bekanntes Format normiert (z. B. A3-Deckblatt + A4-Innenseiten in
+    einem Rutsch, ohne die Auswahl manuell zu unterteilen).
 
 EN: "Normalize page size" tool: bring pages to an exact physical target
     size -- a DIN A format or a free size in mm. Black scan borders
     (e.g. when the original was smaller than the scanner bed) are
     automatically detected and cropped away; without a detectable
     border, the page is scaled directly. Like the other tools, applicable
-    to the current page, a selection, or all pages -- for a document with
-    several sections needing different target sizes, run the tool
-    several times with the matching selection each time.
+    to the current page, a selection, or all pages. Alternatively, via
+    automatic mode: each page is measured individually and normalized to
+    its own nearest known format (e.g. an A3 cover plus A4 inner pages
+    in one pass, without manually splitting up the selection).
 """
 
 from __future__ import annotations
@@ -47,8 +49,10 @@ from pdfkrams.core.seitenmass import (
     aktuelle_groesse_mm,
     einheit_zu_mm,
     mm_zu_einheit,
+    naechstes_format,
     naheliegendes_format,
     schwarzen_rand_erkennen,
+    seite_automatisch_normieren,
     seite_normieren,
 )
 from pdfkrams.einstellungen import einstellungen
@@ -81,6 +85,13 @@ class SeitenmassToolWidget(QWidget):
         self.liste = liste
 
         self._letzter_vorschlag: tuple[str | None, float, float] | None = None
+        # DE: Waehrend _anwenden() laeuft True -- siehe _auswahl_geaendert()
+        #     fuer die Begruendung, warum das die Zwischenaktualisierung
+        #     der Uebersicht unterdrueckt.
+        # EN: True while _anwenden() is running -- see
+        #     _auswahl_geaendert() for why this suppresses the overview's
+        #     intermediate refresh.
+        self._stapel_laeuft = False
         # DE: Kanonischer Zielwert in mm -- unabhaengig von der gerade
         #     angezeigten Masseinheit. Die Zahlenfelder zeigen nur eine
         #     UMGERECHNETE Ansicht davon; das eigentliche Anwenden nutzt
@@ -107,8 +118,10 @@ class SeitenmassToolWidget(QWidget):
                    "kleiner als das Scannerglas war) werden dabei je Kante automatisch "
                    "erkannt und abgeschnitten; ohne erkennbaren Rand wird direkt "
                    "skaliert. Für ein Dokument mit mehreren Abschnitten "
-                   "unterschiedlicher Zielgröße: das Werkzeug mehrfach mit jeweils "
-                   "passender Auswahl anwenden.")
+                   "unterschiedlicher Zielgröße: entweder das Werkzeug mehrfach mit "
+                   "jeweils passender Auswahl anwenden, oder unten den "
+                   "Automatik-Modus aktivieren, der jede Seite einzeln vermisst und "
+                   "auf ihr eigenes naheliegendstes Format normiert.")
         )
         hinweis.setWordWrap(True)
 
@@ -137,6 +150,28 @@ class SeitenmassToolWidget(QWidget):
         self._format_feld.setCurrentIndex(self._format_feld.findData("A4"))
         self._format_feld.currentIndexChanged.connect(self._format_geaendert)
         gruppe_layout.addWidget(self._format_feld)
+
+        # DE: Automatik-Modus fuer Dokumente mit mehreren Abschnitten
+        #     unterschiedlicher Zielgroesse (z. B. ein A3-Deckblatt vor
+        #     A4-Innenseiten): statt EINES global gewaehlten Zielformats
+        #     wird jede Seite einzeln vermessen und auf ihr eigenes
+        #     naheliegendstes bekanntes Format normiert -- rundet dabei
+        #     IMMER auf das relativ naechste Format, auch wenn keins
+        #     wirklich gut passt (siehe naechstes_format()). Macht die
+        #     Format-Auswahl darueber hinfaellig, daher deren Deaktivierung.
+        # EN: Automatic mode for documents with several sections needing
+        #     different target sizes (e.g. an A3 cover before A4 inner
+        #     pages): instead of ONE globally chosen target format, each
+        #     page is measured individually and normalized to its own
+        #     nearest known format -- always rounds to the relatively
+        #     closest format, even if none really fits well (see
+        #     naechstes_format()). Makes the format selection above moot,
+        #     hence disabling it.
+        self._auto_format_feld = QCheckBox(
+            self.tr("Format je Seite automatisch erkennen (A3, A4, … -- rundet auf das nächstliegende Format)")
+        )
+        self._auto_format_feld.toggled.connect(self._auto_format_umgeschaltet)
+        gruppe_layout.addWidget(self._auto_format_feld)
 
         benutzerdefiniert_zeile = QHBoxLayout()
         self._breite_feld = QDoubleSpinBox()
@@ -274,11 +309,24 @@ class SeitenmassToolWidget(QWidget):
     def _format_geaendert(self, _index: int) -> None:
         text = self._format_feld.currentData()
         benutzerdefiniert = text == _BENUTZERDEFINIERT
-        self._breite_feld.setEnabled(benutzerdefiniert)
-        self._hoehe_feld.setEnabled(benutzerdefiniert)
+        self._breite_feld.setEnabled(benutzerdefiniert and not self._auto_format_feld.isChecked())
+        self._hoehe_feld.setEnabled(benutzerdefiniert and not self._auto_format_feld.isChecked())
         if not benutzerdefiniert:
             self._breite_mm, self._hoehe_mm = PAPIERFORMATE[text]
             self._felder_anzeigen()
+
+    def _auto_format_umgeschaltet(self, aktiv: bool) -> None:
+        """DE: Format-Dropdown und Benutzerdefiniert-Felder sperren/
+            freigeben, je nachdem ob der Automatik-Modus aktiv ist -- im
+            Automatik-Modus bestimmt jede Seite ihr Zielformat selbst.
+        EN: Lock/unlock the format dropdown and custom fields depending
+            on whether automatic mode is active -- in automatic mode
+            each page determines its own target format."""
+        self._format_feld.setEnabled(not aktiv)
+        benutzerdefiniert = self._format_feld.currentData() == _BENUTZERDEFINIERT
+        self._breite_feld.setEnabled(benutzerdefiniert and not aktiv)
+        self._hoehe_feld.setEnabled(benutzerdefiniert and not aktiv)
+        self._auswahl_geaendert()
 
     # -- Geltungsbereich / scope resolution --------------------------------
 
@@ -308,10 +356,25 @@ class SeitenmassToolWidget(QWidget):
         # DE: Ueberspringen, wenn nicht sichtbar -- siehe die ausfuehrliche
         #     Begruendung in rotate_tool.py's _auswahl_geaendert(). showEvent()
         #     holt die Vorschau nach, sobald das Werkzeug wieder sichtbar wird.
+        #     Ebenso ueberspringen, waehrend _anwenden() laeuft: jedes
+        #     einzelne Ersetzen einer Seite im Batch loest ueber Qts
+        #     Auswahl-Signale einen Aufruf hier aus, der bis zu
+        #     _MAX_UEBERSICHT_ZEILEN Seiten neu rendert -- reine
+        #     Verschwendung, da der modale Fortschrittsdialog die
+        #     Übersicht ohnehin verdeckt, und spuerbar langsam bei
+        #     vielseitigen Dokumenten. _anwenden() ruft am Ende ohnehin
+        #     einmal selbst auf, um die Anzeige aufzufrischen.
         # EN: Skip when not visible -- see the detailed rationale in
         #     rotate_tool.py's _auswahl_geaendert(). showEvent() catches the
-        #     preview up once the tool becomes visible again.
-        if not self.isVisible():
+        #     preview up once the tool becomes visible again. Also skip
+        #     while _anwenden() is running: each individual page
+        #     replacement in the batch triggers a call here via Qt's
+        #     selection signals, which re-renders up to
+        #     _MAX_UEBERSICHT_ZEILEN pages -- pure waste, since the modal
+        #     progress dialog covers the overview anyway, and noticeably
+        #     slow for many-page documents. _anwenden() calls this once by
+        #     itself at the end regardless, to refresh the display.
+        if not self.isVisible() or self._stapel_laeuft:
             return
         self._aktuelle_seite_info_aktualisieren()
         self._uebersicht_aktualisieren()
@@ -367,14 +430,25 @@ class SeitenmassToolWidget(QWidget):
             self._uebersicht_info.setText(self.tr("Keine Seiten im gewählten Bereich."))
             return
         rand_abschneiden = self._rand_feld.isChecked()
+        automatik = self._auto_format_feld.isChecked()
         zeilen = []
         for item in elemente[:_MAX_UEBERSICHT_ZEILEN]:
             wp = item.data(Qt.ItemDataRole.UserRole)
             breite_mm, hoehe_mm = aktuelle_groesse_mm(wp, rand_abschneiden)
-            vorschlag = naheliegendes_format(breite_mm, hoehe_mm)
             zeile = self.tr("{0}. {1}").format(self.liste.row(item) + 1, self._groesse_anzeigen(breite_mm, hoehe_mm))
-            if vorschlag:
-                zeile += self.tr(" (≈ {0})").format(vorschlag)
+            if automatik:
+                # DE: Im Automatik-Modus wird IMMER normiert (kein "passt zu
+                #     keinem Format" moeglich) -- daher hier das tatsaechliche
+                #     Ziel zeigen, nicht nur eine unverbindliche Vermutung.
+                # EN: In automatic mode, normalization always happens (no
+                #     "matches no format" possible) -- so show the actual
+                #     target here, not just a non-committal guess.
+                ziel = naechstes_format(breite_mm, hoehe_mm)
+                zeile += self.tr(" → wird auf {0} normiert").format(ziel)
+            else:
+                vorschlag = naheliegendes_format(breite_mm, hoehe_mm)
+                if vorschlag:
+                    zeile += self.tr(" (≈ {0})").format(vorschlag)
             zeilen.append(zeile)
         if len(elemente) > _MAX_UEBERSICHT_ZEILEN:
             zeilen.append(self.tr("… und {0} weitere Seite(n).").format(len(elemente) - _MAX_UEBERSICHT_ZEILEN))
@@ -401,6 +475,7 @@ class SeitenmassToolWidget(QWidget):
             )
             return
 
+        automatik = self._auto_format_feld.isChecked()
         breite_mm = self._breite_mm
         hoehe_mm = self._hoehe_mm
         dpi = float(self._dpi_feld.value())
@@ -408,21 +483,54 @@ class SeitenmassToolWidget(QWidget):
         arbeits_unterordner = arbeitsordner.pfad() / uuid.uuid4().hex
 
         anzeige = Fortschrittsanzeige(self, self.tr("Seiten werden normiert …"), len(ziel))
+        self._stapel_laeuft = True
         try:
             with self.liste.stapelverarbeitung():
                 for i, item in enumerate(ziel, start=1):
                     wp = item.data(Qt.ItemDataRole.UserRole)
-                    bild, ziel_dpi = seite_normieren(wp, breite_mm, hoehe_mm, dpi, rand_abschneiden)
+                    if automatik:
+                        # DE: Je Seite ihr eigenes naheliegendstes Format
+                        #     bestimmen -- nicht das global gewaehlte
+                        #     Zielformat verwenden. So normiert ein einziger
+                        #     Durchlauf ein Dokument mit z. B. A3-Deckblatt
+                        #     und A4-Innenseiten jeweils richtig. Nutzt
+                        #     seite_automatisch_normieren() statt getrennt
+                        #     aktuelle_groesse_mm() + seite_normieren()
+                        #     aufzurufen -- Letzteres wuerde jede Seite
+                        #     ZWEIMAL komplett rendern (einmal zum Messen,
+                        #     einmal zum eigentlichen Normieren), was bei
+                        #     vielseitigen Dokumenten spuerbar langsam war.
+                        # EN: Determine each page's own nearest format --
+                        #     don't use the globally chosen target format.
+                        #     This way a single pass correctly normalizes a
+                        #     document with e.g. an A3 cover and A4 inner
+                        #     pages. Uses seite_automatisch_normieren()
+                        #     instead of separately calling
+                        #     aktuelle_groesse_mm() + seite_normieren() --
+                        #     the latter would fully render each page
+                        #     TWICE (once to measure, once to actually
+                        #     normalize), which was noticeably slow for
+                        #     many-page documents.
+                        bild, ziel_dpi, _format = seite_automatisch_normieren(wp, dpi, rand_abschneiden)
+                    else:
+                        bild, ziel_dpi = seite_normieren(wp, breite_mm, hoehe_mm, dpi, rand_abschneiden)
                     source = bild_materialisieren(bild, ziel_dpi, arbeits_unterordner, f"normiert_{uuid.uuid4().hex[:8]}")
                     self.liste.ersetzen(item, [source])
                     anzeige.callback(i, len(ziel))
         except Abgebrochen:
             return
         finally:
+            self._stapel_laeuft = False
             anzeige.schliessen()
 
         self._auswahl_geaendert()
-        QMessageBox.information(
-            self, self.tr("Fertig"),
-            self.tr("{0} Seite(n) auf {1} normiert.").format(len(ziel), self._groesse_anzeigen(breite_mm, hoehe_mm))
-        )
+        if automatik:
+            QMessageBox.information(
+                self, self.tr("Fertig"),
+                self.tr("{0} Seite(n) je auf ihr eigenes erkanntes Format normiert.").format(len(ziel))
+            )
+        else:
+            QMessageBox.information(
+                self, self.tr("Fertig"),
+                self.tr("{0} Seite(n) auf {1} normiert.").format(len(ziel), self._groesse_anzeigen(breite_mm, hoehe_mm))
+            )

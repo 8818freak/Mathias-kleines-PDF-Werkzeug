@@ -4,6 +4,132 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 
 *All notable changes to this project are documented here.*
 
+## [1.12] – 2026-09-12
+
+### Hinzugefügt / Added
+
+- PDF verkleinern: neuer Knopf „Datei analysieren“ -- zeigt vorab, wie
+  viele Seiten bereits effizient komprimiert sind (JBIG2/JPEG2000) und
+  beim Verkleinern unverändert übernommen werden, statt sie zu JPEG
+  umzukodieren.
+  *Shrink PDF: new "Analyze file" button -- shows in advance how many
+  pages are already efficiently compressed (JBIG2/JPEG2000) and will be
+  carried over unchanged when shrinking, instead of being re-encoded as
+  JPEG.*
+- Bearbeiten-Menü: neue Aktion „Reihenfolge umkehren“ -- kehrt die
+  gesamte Seitenliste um, oder bei mindestens zwei markierten Seiten
+  nur deren Reihenfolge untereinander (unmarkierte Seiten bleiben an
+  ihrer Stelle).
+  *Edit menu: new "Reverse order" action -- reverses the entire page
+  list, or, with two or more pages selected, just their order among
+  each other (unselected pages stay in place).*
+- Seitenmaß normieren: neuer Automatik-Modus „Format je Seite
+  automatisch erkennen“ -- statt eines einzelnen global gewählten
+  Zielformats wird jede Seite einzeln vermessen und auf ihr eigenes
+  naheliegendstes bekanntes Format (A3, A4, US Letter, …) normiert.
+  Praktisch für Dokumente mit z. B. einem A3-Deckblatt vor A4-
+  Innenseiten -- ein Durchgang genügt statt mehrerer mit
+  unterschiedlicher Auswahl.
+  *Normalize page size: new "Automatically detect format per page"
+  mode -- instead of a single, globally chosen target format, each
+  page is measured individually and normalized to its own nearest
+  known format (A3, A4, US Letter, …). Useful for documents with e.g.
+  an A3 cover before A4 inner pages -- one pass instead of several
+  with different selections.*
+- `build_linux.sh` -- Skript zum Selbstbauen eines eigenständigen
+  Linux-Binaries, nach demselben Prinzip wie `build_mac.sh`/
+  `build_windows.bat`. Ungetestet (keine Linux-Maschine in der
+  Entwicklungsumgebung verfügbar), aber die App ist reines Python +
+  PySide6 mit ausschließlich plattformübergreifenden Abhängigkeiten.
+  *`build_linux.sh` -- script to self-build a standalone Linux binary,
+  following the same approach as `build_mac.sh`/`build_windows.bat`.
+  Untested (no Linux machine available in the development
+  environment), but the app is plain Python + PySide6 with exclusively
+  cross-platform dependencies.*
+- Seiten drehen: Farbe der Referenzlinien (Wasserwaage) frei wählbar
+  über sechs kleine Farbknöpfe oberhalb der Vorschau -- praktisch bei
+  farbigen Vorlagen, auf denen die Standardfarbe Rot schlecht zu
+  erkennen ist (z. B. bräunliche Seiten). Die Wahl wird gespeichert.
+  *Rotate pages: color of the reference lines (spirit level) freely
+  selectable via six small color buttons above the preview -- handy
+  for colored originals where the default red is hard to make out
+  (e.g. brownish pages). The choice is remembered.*
+
+### Behoben / Fixed
+
+- PDF verkleinern: Seiten, die bereits als JPEG2000 (JPX) gespeichert
+  waren (z. B. viele professionelle Scans), wurden blind zu normalem
+  JPEG umkodiert -- bei einer 912-seitigen Testdatei wuchs die
+  "verkleinerte" Ausgabe dadurch von 139 MB auf 349 MB, da JPEG2000 bei
+  gleicher Qualität kompakter kodiert als JPEG. Solche Seiten werden
+  jetzt wie bereits JBIG2/CCITT-kodierte Strichseiten unverändert
+  übernommen.
+  *Shrink PDF: pages already stored as JPEG2000 (JPX) (e.g. many
+  professional scans) were blindly re-encoded as regular JPEG -- for a
+  912-page test file, the "shrunk" output grew from 139 MB to 349 MB
+  because JPEG2000 encodes more compactly than JPEG at matched quality.
+  Such pages are now carried over unchanged, just like already JBIG2/
+  CCITT-encoded line-art pages.*
+- Seiten ließen sich in der Seitenübersicht per Maus-Drag nicht neu
+  anordnen -- die Miniatur folgte beim Ziehen zwar der Maus, sprang
+  beim Loslassen aber zur ursprünglichen Position zurück. Ursache: die
+  Kombination aus Kachelansicht (`IconMode`) und `Movement.Static` war
+  auf dieser Qt/PySide6/macOS-Kombination für interne Drag&Drop-
+  Neuordnung nachweislich kaputt (per isoliertem Minimaltest
+  bestätigt, außerhalb jedes eigenen Codes) -- der Drop wurde nirgends
+  im Programm zugestellt. Behoben durch Umstellung auf `ListMode` mit
+  Zeilenumbruch, das optisch identisch aussieht, aber Qts normale
+  (funktionierende) Listen-Logik nutzt. Funktioniert jetzt überall in
+  der Liste, auch für mehrere markierte, nicht zusammenhängende Seiten
+  gleichzeitig.
+  *Pages could not be reordered by dragging them in the page overview
+  -- the thumbnail followed the mouse while dragging, but snapped back
+  to its original position on release. Cause: the combination of tile
+  view (`IconMode`) and `Movement.Static` was demonstrably broken for
+  internal drag&drop reordering on this Qt/PySide6/macOS combination
+  (confirmed via an isolated minimal test, outside any of our own
+  code) -- the drop was never delivered anywhere in the program. Fixed
+  by switching to `ListMode` with line wrapping, which looks visually
+  identical but uses Qt's normal (working) list logic. Now works
+  throughout the list, including for several selected, non-contiguous
+  pages at once.*
+- Nach "Speichern" in dieselbe Datei, aus der die Seiten stammen (z. B.
+  eine frisch geöffnete Einzeldatei), zeigte ein Werkzeugwechsel (z. B.
+  zu "Seiten zuschneiden") die Seite wieder schief, und Zuschneiden
+  hatte keine Wirkung. Ursache: Drehung/Spiegelung/Schwärzung waren
+  beim Speichern schon fest in die neuen Bildpixel eingebrannt worden,
+  aber die entsprechenden Felder im Speicher blieben auf ihrem alten
+  Wert stehen -- ein erneutes Rendern wandte sie ein zweites Mal an.
+  Die Seitenliste wird nach so einem Speichern jetzt automatisch aus
+  der frisch geschriebenen Datei neu geladen (wie Schließen +
+  Neuöffnen), als ein Rückgängig-Schritt.
+  *After "Save" back into the very file the pages came from (e.g. a
+  freshly opened single file), switching tools (e.g. to "Crop pages")
+  showed the page skewed again, and cropping had no effect. Cause:
+  rotation/mirroring/redaction had already been baked into the new
+  pixels by the save, but the corresponding in-memory fields stayed at
+  their old value -- re-rendering applied them a second time. The page
+  list is now automatically rebuilt from the freshly written file
+  after such a save (like closing and reopening it), as one undo
+  step.*
+
+### Geändert / Changed
+
+- Seitenmaß normieren: bei vielseitigen Dokumenten deutlich schneller
+  (in Tests rund doppelt so schnell, ohne jeden Qualitätsverlust) --
+  zwei Ursachen behoben: interne Zwischenbilder wurden mit einer
+  unnötig aufwendigen (aber weiterhin verlustfreien) PNG-
+  Kompressionsstufe gespeichert, und während der Stapelverarbeitung
+  aktualisierte sich die (ohnehin vom Fortschrittsdialog verdeckte)
+  Größenübersicht mehrfach unnötig.
+  *Normalize page size: noticeably faster for many-page documents (in
+  testing, roughly twice as fast, with zero quality loss) -- two
+  causes fixed: internal intermediate images were saved with an
+  unnecessarily expensive (but still lossless) PNG compression level,
+  and the size overview (already hidden behind the progress dialog
+  anyway) refreshed itself redundantly several times during batch
+  processing.*
+
 ## [1.11.1] – 2026-09-12
 
 ### Behoben / Fixed

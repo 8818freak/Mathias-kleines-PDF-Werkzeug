@@ -15,8 +15,9 @@ EN: "Rotate pages" tool: freely straighten pages via mouse drag, plus quick
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QKeySequence
+from PySide6.QtGui import QColor, QKeySequence
 from PySide6.QtWidgets import (
+    QButtonGroup,
     QComboBox,
     QGroupBox,
     QHBoxLayout,
@@ -30,6 +31,7 @@ from PySide6.QtWidgets import (
 )
 
 from pdfkrams.core.rotate import normalisiert, rotiertes_bild, schraeglagen_korrektur_erkennen
+from pdfkrams.einstellungen import einstellungen
 from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
 from pdfkrams.gui.widgets.page_list import PageListWidget, basis_pixmap
 from pdfkrams.gui.widgets.pdf_export import seitenliste_als_pdf_exportieren
@@ -42,6 +44,23 @@ _VORSCHAU_GROESSE = 1000
 _AKTUELLE_SEITE = "Aktuelle Seite"
 _AUSGEWAEHLTE_SEITEN = "Ausgewählte Seiten"
 _ALLE_SEITEN = "Alle Seiten"
+
+# DE: Auswahl an Linienfarben fuer die Referenzlinien -- bewusst ueber den
+#     Farbkreis verteilt, damit sich fuer so gut wie jede Seitenfarbe eine
+#     gut sichtbare Variante findet (z. B. Gruen/Blau/Tuerkis auf einer
+#     braeunlichen Seite, wo Rot kaum zu erkennen ist).
+# EN: Selection of line colors for the reference lines -- deliberately
+#     spread around the color wheel, so a clearly visible option exists
+#     for almost any page color (e.g. green/blue/teal on a brownish page,
+#     where red is hard to make out).
+_LINIENFARBEN = [
+    ("#ff4646", "Rot"),
+    ("#3ecf4a", "Grün"),
+    ("#3aa0ff", "Blau"),
+    ("#ffd23a", "Gelb"),
+    ("#2adfd0", "Türkis"),
+    ("#ff4ad1", "Magenta"),
+]
 
 
 class RotateToolWidget(QWidget):
@@ -68,6 +87,7 @@ class RotateToolWidget(QWidget):
         self._canvas = RotateCanvas()
         self._canvas.winkelGeaendert.connect(self._winkel_von_canvas)
         self._canvas.aenderungBegonnen.connect(self.liste.vor_aenderung_sichern)
+        self._canvas.linienfarbe_setzen(QColor(einstellungen.rotationslinien_farbe()))
 
         self._winkel_feld = QDoubleSpinBox()
         self._winkel_feld.setRange(-180.0, 180.0)
@@ -78,10 +98,41 @@ class RotateToolWidget(QWidget):
 
         hinweis = QLabel(
             self.tr("Mit der Maus in der Vorschau ziehen, um die Seite geradezurichten "
-                   "(die roten Linien helfen als Wasserwaage). Pfeiltasten für "
-                   "Feinjustierung, Umschalt+Pfeil für größere Schritte.")
+                   "(die farbigen Linien helfen als Wasserwaage, Farbe unten wählbar). "
+                   "Pfeiltasten für Feinjustierung, Umschalt+Pfeil für größere Schritte.")
         )
         hinweis.setWordWrap(True)
+
+        # DE: Kleine, farbige Schaltflaechen zur Auswahl der Referenzlinien-
+        #     Farbe -- z. B. hilfreich bei braeunlichen Seiten, auf denen
+        #     die Standardfarbe Rot kaum zu erkennen ist. Exklusiv
+        #     (QButtonGroup): immer genau eine Farbe aktiv, per weissem
+        #     Rahmen markiert. Wahl wird in den Einstellungen gemerkt.
+        # EN: Small, colored buttons to choose the reference-line color --
+        #     e.g. helpful on brownish pages, where the default red is
+        #     hard to make out. Exclusive (QButtonGroup): exactly one
+        #     color active at a time, marked with a white border. The
+        #     choice is remembered in settings.
+        farbe_zeile = QHBoxLayout()
+        farbe_zeile.addWidget(QLabel(self.tr("Linienfarbe:")))
+        self._farb_gruppe = QButtonGroup(self)
+        self._farb_gruppe.setExclusive(True)
+        aktuelle_farbe = einstellungen.rotationslinien_farbe()
+        for hex_wert, name in _LINIENFARBEN:
+            btn = QPushButton()
+            btn.setCheckable(True)
+            btn.setFixedSize(24, 20)
+            btn.setToolTip(self.tr(name))
+            btn.setStyleSheet(
+                f"QPushButton {{ background-color: {hex_wert}; border: 1px solid #888; }}"
+                f"QPushButton:checked {{ border: 2px solid white; }}"
+            )
+            if hex_wert.lower() == aktuelle_farbe.lower():
+                btn.setChecked(True)
+            btn.clicked.connect(lambda _checked=False, h=hex_wert: self._linienfarbe_gewaehlt(h))
+            self._farb_gruppe.addButton(btn)
+            farbe_zeile.addWidget(btn)
+        farbe_zeile.addStretch(1)
 
         zoom_zeile = QHBoxLayout()
         btn_zoom_aus = QPushButton("−")
@@ -196,6 +247,7 @@ class RotateToolWidget(QWidget):
         aussen = QVBoxLayout(self)
         aussen.addWidget(hinweis)
         aussen.addLayout(zoom_zeile)
+        aussen.addLayout(farbe_zeile)
         aussen.addWidget(self._canvas, 1)
         aussen.addWidget(self._winkel_feld)
         aussen.addWidget(gruppe)
@@ -337,6 +389,10 @@ class RotateToolWidget(QWidget):
         wp = item.data(Qt.ItemDataRole.UserRole)
         wp.rotation = normalisiert(winkel)
         self.liste.item_aktualisieren(item)
+
+    def _linienfarbe_gewaehlt(self, hex_wert: str) -> None:
+        self._canvas.linienfarbe_setzen(QColor(hex_wert))
+        einstellungen.rotationslinien_farbe_setzen(hex_wert)
 
     # -- Schnellaktionen / quick actions ------------------------------------
 

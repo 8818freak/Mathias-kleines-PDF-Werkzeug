@@ -45,6 +45,7 @@ from PySide6.QtWidgets import (
 )
 
 from pdfkrams.core.combine import export_pdf
+from pdfkrams.core.document import datei_aufschluesseln
 from pdfkrams.einstellungen import einstellungen
 from pdfkrams.gui.einstellungen_dialog import EinstellungenDialog
 from pdfkrams.gui.hilfe_fenster import HilfeFenster
@@ -336,6 +337,22 @@ class MainWindow(QMainWindow):
 
         bearbeiten_menu.addSeparator()
 
+        # DE: Kehrt die Reihenfolge der Seiten um -- bei markiertem Block
+        #     nur dessen Reihenfolge, sonst die ganze Liste (siehe
+        #     PageListWidget.reihenfolge_umkehren() fuer die genaue
+        #     Semantik). Wirkt auf die gemeinsame Seitenliste, ist also
+        #     unabhaengig vom gerade offenen Werkzeug immer verfuegbar.
+        # EN: Reverses the page order -- just the selected block if one
+        #     is marked, otherwise the whole list (see PageListWidget.
+        #     reihenfolge_umkehren() for the exact semantics). Acts on the
+        #     shared page list, so it's always available regardless of
+        #     which tool is currently open.
+        action_reihenfolge_umkehren = QAction(self.tr("Reihenfolge umkehren"), self)
+        action_reihenfolge_umkehren.triggered.connect(self._liste.reihenfolge_umkehren)
+        bearbeiten_menu.addAction(action_reihenfolge_umkehren)
+
+        bearbeiten_menu.addSeparator()
+
         action_einstellungen = QAction(self.tr("Einstellungen …"), self)
         action_einstellungen.setShortcut(QKeySequence.StandardKey.Preferences)
         # DE: PreferencesRole -- macOS verschiebt diesen Eintrag automatisch
@@ -624,4 +641,39 @@ class MainWindow(QMainWindow):
         finally:
             anzeige.schliessen()
         self._ungespeicherte_aenderungen = False
+
+        # DE: "Speichern" ueberschreibt haeufig direkt die Datei, aus der
+        #     die Seiten selbst stammen (z. B. bei einer frisch geoeffneten
+        #     Einzeldatei, siehe _dokument_geoeffnet). Drehung/Spiegelung/
+        #     Schwaerzung/Teilung sind dabei in export_pdf schon fest in die
+        #     neuen Pixel eingebrannt worden -- die WorkingPage-Felder
+        #     selbst (z. B. rotation) bleiben aber unveraendert auf ihrem
+        #     alten Wert stehen. Ohne diesen Neuaufbau wuerde jede weitere
+        #     Aktion, die die Seite aus ihrer Quelle neu rendert (z. B. ein
+        #     Werkzeugwechsel), Drehung/Spiegelung/Schwaerzung ein ZWEITES
+        #     Mal anwenden -- genau der vom Nutzer beobachtete Fehler
+        #     (Seite nach Speichern+Zuschneiden wieder schief). Die Liste
+        #     wird deshalb aus der frisch geschriebenen Datei neu aufgebaut,
+        #     genau wie beim Schliessen und Neuoeffnen dieser Datei -- als
+        #     EIN Rueckgaengig-Schritt, mit erhaltener aktueller Zeile.
+        # EN: "Save" frequently overwrites the very file the pages
+        #     themselves came from (e.g. a freshly opened single file, see
+        #     _dokument_geoeffnet). Rotation/mirroring/redaction/splitting
+        #     have already been baked into the new pixels by export_pdf --
+        #     but the WorkingPage fields themselves (e.g. rotation) stay at
+        #     their old value. Without this rebuild, any further action
+        #     that re-renders the page from its source (e.g. switching
+        #     tools) would apply rotation/mirroring/redaction a SECOND time
+        #     -- exactly the bug the user observed (page skewed again
+        #     after Save+Crop). The list is therefore rebuilt from the
+        #     freshly written file, exactly like closing and reopening it
+        #     -- as ONE undo step, with the current row preserved.
+        if any(wp.source.path == ziel for wp in seiten):
+            aktuelle_zeile = self._liste.currentRow()
+            alle_eintraege = [self._liste.item(i) for i in range(self._liste.count())]
+            neue_quellen = datei_aufschluesseln(ziel)
+            self._liste.mehrere_ersetzen(alle_eintraege, neue_quellen)
+            if 0 <= aktuelle_zeile < self._liste.count():
+                self._liste.setCurrentRow(aktuelle_zeile)
+
         QMessageBox.information(self, self.tr("Gespeichert"), self.tr("PDF gespeichert unter:\n{0}").format(ziel))

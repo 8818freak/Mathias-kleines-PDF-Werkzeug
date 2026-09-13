@@ -1,24 +1,28 @@
 """
 DE: Interaktive Vorschauflaeche fuer das Dreh-Werkzeug. Zeigt eine Seite
     gross an; per Klicken-und-Ziehen mit der Maus laesst sie sich frei
-    drehen (wie an einem Rad), waehrenddessen helfen feste rote
+    drehen (wie an einem Rad), waehrenddessen helfen feste, farbige
     Referenzlinien (waagerecht UND senkrecht) beim Beurteilen, ob die
-    Seite schon gerade ist. Zusaetzlich per Pfeiltasten in 0.1°-Schritten
-    (mit Umschalt-Taste 1°-Schritte) feinjustierbar. Zoom/Verschieben wie
-    bei den anderen Werkzeugen (Strg/Cmd+Scrollen bzw. Pinch-Geste,
-    verankert am Mauszeiger; einfaches Scrollen/Wischen zum Verschieben)
-    -- das Drehen selbst bleibt dabei immer um die Mitte der (ggf.
-    verschobenen) Seite verankert, nicht um die Fenstermitte.
+    Seite schon gerade ist -- die Farbe laesst sich von aussen einstellen
+    (siehe linienfarbe_setzen()/rotate_tool.py), z. B. passend zur
+    Seitenfarbe. Zusaetzlich per Pfeiltasten in 0.1°-Schritten (mit
+    Umschalt-Taste 1°-Schritte) feinjustierbar. Zoom/Verschieben wie bei
+    den anderen Werkzeugen (Strg/Cmd+Scrollen bzw. Pinch-Geste, verankert
+    am Mauszeiger; einfaches Scrollen/Wischen zum Verschieben) -- das
+    Drehen selbst bleibt dabei immer um die Mitte der (ggf. verschobenen)
+    Seite verankert, nicht um die Fenstermitte.
 
 EN: Interactive preview area for the rotate tool. Displays a page at large
     size; click-and-drag with the mouse rotates it freely (like turning a
-    wheel), while fixed red reference lines (horizontal AND vertical) help
-    judge whether the page is level yet. Also fine-adjustable via arrow
-    keys in 0.1° steps (1° steps with the Shift key). Zoom/pan work like
-    in the other tools (Ctrl/Cmd+scroll resp. pinch gesture, anchored at
-    the cursor; plain scroll/swipe to pan) -- rotation itself always stays
-    anchored to the center of the (possibly panned) page, not the widget
-    center.
+    wheel), while fixed, colored reference lines (horizontal AND
+    vertical) help judge whether the page is level yet -- the color can
+    be configured from the outside (see linienfarbe_setzen()/
+    rotate_tool.py), e.g. to match the page color. Also fine-adjustable
+    via arrow keys in 0.1° steps (1° steps with the Shift key). Zoom/pan
+    work like in the other tools (Ctrl/Cmd+scroll resp. pinch gesture,
+    anchored at the cursor; plain scroll/swipe to pan) -- rotation itself
+    always stays anchored to the center of the (possibly panned) page,
+    not the widget center.
 """
 
 from __future__ import annotations
@@ -36,6 +40,14 @@ from pdfkrams.core.rotate import normalisiert
 _RASTER_ABSTAND = 20
 _ZOOM_MIN = 1.0
 _ZOOM_MAX = 40.0
+
+# DE: Standardfarbe der Referenzlinien -- von aussen per linienfarbe_setzen()
+#     aenderbar (siehe rotate_tool.py), z. B. weil Rot auf einer bräunlichen
+#     Seite kaum zu erkennen ist.
+# EN: Default color of the reference lines -- changeable from the outside
+#     via linienfarbe_setzen() (see rotate_tool.py), e.g. because red is
+#     hard to make out on a brownish page.
+_STANDARD_LINIENFARBE = QColor(255, 70, 70)
 
 
 class RotateCanvas(QWidget):
@@ -77,6 +89,15 @@ class RotateCanvas(QWidget):
         self._taste_aktiv = False
         self._zoom = _ZOOM_MIN
         self._pan = QPointF(0, 0)
+        self._linienfarbe = QColor(_STANDARD_LINIENFARBE)
+
+    def linienfarbe_setzen(self, farbe: QColor) -> None:
+        """DE: Farbe der Referenzlinien (Wasserwaage) aendern -- z. B.
+            passend zur Seitenfarbe, damit die Linien gut zu erkennen sind.
+        EN: Change the color of the reference lines (spirit level) -- e.g.
+            to match the page color, so the lines are easy to make out."""
+        self._linienfarbe = farbe
+        self.update()
 
     # -- Zustand setzen / setting state --------------------------------
 
@@ -191,7 +212,9 @@ class RotateCanvas(QWidget):
         # EN: Fixed reference lines that don't rotate, as a spirit level
         #     -- horizontal AND vertical, so alignment also works against
         #     vertical edges (column margins, book spines).
-        painter.setPen(QPen(QColor(255, 70, 70, 150), 1, Qt.PenStyle.DashLine))
+        raster_farbe = QColor(self._linienfarbe)
+        raster_farbe.setAlpha(150)
+        painter.setPen(QPen(raster_farbe, 1, Qt.PenStyle.DashLine))
         y = int(mitte.y()) % _RASTER_ABSTAND
         while y < self.height():
             painter.drawLine(QPointF(0, y), QPointF(self.width(), y))
@@ -200,7 +223,9 @@ class RotateCanvas(QWidget):
         while x < self.width():
             painter.drawLine(QPointF(x, 0), QPointF(x, self.height()))
             x += _RASTER_ABSTAND
-        painter.setPen(QPen(QColor(255, 70, 70, 220), 1, Qt.PenStyle.SolidLine))
+        mitte_farbe = QColor(self._linienfarbe)
+        mitte_farbe.setAlpha(220)
+        painter.setPen(QPen(mitte_farbe, 1, Qt.PenStyle.SolidLine))
         painter.drawLine(QPointF(0, mitte.y()), QPointF(self.width(), mitte.y()))
         painter.drawLine(QPointF(mitte.x(), 0), QPointF(mitte.x(), self.height()))
 

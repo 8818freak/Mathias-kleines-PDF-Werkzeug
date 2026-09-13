@@ -41,10 +41,14 @@ internet connection and no additional software required.*
   *Combine PDF/JPG/BMP/TIF(F) files (including multi-page TIFFs) into one PDF.*
 - **Seiten drehen** -- frei mit der Maus gerade ziehen, oder 90°/180°,
   Spiegeln, "abwechselnd drehen" für gescannte Doppelseiten; Schräglage
-  lässt sich auch automatisch per Textzeilen-Erkennung vorschlagen.
+  lässt sich auch automatisch per Textzeilen-Erkennung vorschlagen. Die
+  Farbe der Referenzlinien (Wasserwaage) ist frei wählbar -- praktisch bei
+  farbigen Vorlagen, auf denen die Standardfarbe schlecht zu erkennen ist.
   *Rotate pages freehand by dragging, or by 90°/180°, mirror, or
   alternate rotation for scanned spreads; skew can also be suggested
-  automatically via text-line detection.*
+  automatically via text-line detection. The color of the reference lines
+  (spirit level) is freely selectable -- handy for colored originals where
+  the default color is hard to make out.*
 - **Bildbereinigung** -- für gescannte Schwarzweiß-/Textvorlagen:
   Binarisieren (Schwellwert, auf Wunsch automatisch per Otsu-Verfahren
   vorgeschlagen) und Despeckle (kleine dunkle Flecken/Staub entfernen),
@@ -81,11 +85,15 @@ internet connection and no additional software required.*
   US-Format (Letter, Legal, …) oder ein freies Maß bringen (Millimeter
   oder Zoll, umstellbar in den Einstellungen); schwarze Scan-Ränder werden
   dabei automatisch erkannt und abgeschnitten, inkl. Größenvorschlag je
-  Seite.
+  Seite. Automatik-Modus: erkennt das naheliegendste Format je Seite
+  automatisch und normiert jede Seite darauf -- praktisch für Dokumente
+  mit z. B. einem A3-Deckblatt vor A4-Innenseiten, in einem Durchgang.
   *Normalize pages to an exact DIN A format, a US format (Letter, Legal,
   …), or a free size (millimeters or inches, switchable in Preferences);
   black scan borders are automatically detected and cropped, including a
-  per-page size suggestion.*
+  per-page size suggestion. Automatic mode: detects each page's nearest
+  format on its own and normalizes it accordingly -- handy for documents
+  with e.g. an A3 cover before A4 inner pages, in a single pass.*
 - **Seiten zuschneiden** -- Seiten von allen vier Rändern aus um ein frei
   wählbares Maß beschneiden (z. B. einen Lochrandstreifen oder Heftrand
   entfernen), mit ziehbaren Linien in der Vorschau und Live-Anzeige der
@@ -150,20 +158,24 @@ internet connection and no additional software required.*
 
 Alle Werkzeuge arbeiten auf derselben gemeinsamen Dateiliste -- einmal
 laden, mit mehreren Werkzeugen nacheinander bearbeiten, ohne zwischendurch
-exportieren zu müssen. Dazu: natives Menü mit Datei schließen/Speichern/
+exportieren zu müssen. Seiten lassen sich in der Übersicht auch direkt mit
+der Maus neu anordnen (oder über "Reihenfolge umkehren" im
+Bearbeiten-Menü), dazu: natives Menü mit Datei schließen/Speichern/
 Speichern unter/Rückgängig/Wiederholen (fragt bei ungespeicherten
-Änderungen nach), Drag & Drop an eine bestimmte Stelle in der Dateiliste,
-eine durchsuchbare Bedienungsanleitung im Programm selbst (Hilfe-Menü
-bzw. Cmd+?/F1), Fortschrittsanzeigen bei allen längeren Vorgängen. macOS
-merkt sich außerdem, dass das Programm PDF- und Bilddateien öffnen kann
-(Finder-Menü „Öffnen mit“) -- unter Windows entsprechend über die
-Registry.
+Änderungen nach), Drag & Drop an eine bestimmte Stelle in der Dateiliste
+für neue Dateien, eine durchsuchbare Bedienungsanleitung im Programm
+selbst (Hilfe-Menü bzw. Cmd+?/F1), Fortschrittsanzeigen bei allen längeren
+Vorgängen. macOS merkt sich außerdem, dass das Programm PDF- und
+Bilddateien öffnen kann (Finder-Menü „Öffnen mit“) -- unter Windows
+entsprechend über die Registry.
 
 *All tools operate on the same shared file list -- load once, work through
-several tools one after another without exporting in between. Plus: a
-native menu with Close file/Save/Save As/Undo/Redo (asks for confirmation
-on unsaved changes), drag & drop insertion at a specific spot in the file
-list, a searchable user manual built right into the app (Help menu resp.
+several tools one after another without exporting in between. Pages can
+also be reordered directly by dragging them in the overview (or via
+"Reverse order" in the Edit menu), plus: a native menu with Close file/
+Save/Save As/Undo/Redo (asks for confirmation on unsaved changes), drag &
+drop insertion of new files at a specific spot in the file list, a
+searchable user manual built right into the app (Help menu resp.
 Cmd+?/F1), and progress indicators for every longer-running operation.
 macOS also remembers that the program can open PDF and image files
 (Finder's "Open With" menu) -- correspondingly via the registry on
@@ -187,6 +199,10 @@ from any country.*
   *macOS 11 (Big Sur) or later, 64-bit (Apple Silicon or Intel).*
 - **Windows** 10 (64-Bit) oder neuer.
   *Windows 10 (64-bit) or later.*
+- **Linux**: keine vorgefertigte Version, aber da die App reines Python +
+  PySide6 ist, läuft/baut sie auch dort -- siehe „Selbst bauen" unten.
+  *Linux: no pre-built version, but since the app is plain Python + PySide6,
+  it also runs/builds there -- see "Build from source" below.*
 - Ca. 250 MB freier Speicherplatz für die App, zusätzlich freier Platz für
   Zwischendateien während der Bearbeitung (grob das 2--3fache der Größe
   der bearbeiteten PDF-Dateien).
@@ -235,15 +251,27 @@ pip install -r requirements.txt
 python -m pdfkrams.main
 ```
 
-Eine eigenständige App/exe bauen -- unter macOS `./build_mac.sh`, unter
-Windows `build_windows.bat` per Doppelklick ausführen. Beide installieren
-alle Abhängigkeiten automatisch in eine eigene virtuelle Umgebung und
-bauen dann mit [PyInstaller](https://pyinstaller.org/).
+Unter Linux genügt (mit installiertem Python 3) schon dieser letzte Befehl,
+`python -m pdfkrams.main`, ohne weiteres um die App direkt zu starten --
+alle Abhängigkeiten gibt es als fertige Wheels für Linux auf PyPI.
 
-*To build a standalone app/exe -- on macOS run `./build_mac.sh`, on
-Windows double-click `build_windows.bat`. Both automatically install all
-dependencies into their own virtual environment and then build with
-[PyInstaller](https://pyinstaller.org/).*
+*On Linux, the last command above, `python -m pdfkrams.main`, is enough
+(with Python 3 installed) to run the app directly -- all dependencies have
+ready-made Linux wheels on PyPI.*
+
+Eine eigenständige App/exe/Binary bauen -- unter macOS `./build_mac.sh`,
+unter Windows `build_windows.bat` per Doppelklick, unter Linux
+`./build_linux.sh` ausführen. Alle drei installieren die Abhängigkeiten
+automatisch in eine eigene virtuelle Umgebung und bauen dann mit
+[PyInstaller](https://pyinstaller.org/). (Die Linux-Variante wird nicht
+selbst getestet, siehe Skript-Kommentar für Details.)
+
+*To build a standalone app/exe/binary -- on macOS run `./build_mac.sh`, on
+Windows double-click `build_windows.bat`, on Linux run `./build_linux.sh`.
+All three automatically install dependencies into their own virtual
+environment and then build with [PyInstaller](https://pyinstaller.org/).
+(The Linux variant isn't tested by the author -- see the script's comment
+for details.)*
 
 ## Technik / Tech stack
 

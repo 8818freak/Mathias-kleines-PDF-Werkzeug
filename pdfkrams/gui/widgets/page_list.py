@@ -228,10 +228,35 @@ class PageListWidget(QListWidget):
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        self.setViewMode(QListWidget.ViewMode.IconMode)
+        # DE: ListMode + Flow(LeftToRight) + Wrapping statt ViewMode.IconMode
+        #     -- sieht optisch identisch aus (Miniaturen fliessen zeilenweise
+        #     um, wie ein Kachelraster), aber IconMode+Movement.Static war
+        #     auf dieser Qt/PySide6/macOS-Kombination nachweislich kaputt
+        #     fuer interne Drag&Drop-Neuordnung: selbst eine voellig nackte
+        #     QListWidget mit exakt dieser Kombination liess sich per Maus
+        #     nicht umsortieren (per isoliertem Minimaltest bestaetigt,
+        #     ausserhalb jedes eigenen Codes) -- der Drop wurde nirgends im
+        #     Programm zugestellt, drag.exec() lieferte immer IgnoreAction.
+        #     Dieselbe nackte Liste mit ListMode+LeftToRight+Wrapping
+        #     funktionierte dagegen sofort mit Qts eingebauter Behandlung,
+        #     ohne jeden eigenen Code.
+        # EN: ListMode + Flow(LeftToRight) + Wrapping instead of
+        #     ViewMode.IconMode -- looks visually identical (thumbnails
+        #     wrap row by row, like a tile grid), but IconMode+
+        #     Movement.Static was demonstrably broken on this Qt/PySide6/
+        #     macOS combination for internal drag&drop reordering: even a
+        #     completely bare QListWidget with exactly this combination
+        #     couldn't be reordered by mouse (confirmed via an isolated
+        #     minimal test, outside any of our own code) -- the drop was
+        #     never delivered anywhere in the program, drag.exec() always
+        #     returned IgnoreAction. The same bare list with ListMode+
+        #     LeftToRight+Wrapping worked immediately with Qt's built-in
+        #     handling, without any code of our own.
+        self.setViewMode(QListWidget.ViewMode.ListMode)
+        self.setFlow(QListWidget.Flow.LeftToRight)
+        self.setWrapping(True)
         self.setIconSize(QSize(THUMB_GROESSE, THUMB_GROESSE))
         self.setResizeMode(QListWidget.ResizeMode.Adjust)
-        self.setMovement(QListWidget.Movement.Static)
         self.setDragDropMode(QListWidget.DragDropMode.InternalMove)
         self.setSelectionMode(QListWidget.SelectionMode.ExtendedSelection)
         self.setSpacing(8)
@@ -369,6 +394,22 @@ class PageListWidget(QListWidget):
         wp = WorkingPage(source=source)
         item = QListWidgetItem(QIcon(_thumbnail(wp)), _text(wp))
         item.setData(Qt.ItemDataRole.UserRole, wp)
+        # DE: Frisch erzeugte Eintraege haben standardmaessig zwar
+        #     ItemIsDragEnabled, aber NICHT ItemIsDropEnabled -- ohne
+        #     dieses Flag lehnt Qt den Drop auf/neben einem bestehenden
+        #     Eintrag ab (die gezogene Miniatur folgt der Maus, springt
+        #     beim Loslassen aber zur urspruenglichen Position zurueck,
+        #     statt die Liste umzusortieren). Explizit ergaenzen, damit
+        #     Drag&Drop-Neuordnung ueberall in der Liste funktioniert, nicht
+        #     nur an eine eventuell leere Stelle am Ende.
+        # EN: Freshly created entries have ItemIsDragEnabled by default, but
+        #     NOT ItemIsDropEnabled -- without that flag, Qt rejects the
+        #     drop on/near an existing entry (the dragged thumbnail follows
+        #     the mouse but snaps back to its original position on release
+        #     instead of reordering the list). Add it explicitly so
+        #     drag&drop reordering works throughout the list, not just onto
+        #     a possibly-empty spot at the end.
+        item.setFlags(item.flags() | Qt.ItemFlag.ItemIsDropEnabled)
         return item
 
     def seiten_anhaengen(
@@ -460,6 +501,36 @@ class PageListWidget(QListWidget):
         for item in neue_reihenfolge:
             self.addItem(item)
         self.geaendert.emit()
+
+    def reihenfolge_umkehren(self) -> None:
+        """DE: Kehrt die Reihenfolge der Seiten um. Sind mindestens zwei
+        Eintraege markiert, wird nur deren Block umgekehrt -- die
+        unmarkierten Eintraege bleiben an ihrer Stelle, nur die Plaetze
+        der markierten tauschen die Reihenfolge (z. B. um nur einen
+        eingefuegten Abschnitt umzudrehen). Ohne (ausreichende) Markierung
+        wird die gesamte Liste umgekehrt.
+        EN: Reverses the page order. If two or more entries are selected,
+        only that block is reversed -- unselected entries stay in place,
+        only the selected ones swap their order among themselves (e.g. to
+        flip just an inserted section). Without a (sufficient) selection,
+        the whole list is reversed."""
+        alle = [self.item(i) for i in range(self.count())]
+        # DE: Als id()-Menge vergleichen, nicht als Menge der Items selbst
+        #     -- QListWidgetItem ist nicht hashbar (kein __hash__), ein
+        #     direktes set(...) daraus wirft TypeError.
+        # EN: Compare via a set of id()s, not a set of the items
+        #     themselves -- QListWidgetItem isn't hashable (no __hash__),
+        #     a direct set(...) of them raises TypeError.
+        ausgewaehlt = {id(item) for item in self.selectedItems()}
+        if len(ausgewaehlt) >= 2:
+            positionen = [i for i, item in enumerate(alle) if id(item) in ausgewaehlt]
+            block = [alle[i] for i in reversed(positionen)]
+            neue_reihenfolge = list(alle)
+            for position, item in zip(positionen, block):
+                neue_reihenfolge[position] = item
+        else:
+            neue_reihenfolge = list(reversed(alle))
+        self.neu_anordnen(neue_reihenfolge)
 
     def item_aktualisieren(self, item: QListWidgetItem) -> None:
         """DE: Miniaturbild und Text eines Eintrags neu erzeugen, z. B.

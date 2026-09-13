@@ -317,7 +317,7 @@
 <div class="schema" lang="en">
   <nav class="werkzeugliste">
     <p class="marke">Mathias' kleines<br>PDF-Werkzeug
-      <small>Manual · Version 1.11.1</small>
+      <small>Manual · Version 1.12</small>
     </p>
     <ol>
       <li><a href="#pdf-erstellen">Create PDF</a></li>
@@ -382,7 +382,7 @@
       </figure>
       <ol class="schritte">
         <li><span class="txt">Load files via <b class="ui">Add files …</b> or drag &amp; drop into the middle list.</span></li>
-        <li><span class="txt">Change the order by dragging within the list, if needed.</span></li>
+        <li><span class="txt">Change the order by dragging within the list, if needed, or reverse it entirely via <b class="ui">Edit → Reverse order</b> (with pages selected, just their order among each other).</span></li>
         <li><span class="txt">Optional: prepare with other tools (rotate, split, normalize) — the list is preserved throughout.</span></li>
         <li><span class="txt">Click <b class="ui">Export as PDF …</b> and choose where to save.</span></li>
       </ol>
@@ -397,15 +397,17 @@
       <p class="nr">Tool 02</p>
       <h2>Rotate pages</h2>
       <p class="intro">Straighten crookedly scanned pages directly with the mouse: dragging
-        in the preview rotates the page freely, fixed red lines act as a spirit level. Plus
-        the usual quick actions — 90°, 180°, mirror — as well as a function for double-page
-        spreads that were scanned sideways in alternating directions.</p>
+        in the preview rotates the page freely, fixed, colored reference lines (color freely
+        selectable) act as a spirit level. Plus the usual quick actions — 90°, 180°, mirror —
+        as well as a function for double-page spreads that were scanned sideways in
+        alternating directions.</p>
       <figure class="platte">
-        <img src="bilder_en/1_seiten_drehen.jpg" alt="Rotate pages tool: a crooked page is rotated by 4.5° with yellow reference lines">
+        <img src="bilder_en/1_seiten_drehen.jpg" alt="Rotate pages tool: a crooked page is rotated by 4.5° with red reference lines">
         <figcaption><b>Fig. 2</b> — Free-hand straightening by mouse drag; the field below shows the exact angle (here 4.5°).</figcaption>
       </figure>
       <ol class="schritte">
-        <li><span class="txt">Click a page in the list, then drag with the mouse button held down in the preview until the content lines up with the red lines.</span></li>
+        <li><span class="txt">Click a page in the list, then drag with the mouse button held down in the preview until the content lines up with the reference lines.</span></li>
+        <li><span class="txt">Color of the reference lines selectable above the preview (six small color buttons) -- handy for colored originals where the default color is hard to make out.</span></li>
         <li><span class="txt">For exact values: use the number field below the preview, or fine-tune with the arrow keys in <b class="ui">0.1°</b> steps (<b class="ui">Shift (⇧)</b>+arrow = <b class="ui">1°</b> steps).</span></li>
         <li><span class="txt">For right angles/mirroring: use the quick-action buttons.</span></li>
         <li><span class="txt">Set the scope (current page / selection / all) above the list before applying a quick action.</span></li>
@@ -606,6 +608,7 @@
         <li><span class="txt"><b class="ui">Use measured size</b> sets this suggestion directly as the target size — or choose a format resp. a custom size by hand.</span></li>
         <li><span class="txt">Set the output resolution (dpi) and whether black borders should be cropped.</span></li>
         <li><span class="txt">Choose the scope and click <b class="ui">Apply</b>.</span></li>
+        <li><span class="txt">Alternatively: enable <b class="ui">Automatically detect format per page</b> -- then each page determines its own target format (rounding to the nearest known format), instead of using one chosen format for all.</span></li>
       </ol>
       <table class="masse">
         <tr><th>DIN format</th><th>Size (mm)</th><th>US format</th><th>Size (in)</th></tr>
@@ -636,8 +639,11 @@
       </div>
       <div class="hinweis">
         <span class="label">Several sections, different formats</span>
-        For a document with, say, A4 inner pages and an A3 insert: run the tool once on the
-        A4 pages (select, A4, Apply), then again with a different selection and A3.
+        For a document with, say, A4 inner pages and an A3 insert: either run the tool once on
+        the A4 pages (select, A4, Apply), then again with a different selection and A3 -- or
+        more simply, enable <b class="ui">Automatically detect format per page</b> and apply
+        once to all pages at the same time: each page is then normalized to its own,
+        automatically detected format.
       </div>
     </section>
 
@@ -886,7 +892,7 @@
     </section>
 
     <div class="fussleiste">
-      <span>Mathias' kleines PDF-Werkzeug · Version 1.11.1</span>
+      <span>Mathias' kleines PDF-Werkzeug · Version 1.12</span>
       <span>Provided free of charge by <a href="https://www.telefonanleitungen.de">Telefonanleitungen.de</a></span>
     </div>
   </main>

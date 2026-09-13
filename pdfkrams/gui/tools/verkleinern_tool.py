@@ -5,14 +5,22 @@ DE: Werkzeug "PDF verkleinern & PDF/A": exportiert die gemeinsame
     Dokumenten typischerweise um ein Vielfaches kleiner) und kann jede
     PDF-Datei nachträglich mit den strukturellen Kennzeichen fürs
     Archivformat PDF/A-2b versehen (eingebettetes Farbprofil + passende
-    Metadaten).
+    Metadaten). Seiten, die bereits in einem Format vorliegen, bei dem
+    JPEG-Neukodierung ueberwiegend keinen Sinn ergibt (JBIG2/CCITT fuer
+    Schwarzweiss-/Strichinhalt, JPX/JPEG2000 fuer bereits effizient
+    komprimierte Fotoseiten), werden unveraendert uebernommen -- der Knopf
+    "Datei analysieren" zeigt vorab, wie viele Seiten das betrifft.
 
 EN: "Shrink PDF & PDF/A" tool: exports the shared page list as a
     significantly smaller PDF file (JPEG encoding instead of lossless,
     selectable quality and maximum resolution -- for scanned documents
     typically many times smaller) and can retrofit any PDF file with the
     structural markers for the PDF/A-2b archival format (embedded color
-    profile + matching metadata).
+    profile + matching metadata). Pages already stored in a format where
+    JPEG re-encoding mostly doesn't make sense (JBIG2/CCITT for black-and-
+    white/line content, JPX/JPEG2000 for already efficiently compressed
+    photo pages) are carried over unchanged -- the "Analyze file" button
+    shows in advance how many pages that affects.
 """
 
 from __future__ import annotations
@@ -31,6 +39,7 @@ from PySide6.QtWidgets import (
 
 from pdfkrams.core.komprimierung import (
     ausgangsgroesse_falls_eindeutig,
+    codec_analyse,
     export_pdf_komprimiert,
     strukturell_komprimieren,
 )
@@ -63,7 +72,10 @@ class VerkleinernToolWidget(QWidget):
                    "jede Seite wird verlustbehaftet als JPEG statt verlustfrei "
                    "kodiert. Bei gescannten Dokumenten oft 10-100x kleiner. Nicht "
                    "geeignet für Seiten mit echtem Vektortext (der wird dabei zu "
-                   "Pixeln).")
+                   "Pixeln). Bereits effizient komprimierte Seiten (z. B. JPEG2000- "
+                   "oder JBIG2-Scans) werden unverändert übernommen, statt sie zu "
+                   "JPEG umzukodieren -- das würde sie oft eher vergrößern als "
+                   "verkleinern.")
         )
         hinweis.setWordWrap(True)
 
@@ -88,6 +100,32 @@ class VerkleinernToolWidget(QWidget):
 
         self._pdfa_beim_export_feld = QCheckBox(self.tr("Zusätzlich als PDF/A-2b kennzeichnen"))
 
+        # DE: Analyse VOR dem eigentlichen (bei vielen Seiten langwierigen)
+        #     Export -- prueft, wie viele Seiten bereits in einem Format
+        #     vorliegen (JBIG2/CCITT/JPX), bei dem JPEG-Neukodierung
+        #     ueberwiegend keinen Sinn ergibt (siehe core/komprimierung.py's
+        #     _bereits_effizient_komprimiert()). Genau der Fall, der einmal
+        #     zu einer 912-seitigen Datei fuehrte, die beim "Verkleinern"
+        #     von 139 MB auf 349 MB WUCHS, weil bereits JPEG2000-kodierte
+        #     Fotoseiten blind zu JPEG umkodiert wurden. Als eigener Knopf
+        #     statt automatisch bei jeder Auswahlaenderung, da die Analyse
+        #     bei sehr vielen Seiten selbst spuerbar dauern kann.
+        # EN: Analysis BEFORE the actual (for many pages, lengthy) export --
+        #     checks how many pages are already stored in a format (JBIG2/
+        #     CCITT/JPX) where JPEG re-encoding mostly doesn't make sense
+        #     (see core/komprimierung.py's _bereits_effizient_komprimiert()).
+        #     Exactly the case that once caused a 912-page file to GROW
+        #     from 139 MB to 349 MB when "shrunk", because already-JPEG2000-
+        #     encoded photo pages were blindly re-encoded as JPEG. A
+        #     separate button rather than automatic on every selection
+        #     change, since the analysis itself can take a noticeable while
+        #     for very many pages.
+        self._btn_analysieren = QPushButton(self.tr("Datei analysieren"))
+        self._btn_analysieren.clicked.connect(self._analysieren)
+        self._analyse_info = QLabel()
+        self._analyse_info.setWordWrap(True)
+        self._analyse_info.setStyleSheet("color: gray;")
+
         self._btn_export = QPushButton(self.tr("Als kleinere PDF exportieren …"))
         self._btn_export.clicked.connect(self._exportieren)
         self._btn_export.setEnabled(self.liste.count() > 0)
@@ -100,6 +138,8 @@ class VerkleinernToolWidget(QWidget):
         groesse_layout.addWidget(hinweis)
         groesse_layout.addLayout(einstellungen_zeile)
         groesse_layout.addWidget(self._pdfa_beim_export_feld)
+        groesse_layout.addWidget(self._btn_analysieren)
+        groesse_layout.addWidget(self._analyse_info)
         groesse_layout.addWidget(self._btn_export)
 
         # -- PDF/A eigenstaendig / PDF/A standalone ------------------------
@@ -144,6 +184,46 @@ class VerkleinernToolWidget(QWidget):
         layout.addStretch(1)
 
     # -- Dateigroesse verringern / reduce file size -----------------------
+
+    def _analysieren(self) -> None:
+        seiten = self.liste.seiten()
+        if not seiten:
+            QMessageBox.information(
+                self, self.tr("Keine Seiten"), self.tr("Die Dateiliste ist leer.")
+            )
+            return
+        try:
+            effizient, gesamt = im_hintergrund_ausfuehren(
+                self, self.tr("Datei wird analysiert …"),
+                lambda _fortschritt: codec_analyse(seiten),
+            )
+        except Exception as exc:  # noqa: BLE001 -- Fehler dem Nutzer verstaendlich zeigen
+            QMessageBox.warning(self, self.tr("Analyse fehlgeschlagen"), str(exc))
+            return
+
+        if effizient == 0:
+            self._analyse_info.setText(
+                self.tr("Keine der {0} Seite(n) ist bereits effizient komprimiert -- "
+                       "die JPEG-Neukodierung sollte die Datei hier tatsächlich "
+                       "spürbar verkleinern.").format(gesamt)
+            )
+        elif effizient == gesamt:
+            self._analyse_info.setText(
+                self.tr("Alle {0} Seite(n) sind bereits effizient komprimiert (JBIG2/"
+                       "JPEG2000) und werden unverändert übernommen -- eine weitere "
+                       "Verkleinerung wird hier vermutlich wenig oder gar nichts "
+                       "bringen (kann die Datei sogar vergrößern).").format(gesamt)
+            )
+        else:
+            anteil = effizient / gesamt * 100
+            self._analyse_info.setText(
+                self.tr("{0} von {1} Seite(n) ({2:.0f} %) sind bereits effizient "
+                       "komprimiert (JBIG2/JPEG2000) und werden unverändert "
+                       "übernommen. Bei den übrigen {3} Seite(n) sollte die "
+                       "JPEG-Neukodierung tatsächlich verkleinern.").format(
+                    effizient, gesamt, anteil, gesamt - effizient
+                )
+            )
 
     def _exportieren(self) -> None:
         vorschlag = self.liste.dateiname_vorschlag() or self.tr("verkleinert.pdf")

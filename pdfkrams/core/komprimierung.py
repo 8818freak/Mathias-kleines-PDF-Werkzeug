@@ -34,17 +34,32 @@ from .rotate import ist_rechter_winkel, normalisiert, rotiertes_bild
 from .schwaerzung import schwaerzungen_anwenden
 from .split import teile_bild
 
-# DE: Filter, die Bilder bereits fuer reinen Schwarzweiss-/Strichinhalt
-#     (Text, Strichzeichnungen) verlustfrei und extrem kompakt speichern.
-#     JPEG-Neukodierung solcher Seiten ist so gut wie immer ein Verlust auf
-#     ganzer Linie: groesser UND schlechter (Kantenartefakte auf scharfen
-#     Text-/Linienkanten), weil JPEG fuer Halbton-/Fotoinhalt gemacht ist.
-# EN: Filters that already store pure black-and-white/line content (text,
-#     line art) losslessly and extremely compactly. Re-encoding such pages
-#     as JPEG is almost always a lose-lose: bigger AND worse (edge
-#     artifacts on sharp text/line edges), since JPEG is built for
-#     continuous-tone/photo content.
-_BILEVEL_FILTER = {"JBIG2Decode", "CCITTFaxDecode"}
+# DE: Filter, die ein Bild bereits in einem Format speichern, bei dem eine
+#     JPEG-Neukodierung ueberwiegend keinen Sinn ergibt:
+#     - JBIG2/CCITT: reiner Schwarzweiss-/Strichinhalt (Text,
+#       Strichzeichnungen), verlustfrei und extrem kompakt. JPEG-
+#       Neukodierung ist hier so gut wie immer ein Verlust auf ganzer
+#       Linie: groesser UND schlechter (Kantenartefakte auf scharfen
+#       Text-/Linienkanten), weil JPEG fuer Halbton-/Fotoinhalt gemacht ist.
+#     - JPX (JPEG2000): bereits ein verlustbehafteter Foto-Codec, der bei
+#       gleicher Qualitaet in aller Regel kompakter kodiert als JPEG --
+#       eine Neukodierung als JPEG macht solche Seiten typischerweise
+#       GROESSER statt kleiner (das genaue Symptom, das zu diesem Fix
+#       gefuehrt hat: eine 912-seitige, ueberwiegend JPX-basierte Vorlage
+#       wuchs beim "Verkleinern" von 139 MB auf 349 MB).
+# EN: Filters that already store an image in a format where re-encoding as
+#     JPEG mostly doesn't make sense:
+#     - JBIG2/CCITT: pure black-and-white/line content (text, line art),
+#       lossless and extremely compact. Re-encoding as JPEG here is
+#       almost always a lose-lose: bigger AND worse (edge artifacts on
+#       sharp text/line edges), since JPEG is built for continuous-tone/
+#       photo content.
+#     - JPX (JPEG2000): already a lossy photo codec that, at matched
+#       quality, typically encodes more compactly than JPEG -- re-encoding
+#       such pages as JPEG typically makes them BIGGER, not smaller (the
+#       exact symptom that led to this fix: a 912-page source dominated
+#       by JPX grew from 139 MB to 349 MB when "shrunk").
+_BEREITS_EFFIZIENT_FILTER = {"JBIG2Decode", "CCITTFaxDecode", "JPXDecode"}
 
 
 def _verkleinert(bild: Image.Image, dpi: float, max_dpi: float | None) -> tuple[Image.Image, float]:
@@ -57,17 +72,21 @@ def _verkleinert(bild: Image.Image, dpi: float, max_dpi: float | None) -> tuple[
     return bild.resize(neue_groesse, Image.LANCZOS), max_dpi
 
 
-def _bereits_bilevel_komprimiert(page: fitz.Page) -> bool:
+def _bereits_effizient_komprimiert(page: fitz.Page) -> bool:
     """
     DE: Prueft, ob die Seite von einem einzigen, seitenfuellenden Bild
-        dominiert wird, das bereits mit einem Schwarzweiss-/Strich-Codec
-        (JBIG2/CCITT) gespeichert ist -- solche Seiten sollen unveraendert
+        dominiert wird, das bereits in einem Format vorliegt, bei dem eine
+        JPEG-Neukodierung ueberwiegend keinen Sinn ergibt (JBIG2/CCITT fuer
+        Schwarzweiss-/Strichinhalt, JPX/JPEG2000 fuer bereits effizient
+        komprimierte Fotoseiten) -- solche Seiten sollen unveraendert
         durchgereicht werden statt sie zu JPEG umzukodieren.
 
     EN: Checks whether the page is dominated by a single page-filling
-        image already stored with a black-and-white/line codec
-        (JBIG2/CCITT) -- such pages should be passed through unchanged
-        instead of being re-encoded as JPEG.
+        image already stored in a format where re-encoding as JPEG mostly
+        doesn't make sense (JBIG2/CCITT for black-and-white/line content,
+        JPX/JPEG2000 for already efficiently compressed photo pages) --
+        such pages should be passed through unchanged instead of being
+        re-encoded as JPEG.
     """
     seitenflaeche = page.rect.width * page.rect.height
     if seitenflaeche <= 0:
@@ -80,7 +99,7 @@ def _bereits_bilevel_komprimiert(page: fitz.Page) -> bool:
             continue
         if (breite_pt * hoehe_pt) / seitenflaeche < 0.9:
             continue
-        if filter_je_xref.get(eintrag["xref"]) in _BILEVEL_FILTER:
+        if filter_je_xref.get(eintrag["xref"]) in _BEREITS_EFFIZIENT_FILTER:
             return True
     return False
 
@@ -123,6 +142,48 @@ def ausgangsgroesse_falls_eindeutig(seiten: list[WorkingPage]) -> int | None:
     return pfad.stat().st_size
 
 
+def codec_analyse(seiten: list[WorkingPage]) -> tuple[int, int]:
+    """
+    DE: Zaehlt, wie viele der gegebenen Seiten bereits in einem Format
+        vorliegen, bei dem eine JPEG-Neukodierung ueberwiegend keinen Sinn
+        ergibt (siehe _bereits_effizient_komprimiert()) -- fuer einen
+        proaktiven Hinweis im Werkzeug, BEVOR eine (bei vielen Seiten
+        langwierige) Komprimierung tatsaechlich angestossen wird. Reine
+        Metadaten-Abfrage ohne Rasterung, daher auch bei vielen hundert
+        Seiten schnell genug fuer einen Aufruf direkt bei Auswahlaenderung.
+        Liefert (Anzahl bereits effizient, Gesamtzahl).
+
+    EN: Counts how many of the given pages are already stored in a format
+        where JPEG re-encoding mostly doesn't make sense (see
+        _bereits_effizient_komprimiert()) -- for a proactive hint in the
+        tool, BEFORE a (for many pages, lengthy) compression is actually
+        triggered. Pure metadata lookup without rasterizing, so fast
+        enough even for several hundred pages to call directly on
+        selection change. Returns (count already efficient, total count).
+    """
+    offene_pdfs: dict[Path, fitz.Document] = {}
+    bereits_effizient = 0
+    try:
+        for wp in seiten:
+            source = wp.source
+            if source.kind != "pdf":
+                continue
+            grad = normalisiert(wp.rotation)
+            unveraendert = (
+                not wp.schwaerzungen and wp.split is None and not wp.spiegel_h and not wp.spiegel_v
+                and ist_rechter_winkel(grad)
+            )
+            if not unveraendert:
+                continue
+            quelle = offene_pdfs.setdefault(source.path, fitz.open(source.path))
+            if _bereits_effizient_komprimiert(quelle[source.index]):
+                bereits_effizient += 1
+    finally:
+        for doc in offene_pdfs.values():
+            doc.close()
+    return bereits_effizient, len(seiten)
+
+
 def export_pdf_komprimiert(seiten: list[WorkingPage], ziel: Path, jpeg_qualitaet: int = 75,
                            max_dpi: float | None = 200.0,
                            fortschritt: Callable[[int, int], None] | None = None,
@@ -131,10 +192,13 @@ def export_pdf_komprimiert(seiten: list[WorkingPage], ziel: Path, jpeg_qualitaet
     DE: Seiten wie combine.export_pdf zusammensetzen, dabei aber jede
         Seite als JPEG mit `jpeg_qualitaet` (1-95) kodieren und optional
         auf `max_dpi` verkleinern (None = nicht verkleinern). Ausnahme:
-        unveraenderte PDF-Seiten, die bereits mit einem Schwarzweiss-/
-        Strich-Codec (JBIG2/CCITT) gespeichert sind, werden unveraendert
-        durchgereicht -- JPEG waere hier so gut wie immer groesser UND
-        schlechter (siehe _bereits_bilevel_komprimiert). `dokument_metadaten`
+        unveraenderte PDF-Seiten, die bereits in einem Format vorliegen, bei
+        dem JPEG-Neukodierung ueberwiegend keinen Sinn ergibt (JBIG2/CCITT
+        fuer Schwarzweiss-/Strichinhalt, JPX/JPEG2000 fuer bereits
+        effizient komprimierte Fotoseiten), werden unveraendert
+        durchgereicht -- JPEG waere hier so gut wie immer groesser (und bei
+        JBIG2/CCITT zusaetzlich schlechter), siehe
+        _bereits_effizient_komprimiert(). `dokument_metadaten`
         (optional, siehe core/metadaten.py's pdf_felder()) ergaenzt Titel/
         Autor/Thema/Stichwoerter; Lesezeichen (siehe WorkingPage.
         lesezeichen_titel) werden wie bei combine.export_pdf uebernommen.
@@ -143,9 +207,12 @@ def export_pdf_komprimiert(seiten: list[WorkingPage], ziel: Path, jpeg_qualitaet
     EN: Assemble pages like combine.export_pdf, but encode every page as
         JPEG at `jpeg_qualitaet` (1-95) and optionally downscale to
         `max_dpi` (None = no downscaling). Exception: unmodified PDF pages
-        already stored with a black-and-white/line codec (JBIG2/CCITT) are
-        passed through unchanged -- JPEG would almost always be bigger AND
-        worse there (see _bereits_bilevel_komprimiert). `dokument_metadaten`
+        already stored in a format where JPEG re-encoding mostly doesn't
+        make sense (JBIG2/CCITT for black-and-white/line content, JPX/
+        JPEG2000 for already efficiently compressed photo pages) are
+        passed through unchanged -- JPEG would almost always be bigger
+        (and, for JBIG2/CCITT, also worse) there, see
+        _bereits_effizient_komprimiert(). `dokument_metadaten`
         (optional, see core/metadaten.py's pdf_felder()) adds title/author/
         subject/keywords; bookmarks (see WorkingPage.lesezeichen_titel) are
         carried over the same way as in combine.export_pdf. Returns
@@ -169,7 +236,7 @@ def export_pdf_komprimiert(seiten: list[WorkingPage], ziel: Path, jpeg_qualitaet
             )
             if unveraendert_pdf_seite:
                 quelle = offene_pdfs.setdefault(source.path, fitz.open(source.path))
-                if _bereits_bilevel_komprimiert(quelle[source.index]):
+                if _bereits_effizient_komprimiert(quelle[source.index]):
                     neue_seite_nr = ausgabe.page_count
                     ausgabe.insert_pdf(quelle, from_page=source.index, to_page=source.index)
                     if abs(grad) > 1e-6:

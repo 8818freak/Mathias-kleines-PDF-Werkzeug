@@ -395,7 +395,7 @@
 <div class="schema" lang="de">
   <nav class="werkzeugliste">
     <p class="marke">Mathias' kleines<br>PDF-Werkzeug
-      <small>Anleitung · Version 1.11.1</small>
+      <small>Anleitung · Version 1.12</small>
     </p>
     <ol>
       <li><a href="#pdf-erstellen">PDF erstellen</a></li>
@@ -462,7 +462,7 @@
       </figure>
       <ol class="schritte">
         <li><span class="txt">Dateien per <b class="ui">Dateien hinzufügen …</b> oder Drag&amp;Drop in die mittlere Liste laden.</span></li>
-        <li><span class="txt">Reihenfolge bei Bedarf per Ziehen in der Liste ändern.</span></li>
+        <li><span class="txt">Reihenfolge bei Bedarf per Ziehen in der Liste ändern, oder komplett umkehren über <b class="ui">Bearbeiten → Reihenfolge umkehren</b> (bei markierten Seiten nur deren Reihenfolge untereinander).</span></li>
         <li><span class="txt">Optional: mit anderen Werkzeugen vorbereiten (drehen, teilen, normieren) — die Liste bleibt dabei erhalten.</span></li>
         <li><span class="txt"><b class="ui">Als PDF exportieren …</b> klicken und Speicherort wählen.</span></li>
       </ol>
@@ -478,15 +478,17 @@
       <p class="nr">Werkzeug 02</p>
       <h2>Seiten drehen</h2>
       <p class="intro">Schräg eingescannte Seiten direkt mit der Maus geradeziehen: in der
-        Vorschau ziehen dreht die Seite frei, feste rote Linien dienen als Wasserwaage. Dazu
-        die üblichen Schnellaktionen — 90°, 180°, Spiegeln — sowie eine Funktion für
-        Doppelseiten, die abwechselnd in verschiedene Richtungen quer eingescannt wurden.</p>
+        Vorschau ziehen dreht die Seite frei, feste, farbige Referenzlinien (Farbe frei
+        wählbar) dienen als Wasserwaage. Dazu die üblichen Schnellaktionen — 90°, 180°,
+        Spiegeln — sowie eine Funktion für Doppelseiten, die abwechselnd in verschiedene
+        Richtungen quer eingescannt wurden.</p>
       <figure class="platte">
-        <img src="bilder/1_seiten_drehen.jpg" alt="Seiten-drehen-Werkzeug: eine schräge Seite wird mit gelben Referenzlinien um 4,5° gedreht">
+        <img src="bilder/1_seiten_drehen.jpg" alt="Seiten-drehen-Werkzeug: eine schräge Seite wird mit roten Referenzlinien um 4,5° gedreht">
         <figcaption><b>Abb. 2</b> — Freies Geraderichten per Maus-Zug; das Feld unten zeigt den exakten Winkel (hier 4,5°).</figcaption>
       </figure>
       <ol class="schritte">
-        <li><span class="txt">Seite in der Liste anklicken, dann in der Vorschau mit gedrückter Maustaste ziehen, bis der Inhalt an den roten Linien ausgerichtet ist.</span></li>
+        <li><span class="txt">Seite in der Liste anklicken, dann in der Vorschau mit gedrückter Maustaste ziehen, bis der Inhalt an den Referenzlinien ausgerichtet ist.</span></li>
+        <li><span class="txt">Farbe der Referenzlinien oberhalb der Vorschau wählbar (sechs kleine Farbknöpfe) — praktisch bei farbigen Vorlagen, auf denen die Standardfarbe schlecht zu erkennen ist.</span></li>
         <li><span class="txt">Für exakte Werte: Zahlenfeld unter der Vorschau nutzen, oder mit den Pfeiltasten in <b class="ui">0,1°</b>-Schritten feinjustieren (<b class="ui">Umschalt (⇧)</b>+Pfeil = <b class="ui">1°</b>-Schritte).</span></li>
         <li><span class="txt">Für rechte Winkel/Spiegelung: die Schnellaktionsknöpfe verwenden.</span></li>
         <li><span class="txt">Geltungsbereich (aktuelle Seite / Auswahl / alle) oben in der Liste festlegen, bevor eine Schnellaktion angewendet wird.</span></li>
@@ -690,6 +692,7 @@
         <li><span class="txt"><b class="ui">Gemessene Größe übernehmen</b> setzt diesen Vorschlag direkt als Zielgröße — oder Format bzw. eigenes Maß von Hand wählen.</span></li>
         <li><span class="txt">Ausgabeauflösung (dpi) und ob schwarze Ränder abgeschnitten werden sollen, festlegen.</span></li>
         <li><span class="txt">Geltungsbereich wählen und <b class="ui">Anwenden</b> klicken.</span></li>
+        <li><span class="txt">Alternativ: <b class="ui">Format je Seite automatisch erkennen</b> aktivieren — dann bestimmt jede Seite ihr Zielformat selbst (rundet auf das nächstliegende bekannte Format), statt ein einziges gewähltes Format für alle zu verwenden.</span></li>
       </ol>
       <table class="masse">
         <tr><th>DIN-Format</th><th>Maße (mm)</th><th>US-Format</th><th>Maße (in)</th></tr>
@@ -719,9 +722,11 @@
       </div>
       <div class="hinweis">
         <span class="label">Mehrere Abschnitte, unterschiedliche Formate</span>
-        Für ein Dokument mit z. B. A4-Innenseiten und einer A3-Beilage: Werkzeug einmal auf
-        die A4-Seiten anwenden (auswählen, A4, Anwenden), dann erneut mit anderer Auswahl und
-        A3.
+        Für ein Dokument mit z. B. A4-Innenseiten und einer A3-Beilage: entweder das Werkzeug
+        einmal auf die A4-Seiten anwenden (auswählen, A4, Anwenden), dann erneut mit anderer
+        Auswahl und A3 — oder einfacher <b class="ui">Format je Seite automatisch erkennen</b>
+        aktivieren und einmal auf alle Seiten gleichzeitig anwenden: jede Seite wird dann auf
+        ihr eigenes, automatisch erkanntes Format normiert.
       </div>
     </section>
 
@@ -975,7 +980,7 @@
     </section>
 
     <div class="fussleiste">
-      <span>Mathias' kleines PDF-Werkzeug · Version 1.11.1</span>
+      <span>Mathias' kleines PDF-Werkzeug · Version 1.12</span>
       <span>Kostenlos bereitgestellt von <a href="https://www.telefonanleitungen.de">Telefonanleitungen.de</a></span>
     </div>
   </main>
