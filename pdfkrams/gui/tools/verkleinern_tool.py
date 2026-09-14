@@ -25,6 +25,9 @@ EN: "Shrink PDF & PDF/A" tool: exports the shared page list as a
 
 from __future__ import annotations
 
+from pathlib import Path
+from typing import Callable
+
 from PySide6.QtWidgets import (
     QCheckBox,
     QGroupBox,
@@ -37,6 +40,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from pdfkrams.core.document import WorkingPage, datei_aufschluesseln
 from pdfkrams.core.komprimierung import (
     ausgangsgroesse_falls_eindeutig,
     codec_analyse,
@@ -44,7 +48,8 @@ from pdfkrams.core.komprimierung import (
     strukturell_komprimieren,
 )
 from pdfkrams.core.pdfa import als_pdfa_markieren
-from pdfkrams.gui.widgets.datei_dialoge import einzeln_oeffnen_dialog, speichern_dialog
+from pdfkrams.gui.widgets.batch_ziel_dialog import batch_ziel_dialog
+from pdfkrams.gui.widgets.datei_dialoge import einzeln_oeffnen_dialog, oeffnen_dialog, speichern_dialog
 from pdfkrams.gui.widgets.fortschritt import Abgebrochen, Fortschrittsanzeige
 from pdfkrams.gui.widgets.hintergrund import im_hintergrund_ausfuehren
 from pdfkrams.gui.widgets.page_list import PageListWidget
@@ -133,6 +138,17 @@ class VerkleinernToolWidget(QWidget):
             lambda: self._btn_export.setEnabled(self.liste.count() > 0)
         )
 
+        # DE: Stapel-Variante -- verarbeitet mehrere, komplett eigenstaendige
+        #     Dateien EINZELN (jede bleibt ihr eigenes Dokument), anders als
+        #     der Knopf oben, der die gemeinsame Dateiliste als EINE Datei
+        #     exportiert. Nutzt dieselben Qualitaets-/Aufloesungs-Felder.
+        # EN: Batch variant -- processes several, completely independent
+        #     files INDIVIDUALLY (each stays its own document), unlike the
+        #     button above, which exports the shared page list as ONE file.
+        #     Uses the same quality/resolution fields.
+        btn_stapel_export = QPushButton(self.tr("Mehrere Dateien einzeln verkleinern …"))
+        btn_stapel_export.clicked.connect(self._mehrere_verkleinern)
+
         groesse_gruppe = QGroupBox(self.tr("Dateigröße verringern"))
         groesse_layout = QVBoxLayout(groesse_gruppe)
         groesse_layout.addWidget(hinweis)
@@ -141,6 +157,7 @@ class VerkleinernToolWidget(QWidget):
         groesse_layout.addWidget(self._btn_analysieren)
         groesse_layout.addWidget(self._analyse_info)
         groesse_layout.addWidget(self._btn_export)
+        groesse_layout.addWidget(btn_stapel_export)
 
         # -- PDF/A eigenstaendig / PDF/A standalone ------------------------
         pdfa_hinweis = QLabel(
@@ -154,11 +171,14 @@ class VerkleinernToolWidget(QWidget):
         pdfa_hinweis.setWordWrap(True)
         btn_pdfa = QPushButton(self.tr("Bestehende PDF-Datei als PDF/A-2b kennzeichnen …"))
         btn_pdfa.clicked.connect(self._pdfa_eigenstaendig)
+        btn_pdfa_stapel = QPushButton(self.tr("Mehrere Dateien einzeln als PDF/A-2b kennzeichnen …"))
+        btn_pdfa_stapel.clicked.connect(self._mehrere_pdfa_kennzeichnen)
 
         pdfa_gruppe = QGroupBox(self.tr("PDF/A kennzeichnen"))
         pdfa_layout = QVBoxLayout(pdfa_gruppe)
         pdfa_layout.addWidget(pdfa_hinweis)
         pdfa_layout.addWidget(btn_pdfa)
+        pdfa_layout.addWidget(btn_pdfa_stapel)
 
         # -- Struktur-Kompression eigenstaendig / structural compression standalone --
         struktur_hinweis = QLabel(
@@ -171,11 +191,14 @@ class VerkleinernToolWidget(QWidget):
         struktur_hinweis.setWordWrap(True)
         btn_struktur = QPushButton(self.tr("Bestehende PDF-Datei verlustfrei komprimieren …"))
         btn_struktur.clicked.connect(self._struktur_komprimieren)
+        btn_struktur_stapel = QPushButton(self.tr("Mehrere Dateien einzeln verlustfrei komprimieren …"))
+        btn_struktur_stapel.clicked.connect(self._mehrere_struktur_komprimieren)
 
         struktur_gruppe = QGroupBox(self.tr("PDF-Struktur komprimieren (verlustfrei)"))
         struktur_layout = QVBoxLayout(struktur_gruppe)
         struktur_layout.addWidget(struktur_hinweis)
         struktur_layout.addWidget(btn_struktur)
+        struktur_layout.addWidget(btn_struktur_stapel)
 
         layout = QVBoxLayout(self)
         layout.addWidget(groesse_gruppe)
@@ -328,3 +351,105 @@ class VerkleinernToolWidget(QWidget):
                 ziel_pfad, _lesbare_groesse(vorher), _lesbare_groesse(nachher), f"{ersparnis:.0f}"
             ),
         )
+
+    # -- Stapelverarbeitung (mehrere eigenstaendige Dateien) / batch (several independent files) --
+
+    def _stapel_verarbeiten(
+        self, suffix_vorschlag: str, verarbeite: Callable[[Path, Path], None],
+    ) -> None:
+        """
+        DE: Gemeinsamer Ablauf fuer alle drei "Mehrere Dateien …"-Knoepfe:
+            Dateien waehlen, Ziel-Ordner/Namenszusatz festlegen
+            (batch_ziel_dialog), dann jede Datei EINZELN mit `verarbeite`
+            im Hintergrund verarbeiten -- ein Fehler bei einer Datei bricht
+            die uebrigen nicht ab, sondern wird am Ende gesammelt
+            aufgelistet, damit ein einzelnes Problem (z. B. eine
+            beschaedigte PDF) nicht den ganzen Stapel verhindert.
+        EN: Shared flow for all three "Multiple files …" buttons: choose
+            files, decide target folder/name suffix (batch_ziel_dialog),
+            then process each file INDIVIDUALLY with `verarbeite` in the
+            background -- a failure on one file doesn't abort the rest,
+            it's collected and listed at the end instead, so a single
+            problem (e.g. a corrupted PDF) doesn't block the whole batch.
+        """
+        pfade = oeffnen_dialog(self, self.tr("Dateien wählen"), self.tr("PDF-Datei (*.pdf)"))
+        if not pfade:
+            return
+        wahl = batch_ziel_dialog(self, suffix_vorschlag)
+        if wahl is None:
+            return
+
+        def ziel_fuer(quelle: Path) -> Path:
+            ordner = wahl.ordner or quelle.parent
+            return ordner / f"{quelle.stem}{wahl.suffix}{quelle.suffix}"
+
+        ziele = [ziel_fuer(p) for p in pfade]
+        if len(set(ziele)) != len(ziele):
+            antwort = QMessageBox.warning(
+                self, self.tr("Mehrdeutiges Ziel"),
+                self.tr("Mehrere Ausgabedateien hätten denselben Namen im selben Ordner und "
+                       "würden sich gegenseitig überschreiben. Trotzdem fortfahren?"),
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.Cancel,
+                QMessageBox.StandardButton.Cancel,
+            )
+            if antwort != QMessageBox.StandardButton.Yes:
+                return
+
+        def _lauf(fortschritt):
+            erfolge = 0
+            fehler: list[tuple[Path, str]] = []
+            vorher_gesamt = 0
+            nachher_gesamt = 0
+            for i, (quelle, ziel) in enumerate(zip(pfade, ziele), start=1):
+                try:
+                    vorher_gesamt += quelle.stat().st_size
+                    verarbeite(quelle, ziel)
+                    nachher_gesamt += ziel.stat().st_size
+                    erfolge += 1
+                except Exception as exc:  # noqa: BLE001 -- pro Datei sammeln statt abzubrechen
+                    fehler.append((quelle, str(exc)))
+                fortschritt(i, len(pfade))
+            return erfolge, fehler, vorher_gesamt, nachher_gesamt
+
+        try:
+            erfolge, fehler, vorher_gesamt, nachher_gesamt = im_hintergrund_ausfuehren(
+                self, self.tr("Dateien werden verarbeitet …"), _lauf,
+            )
+        except Exception as exc:  # noqa: BLE001 -- Fehler dem Nutzer verstaendlich zeigen
+            QMessageBox.critical(self, self.tr("Fehlgeschlagen"), str(exc))
+            return
+
+        text = self.tr("{0} von {1} Datei(en) erfolgreich verarbeitet.").format(erfolge, len(pfade))
+        if vorher_gesamt:
+            text += "\n\n" + self.tr("{0} → {1} insgesamt").format(
+                _lesbare_groesse(vorher_gesamt), _lesbare_groesse(nachher_gesamt)
+            )
+        if fehler:
+            text += "\n\n" + self.tr("Fehler bei:") + "\n" + "\n".join(
+                f"{quelle.name}: {meldung}" for quelle, meldung in fehler
+            )
+            QMessageBox.warning(self, self.tr("Fertig mit Fehlern"), text)
+        else:
+            QMessageBox.information(self, self.tr("Fertig"), text)
+
+    def _mehrere_verkleinern(self) -> None:
+        qualitaet = self._qualitaet_feld.value()
+        max_dpi = self._dpi_feld.value() if self._dpi_aktiv_feld.isChecked() else None
+
+        def verarbeite(quelle: Path, ziel: Path) -> None:
+            seiten = [WorkingPage(source=quelle_seite) for quelle_seite in datei_aufschluesseln(quelle)]
+            export_pdf_komprimiert(seiten, ziel, jpeg_qualitaet=qualitaet, max_dpi=max_dpi)
+
+        self._stapel_verarbeiten("_verkleinert", verarbeite)
+
+    def _mehrere_pdfa_kennzeichnen(self) -> None:
+        def verarbeite(quelle: Path, ziel: Path) -> None:
+            als_pdfa_markieren(quelle, ziel, titel=quelle.stem)
+
+        self._stapel_verarbeiten("_pdfa", verarbeite)
+
+    def _mehrere_struktur_komprimieren(self) -> None:
+        def verarbeite(quelle: Path, ziel: Path) -> None:
+            strukturell_komprimieren(quelle, ziel)
+
+        self._stapel_verarbeiten("_komprimiert", verarbeite)

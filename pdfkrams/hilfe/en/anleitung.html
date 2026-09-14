@@ -317,27 +317,27 @@
 <div class="schema" lang="en">
   <nav class="werkzeugliste">
     <p class="marke">Mathias' kleines<br>PDF-Werkzeug
-      <small>Manual · Version 1.12</small>
+      <small>Manual · Version 1.14</small>
     </p>
     <ol>
       <li><a href="#pdf-erstellen">Create PDF</a></li>
       <li><a href="#seiten-drehen">Rotate pages</a></li>
-      <li><a href="#bildbereinigung">Image cleanup</a></li>
-      <li><a href="#leerseiten-entfernen">Remove blank pages</a></li>
       <li><a href="#seiten-teilen">Split pages</a></li>
+      <li><a href="#heftseiten-teilen">Split booklet pages and reorder</a></li>
       <li><a href="#seiten-zusammenfuegen">Combine pages</a></li>
-      <li><a href="#heftseiten-teilen">Split booklet pages</a></li>
-      <li><a href="#seiten-nummerieren">Number pages</a></li>
-      <li><a href="#lesezeichen-setzen">Set bookmarks</a></li>
-      <li><a href="#seitenmass-normieren">Normalize page size</a></li>
       <li><a href="#seiten-zuschneiden">Crop pages</a></li>
-      <li><a href="#schwaerzen">Redact</a></li>
-      <li><a href="#pdf-in-bilder">Split PDF into images</a></li>
+      <li><a href="#seiten-nummerieren">Change page order</a></li>
+      <li><a href="#seiten-benennen">Name pages</a></li>
+      <li><a href="#bildbereinigung">Image cleanup</a></li>
+      <li><a href="#seiten-entfernen">Remove pages</a></li>
+      <li><a href="#seitenmass-normieren">Normalize page size</a></li>
+      <li><a href="#lesezeichen-setzen">Set bookmarks</a></li>
+      <li><a href="#schwaerzen">Redact text and images</a></li>
+      <li><a href="#pdf-in-bilder">Split PDF into images and PDFs</a></li>
       <li><a href="#pdf-verkleinern">Shrink PDF &amp; PDF/A</a></li>
       <li><a href="#pdf-reparieren-entsperren">Repair &amp; unlock PDF</a></li>
       <li><a href="#passwortschutz">Password protection</a></li>
       <li><a href="#metadaten-bearbeiten">Edit metadata</a></li>
-      <li><a href="#seiten-benennen">Name pages</a></li>
     </ol>
     <div class="stufe">
       <a href="#einstellungen">Preferences</a>
@@ -350,7 +350,7 @@
     <div class="deckblatt">
       <p class="eyebrow">User manual · English</p>
       <h1 class="titel">Mathias' kleines PDF-Werkzeug</h1>
-      <p class="lead">Seventeen tools for one recurring problem: turning scanned documents into a
+      <p class="lead">Eighteen tools for one recurring problem: turning scanned documents into a
         clean, correctly formatted PDF file after the fact — straighten, split apart,
         reassemble, bring to a standard size, shrink. This manual walks through every tool
         using a real example.</p>
@@ -363,9 +363,15 @@
       <div class="hinweis" style="margin-top: 1.8rem;">
         <span class="label">Tools also reachable via menu</span>
         All tools are also available from the <b class="ui">Tools</b> menu, in addition
-        to the sidebar. The sidebar itself can be shown/hidden via
-        <b class="ui">View → Show tool list</b> resp. <b class="ui">Cmd+Alt+L (⌘⌥L)</b> --
-        handy for gaining more room for the file list and tool area on smaller screens.
+        to the sidebar, including via keyboard: <b class="ui">Cmd+1</b> through <b class="ui">Cmd+9
+        (⌘1–⌘9)</b> jump straight to the first nine tools, <b class="ui">Cmd+]</b> and
+        <b class="ui">Cmd+[ (⌘] / ⌘[)</b> move to the next resp. previous one. The sidebar itself
+        can be shown/hidden via <b class="ui">View → Show tool list</b> resp.
+        <b class="ui">Cmd+Alt+L (⌘⌥L)</b> -- handy for gaining more room for the file list and
+        tool area on smaller screens. The <b class="ui">Edit</b> menu additionally shows the
+        currently visible tool's own quick actions (e.g. <b class="ui">Cmd+L</b>/<b class="ui">
+        Cmd+R</b> to rotate all marked pages), plus <b class="ui">Backspace</b>/<b class="ui">
+        Delete</b> to remove marked pages, regardless of which tool is currently open.
       </div>
     </div>
 
@@ -391,6 +397,14 @@
         <span class="label">Lossless where possible</span>
         Unmodified PDF pages rotated by 0/90/180/270° stay vector pages on export — only
         truly free rotation angles, mirroring, or splits get rasterized.
+      </div>
+      <div class="hinweis">
+        <span class="label">Take out pages</span>
+        The <b class="ui">Take out pages</b> section lets you pull out just the marked pages
+        into their own new PDF file — as a copy (they also stay in the current list) via
+        <b class="ui">Export marked pages as new file …</b>, or moved (removed from the
+        current list) via <b class="ui">Move marked pages to new file …</b>. Handy for handing
+        a few pages from a longer document off separately.
       </div>
     </section>
 
@@ -422,57 +436,8 @@
       </div>
     </section>
 
-    <section class="werkzeug" id="bildbereinigung">
-      <p class="nr">Tool 03</p>
-      <h2>Image cleanup</h2>
-      <p class="intro">For scanned black-and-white/text originals: converts to pure black and
-        white (threshold, optionally auto-suggested via Otsu's method) and/or removes small
-        dark specks (dust, print artifacts). Both steps can be toggled independently.</p>
-      <figure class="platte">
-        <img src="bilder_en/11_bildbereinigung.jpg" alt="Image cleanup tool: a scanned page binarized in the preview using an Otsu threshold">
-        <figcaption><b>Fig. 3</b> — Preview of the "Image cleanup" tool: a scanned page with an automatically suggested threshold, shown binarized.</figcaption>
-      </figure>
-      <ol class="schritte">
-        <li><span class="txt">Select a page — the preview immediately shows how threshold, binarizing, and despeckling affect exactly this page.</span></li>
-        <li><span class="txt"><b class="ui">Suggest automatically</b> computes a threshold via Otsu's method that most clearly separates text/lines from the background — or fine-tune it by hand.</span></li>
-        <li><span class="txt">Turn off <b class="ui">Convert to pure black and white (binarize)</b> if needed, to only remove specks while leaving gray/color values otherwise unchanged.</span></li>
-        <li><span class="txt">Choose a scope and click <b class="ui">Apply</b>.</span></li>
-      </ol>
-      <div class="hinweis">
-        <span class="label">Smaller files as a side effect</span>
-        Binarized pages can often be compressed especially small in "Shrink PDF &amp; PDF/A"
-        — pure black-and-white content needs far less storage than a grayscale or color scan.
-      </div>
-    </section>
-
-    <section class="werkzeug" id="leerseiten-entfernen">
-      <p class="nr">Tool 04</p>
-      <h2>Remove blank pages</h2>
-      <p class="intro">Searches the selected scope for likely blank pages (via ink share) —
-        typical with automated ADF scanning (duplex with an occasionally unprinted back side,
-        blank separator sheets). Only finds suggestions, doesn't delete anything automatically:
-        the pages found appear in an overview with checkboxes (all preselected), so individual
-        pages can be deselected before actually removing them.</p>
-      <figure class="platte">
-        <img src="bilder_en/14_leerseiten_entfernen.jpg" alt="Remove blank pages tool with two found, checked blank-page suggestions in the overview">
-        <figcaption><b>Fig. 4</b> — Two likely blank pages found, both checked for removal; the measured ink share is shown for each.</figcaption>
-      </figure>
-      <ol class="schritte">
-        <li><span class="txt">Choose a scope (usually <b class="ui">All pages</b>, since one typically checks the whole freshly loaded batch) and click <b class="ui">Search for blank pages</b>.</span></li>
-        <li><span class="txt">Each page found appears in the overview with a checkbox and its measured ink share — all checked by default.</span></li>
-        <li><span class="txt">Deselect whatever isn't actually a blank page.</span></li>
-        <li><span class="txt">Click <b class="ui">Remove selected</b>.</span></li>
-      </ol>
-      <div class="hinweis">
-        <span class="label">Threshold and sensitivity adjustable</span>
-        The ink threshold (what counts as "ink") and the maximum share (at what point a page
-        counts as "blank") can be adjusted — handy for scanners with visible noise/dust that
-        would otherwise falsely flag real, nearly blank pages.
-      </div>
-    </section>
-
     <section class="werkzeug" id="seiten-teilen">
-      <p class="nr">Tool 05</p>
+      <p class="nr">Tool 03</p>
       <h2>Split pages</h2>
       <p class="intro">Cuts a page along vertical and/or horizontal lines into a
         row-by-column grid — e.g. for two book pages on one double-page scan, or several
@@ -480,7 +445,7 @@
         zoom for pixel-precise placement.</p>
       <figure class="platte">
         <img src="bilder_en/2_seiten_teilen.jpg" alt="Split pages tool: a double-page spread with a yellow vertical cut line in the middle">
-        <figcaption><b>Fig. 5</b> — Two columns, cut line placed in the middle; "Apply split now" actually cuts it.</figcaption>
+        <figcaption><b>Fig. 3</b> — Two columns, cut line placed in the middle; "Apply split now" actually cuts it.</figcaption>
       </figure>
       <ol class="schritte">
         <li><span class="txt">Set the number of columns and/or rows, click <b class="ui">Apply</b> — the lines appear evenly distributed.</span></li>
@@ -495,35 +460,9 @@
       </div>
     </section>
 
-    <section class="werkzeug" id="seiten-zusammenfuegen">
-      <p class="nr">Tool 06</p>
-      <h2>Combine pages</h2>
-      <p class="intro">The counterpart to the split tool: several smaller scans — e.g. A4
-        sheets of an A1 drawing or a schematic — are assembled into one large page. One
-        click produces an initial edge-to-edge layout; afterwards, each part can be freely
-        dragged, fine-rotated, and cropped at the edges.</p>
-      <figure class="platte">
-        <img src="bilder_en/3_seiten_zusammenfuegen.jpg" alt="Combine pages tool: four colored tiles in a 2×2 grid, one tile is selected and slightly rotated/cropped">
-        <figcaption><b>Fig. 6</b> — Four parts in a 2×2 grid; the top-left tile is selected, fine-rotated by 3°, and cropped on the left/top.</figcaption>
-      </figure>
-      <ol class="schritte">
-        <li><span class="txt">Select the parts in the file list in the desired reading order (<b class="ui">Cmd (⌘)</b>/<b class="ui">Shift (⇧)</b>-click).</span></li>
-        <li><span class="txt">Set the number of columns (e.g. <b class="ui">2</b> for a 2×2 grid from four parts) and click <b class="ui">Generate layout from selection</b>.</span></li>
-        <li><span class="txt">Click each part in the preview (selects it) and drag it to the right place with the mouse.</span></li>
-        <li><span class="txt">For the selected part, set a <b>fine rotation</b> (0.1° steps) and a <b>crop per edge</b> in % on the right, to compensate for slightly different scan edges or a deliberate overlap.</span></li>
-        <li><span class="txt"><b class="ui">Apply</b> replaces the originally selected parts with the one assembled page.</span></li>
-      </ol>
-      <div class="hinweis">
-        <span class="label">Rotation as a number field, deliberately</span>
-        For technical drawings, an exact degree value is more precise than a mouse click —
-        the "Rotate pages" tool remains useful for the rough alignment of individual parts
-        regardless, and factors in automatically here.
-      </div>
-    </section>
-
     <section class="werkzeug" id="heftseiten-teilen">
-      <p class="nr">Tool 07</p>
-      <h2>Split booklet pages</h2>
+      <p class="nr">Tool 04</p>
+      <h2>Split booklet pages and reorder</h2>
       <p class="intro">For stapled booklets available as double-page spread scans in their
         physically stacked order (scan 1 shows the last and the first book page, scan 2 the
         ones before and after that, and so on): this tool automatically splits every
@@ -531,7 +470,7 @@
         order — following the classic saddle-stitch formula.</p>
       <figure class="platte">
         <img src="bilder_en/4_heftseiten_teilen.jpg" alt="Split booklet pages tool with four selected double-page scans in the file list">
-        <figcaption><b>Fig. 7</b> — Four double-page scans selected, ready for automatic splitting and placement.</figcaption>
+        <figcaption><b>Fig. 4</b> — Four double-page scans selected, ready for automatic splitting and placement.</figcaption>
       </figure>
       <ol class="schritte">
         <li><span class="txt">Select all double-page scans of the booklet in their physically stacked order.</span></li>
@@ -548,16 +487,67 @@
       </div>
     </section>
 
+    <section class="werkzeug" id="seiten-zusammenfuegen">
+      <p class="nr">Tool 05</p>
+      <h2>Combine pages</h2>
+      <p class="intro">The counterpart to the split tool: several smaller scans — e.g. A4
+        sheets of an A1 drawing or a schematic — are assembled into one large page. One
+        click produces an initial edge-to-edge layout; afterwards, each part can be freely
+        dragged, fine-rotated, and cropped at the edges.</p>
+      <figure class="platte">
+        <img src="bilder_en/3_seiten_zusammenfuegen.jpg" alt="Combine pages tool: four colored tiles in a 2×2 grid, one tile is selected and slightly rotated/cropped">
+        <figcaption><b>Fig. 5</b> — Four parts in a 2×2 grid; the top-left tile is selected, fine-rotated by 3°, and cropped on the left/top.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Select the parts in the file list in the desired reading order (<b class="ui">Cmd (⌘)</b>/<b class="ui">Shift (⇧)</b>-click).</span></li>
+        <li><span class="txt">Set the number of columns (e.g. <b class="ui">2</b> for a 2×2 grid from four parts) and click <b class="ui">Generate layout from selection</b>.</span></li>
+        <li><span class="txt">Click each part in the preview (selects it) and drag it to the right place with the mouse.</span></li>
+        <li><span class="txt">For the selected part, set a <b>fine rotation</b> (0.1° steps) and a <b>crop per edge</b> in % on the right, to compensate for slightly different scan edges or a deliberate overlap.</span></li>
+        <li><span class="txt"><b class="ui">Apply</b> replaces the originally selected parts with the one assembled page.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Rotation as a number field, deliberately</span>
+        For technical drawings, an exact degree value is more precise than a mouse click —
+        the "Rotate pages" tool remains useful for the rough alignment of individual parts
+        regardless, and factors in automatically here.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="seiten-zuschneiden">
+      <p class="nr">Tool 06</p>
+      <h2>Crop pages</h2>
+      <p class="intro">Crops pages on all four edges by a freely chosen amount — e.g. to
+        precisely remove a punch-hole strip or binding margin. Unlike "Normalize page size",
+        this does not scale to a target size but cuts away exactly the specified amount; the
+        resulting size follows from that and is displayed live.</p>
+      <figure class="platte">
+        <img src="bilder_en/10_seiten_zuschneiden.jpg" alt="Crop pages tool: a page with a punch-hole strip on the left, the cropped-away area is shown darkened">
+        <figcaption><b>Fig. 6</b> — The area to be cut away is shown darkened; here the punch-hole strip on the left disappears into the dark area.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Enter the four margins as number fields (Left, Top, Right, Bottom) — or drag the yellow lines directly in the preview with the mouse.</span></li>
+        <li><span class="txt">To hit precisely with small margins: zoom in with <b class="ui">Ctrl/Cmd (⌃/⌘)</b>+scroll resp. a pinch gesture.</span></li>
+        <li><span class="txt">The resulting size is shown live below the margin fields, including a format suggestion if one fits.</span></li>
+        <li><span class="txt">Choose the scope and click <b class="ui">Apply</b> — the same margins are applied to every page within the selected scope.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Fixed margins persist</span>
+        The configured margins persist when switching to the next page — handy for
+        deliberately applying the same fixed amount to several, slightly different-sized
+        pages ("in bulk").
+      </div>
+    </section>
+
     <section class="werkzeug" id="seiten-nummerieren">
-      <p class="nr">Tool 08</p>
-      <h2>Number pages</h2>
+      <p class="nr">Tool 07</p>
+      <h2>Change page order</h2>
       <p class="intro">For a scrambled page sequence — manually assign each page a target
         number, then rearrange in one step. Nothing is written onto the page, only the
         order in the list changes. Alternatively: automatic sorting by capture/creation
         date, including renaming the files on disk.</p>
       <figure class="platte">
         <img src="bilder_en/5_seiten_nummerieren.jpg" alt="Number pages tool: four pages with assigned target numbers 1 to 4 in the file list">
-        <figcaption><b>Fig. 8</b> — Each thumbnail shows its assigned target number; "Rearrange now" sorts the list accordingly.</figcaption>
+        <figcaption><b>Fig. 7</b> — Each thumbnail shows its assigned target number; "Rearrange now" sorts the list accordingly.</figcaption>
       </figure>
       <ol class="schritte">
         <li><span class="txt">Click a page, enter the target number, click <b class="ui">Assign &amp; next</b> — automatically jumps to the next page.</span></li>
@@ -567,33 +557,92 @@
       </ol>
     </section>
 
-    <section class="werkzeug" id="lesezeichen-setzen">
-      <p class="nr">Tool 09</p>
-      <h2>Set bookmarks</h2>
-      <p class="intro">For booklets and books one already goes through page by page anyway:
-        optionally give each page a chapter or sub-chapter title. Automatically becomes a
-        bookmark/table of contents (outline) in the PDF file when saving — with no separate
-        export step.</p>
+    <section class="werkzeug" id="seiten-benennen">
+      <p class="nr">Tool 08</p>
+      <h2>Name pages</h2>
+      <p class="intro">Assigns PDF-native page labels (like in Acrobat's page navigator) --
+        independent of the actual sheet order. Handy e.g. for cover pages in roman numerals
+        (I, II, …) before and after a book block numbered in arabic numerals (1, 2, …).</p>
       <figure class="platte">
-        <img src="bilder_en/12_lesezeichen_setzen.jpg" alt="Set bookmarks tool with three bookmarks set in the overview">
-        <figcaption><b>Fig. 9</b> — Three bookmarks set (two chapters, one sub-chapter); the overview below shows all of them in page order.</figcaption>
+        <img src="bilder_en/18_seiten_benennen.jpg" alt="Name pages tool: cover pages in roman numerals before and after a book block numbered in arabic numerals">
+        <figcaption><b>Fig. 8</b> — Three defined groups: pages 1–2 as cover (i–ii), pages 3–6 as book block (1–4), pages 7–8 as cover continuation (iii–iv).</figcaption>
       </figure>
       <ol class="schritte">
-        <li><span class="txt">Select the page that starts a chapter or sub-chapter, enter a title.</span></li>
-        <li><span class="txt">Choose a level — <b class="ui">Chapter</b> or <b class="ui">Sub-chapter</b> — then click <b class="ui">Set &amp; continue</b>; automatically jumps to the next page.</span></li>
-        <li><span class="txt">The overview below shows every bookmark set so far in page order — click one to jump to that page.</span></li>
-        <li><span class="txt">Automatically carried over into the PDF file as an outline the next time it's saved.</span></li>
+        <li><span class="txt">Select a page on the left that should start a new group (or use "Select range in the list" for a longer from-to range).</span></li>
+        <li><span class="txt">Choose a style -- decimal (1, 2, 3), roman upper/lower (I/i, II/ii, …), letters upper/lower (A/a, B/b, …), or "None" (a fixed prefix only, no number) -- plus an optional prefix and the start number.</span></li>
+        <li><span class="txt">Click <b class="ui">Set group here</b>. Pages without their own marker simply continue the previous group's count.</span></li>
+        <li><span class="txt">For cover pages at the start AND end of a book block: click the first group in the overview below, select the last desired page, and click <b class="ui">Continue template here</b> -- takes over style/prefix and automatically computes the matching continuation number.</span></li>
       </ol>
       <div class="hinweis">
-        <span class="label">No separate export needed</span>
-        Unlike other tools, there's no dedicated "Apply" button here — bookmarks
-        automatically flow into every save, whether via "Create PDF", "Save", or "Shrink PDF
-        &amp; PDF/A".
+        <span class="label">Stays with the page, not the position</span>
+        A group marker is attached to the page itself, not its position in the list -- if the
+        page sequence is later reordered or extended, the marker travels along; the actual
+        start number in the PDF is only computed at export time, from whatever order is
+        current then.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="bildbereinigung">
+      <p class="nr">Tool 09</p>
+      <h2>Image cleanup</h2>
+      <p class="intro">For scanned black-and-white/text originals: converts to pure black and
+        white (threshold, optionally auto-suggested via Otsu's method) and/or removes small
+        dark specks (dust, print artifacts). Both steps can be toggled independently.</p>
+      <figure class="platte">
+        <img src="bilder_en/11_bildbereinigung.jpg" alt="Image cleanup tool: a scanned page binarized in the preview using an Otsu threshold">
+        <figcaption><b>Fig. 9</b> — Preview of the "Image cleanup" tool: a scanned page with an automatically suggested threshold, shown binarized.</figcaption>
+      </figure>
+      <ol class="schritte">
+        <li><span class="txt">Select a page — the preview immediately shows how threshold, binarizing, and despeckling affect exactly this page.</span></li>
+        <li><span class="txt"><b class="ui">Suggest automatically</b> computes a threshold via Otsu's method that most clearly separates text/lines from the background — or fine-tune it by hand.</span></li>
+        <li><span class="txt">Turn off <b class="ui">Convert to pure black and white (binarize)</b> if needed, to only remove specks while leaving gray/color values otherwise unchanged.</span></li>
+        <li><span class="txt">Choose a scope and click <b class="ui">Apply</b>.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Smaller files as a side effect</span>
+        Binarized pages can often be compressed especially small in "Shrink PDF &amp; PDF/A"
+        — pure black-and-white content needs far less storage than a grayscale or color scan.
+      </div>
+    </section>
+
+    <section class="werkzeug" id="seiten-entfernen">
+      <p class="nr">Tool 10</p>
+      <h2>Remove pages</h2>
+      <p class="intro">Two ways to remove pages from the list: <b class="ui">manual</b> —
+        immediately delete the pages marked on the left, no search involved, for when you
+        already know which ones should go — or <b class="ui">automatically suggested</b>:
+        searches the selected scope for likely blank pages (via ink share) — typical with
+        automated ADF scanning (duplex with an occasionally unprinted back side, blank
+        separator sheets). Only finds suggestions, doesn't delete anything automatically: the
+        pages found appear in an overview with checkboxes (all preselected), so individual
+        pages can be deselected before actually removing them.</p>
+      <figure class="platte">
+        <img src="bilder_en/14_leerseiten_entfernen.jpg" alt="Remove pages tool with two found, checked blank-page suggestions in the overview">
+        <figcaption><b>Fig. 10</b> — Two likely blank pages found, both checked for removal; the measured ink share is shown for each.</figcaption>
+      </figure>
+      <div class="hinweis">
+        <span class="label">Manual removal</span>
+        Right at the top of the tool: <b class="ui">Remove marked pages now</b> directly
+        deletes the pages marked in the list on the left, no search involved -- the same
+        function as the <b class="ui">Remove selection</b> button in the file panel, also
+        available here where it fits the tool's purpose.
+      </div>
+      <ol class="schritte">
+        <li><span class="txt">Choose a scope (usually <b class="ui">All pages</b>, since one typically checks the whole freshly loaded batch) and click <b class="ui">Search for blank pages</b>.</span></li>
+        <li><span class="txt">Each page found appears in the overview with a checkbox and its measured ink share — all checked by default.</span></li>
+        <li><span class="txt">Deselect whatever isn't actually a blank page.</span></li>
+        <li><span class="txt">Click <b class="ui">Remove selected</b>.</span></li>
+      </ol>
+      <div class="hinweis">
+        <span class="label">Threshold and sensitivity adjustable</span>
+        The ink threshold (what counts as "ink") and the maximum share (at what point a page
+        counts as "blank") can be adjusted — handy for scanners with visible noise/dust that
+        would otherwise falsely flag real, nearly blank pages.
       </div>
     </section>
 
     <section class="werkzeug" id="seitenmass-normieren">
-      <p class="nr">Tool 10</p>
+      <p class="nr">Tool 11</p>
       <h2>Normalize page size</h2>
       <p class="intro">Brings pages to an exact physical size — a DIN A format, a US format
         (Letter, Legal, …), or a custom size. Portrait and landscape orientation are detected
@@ -602,7 +651,7 @@
         cropped away; without a detectable border, the page is scaled directly.</p>
       <figure class="platte">
         <img src="bilder_en/6_seitenmass_normieren.jpg" alt="Normalize page size tool: the measured size of a page (approx. A4) is shown, with an apply button">
-        <figcaption><b>Fig. 10</b> — Measured size of the current page with an automatic format suggestion and a use-size button.</figcaption>
+        <figcaption><b>Fig. 11</b> — Measured size of the current page with an automatic format suggestion and a use-size button.</figcaption>
       </figure>
       <ol class="schritte">
         <li><span class="txt">Click a page — the tool automatically measures the current (content) size and suggests a matching format, if one is close enough (DIN A or US).</span></li>
@@ -619,7 +668,7 @@
       </table>
       <figure class="platte">
         <img src="bilder_en/9_seitenmass_us_zoll.jpg" alt="Normalize page size tool with format “US Letter” and measurement unit “inch” set">
-        <figcaption><b>Fig. 11</b> — The same page with format <b class="ui">US Letter</b> and the measurement unit switched to <b class="ui">inches</b>: the number fields show 8.50 × 11.00 in.</figcaption>
+        <figcaption><b>Fig. 12</b> — The same page with format <b class="ui">US Letter</b> and the measurement unit switched to <b class="ui">inches</b>: the number fields show 8.50 × 11.00 in.</figcaption>
       </figure>
       <div class="hinweis">
         <span class="label">Portrait/landscape detected automatically</span>
@@ -648,34 +697,34 @@
       </div>
     </section>
 
-    <section class="werkzeug" id="seiten-zuschneiden">
-      <p class="nr">Tool 11</p>
-      <h2>Crop pages</h2>
-      <p class="intro">Crops pages on all four edges by a freely chosen amount — e.g. to
-        precisely remove a punch-hole strip or binding margin. Unlike "Normalize page size",
-        this does not scale to a target size but cuts away exactly the specified amount; the
-        resulting size follows from that and is displayed live.</p>
+    <section class="werkzeug" id="lesezeichen-setzen">
+      <p class="nr">Tool 12</p>
+      <h2>Set bookmarks</h2>
+      <p class="intro">For booklets and books one already goes through page by page anyway:
+        optionally give each page a chapter or sub-chapter title. Automatically becomes a
+        bookmark/table of contents (outline) in the PDF file when saving — with no separate
+        export step.</p>
       <figure class="platte">
-        <img src="bilder_en/10_seiten_zuschneiden.jpg" alt="Crop pages tool: a page with a punch-hole strip on the left, the cropped-away area is shown darkened">
-        <figcaption><b>Fig. 12</b> — The area to be cut away is shown darkened; here the punch-hole strip on the left disappears into the dark area.</figcaption>
+        <img src="bilder_en/12_lesezeichen_setzen.jpg" alt="Set bookmarks tool with three bookmarks set in the overview">
+        <figcaption><b>Fig. 13</b> — Three bookmarks set (two chapters, one sub-chapter); the overview below shows all of them in page order.</figcaption>
       </figure>
       <ol class="schritte">
-        <li><span class="txt">Enter the four margins as number fields (Left, Top, Right, Bottom) — or drag the yellow lines directly in the preview with the mouse.</span></li>
-        <li><span class="txt">To hit precisely with small margins: zoom in with <b class="ui">Ctrl/Cmd (⌃/⌘)</b>+scroll resp. a pinch gesture.</span></li>
-        <li><span class="txt">The resulting size is shown live below the margin fields, including a format suggestion if one fits.</span></li>
-        <li><span class="txt">Choose the scope and click <b class="ui">Apply</b> — the same margins are applied to every page within the selected scope.</span></li>
+        <li><span class="txt">Select the page that starts a chapter or sub-chapter, enter a title.</span></li>
+        <li><span class="txt">Choose a level — <b class="ui">Chapter</b> or <b class="ui">Sub-chapter</b> — then click <b class="ui">Set &amp; continue</b>; automatically jumps to the next page.</span></li>
+        <li><span class="txt">The overview below shows every bookmark set so far in page order — click one to jump to that page.</span></li>
+        <li><span class="txt">Automatically carried over into the PDF file as an outline the next time it's saved.</span></li>
       </ol>
       <div class="hinweis">
-        <span class="label">Fixed margins persist</span>
-        The configured margins persist when switching to the next page — handy for
-        deliberately applying the same fixed amount to several, slightly different-sized
-        pages ("in bulk").
+        <span class="label">No separate export needed</span>
+        Unlike other tools, there's no dedicated "Apply" button here — bookmarks
+        automatically flow into every save, whether via "Create PDF", "Save", or "Shrink PDF
+        &amp; PDF/A".
       </div>
     </section>
 
     <section class="werkzeug" id="schwaerzen">
-      <p class="nr">Tool 12</p>
-      <h2>Redact</h2>
+      <p class="nr">Tool 13</p>
+      <h2>Redact text and images</h2>
       <p class="intro">Permanently obscure any number of areas on a page: fully filled
         rectangles, freely drawn, moved, and resized with the mouse. Unlike a plain black box,
         the rectangles are actually burned into the image pixels on save — affected pages are
@@ -683,7 +732,7 @@
         vector page, so no original text is guaranteed to remain underneath.</p>
       <figure class="platte">
         <img src="bilder_en/15_schwaerzen.jpg" alt="Redact tool with a drawn black rectangle over lines of text, marked blue as selected">
-        <figcaption><b>Fig. 13</b> — An area redacted and selected (blue outline with corner handles); the rectangles are permanently burned into the image pixels on save.</figcaption>
+        <figcaption><b>Fig. 14</b> — An area redacted and selected (blue outline with corner handles); the rectangles are permanently burned into the image pixels on save.</figcaption>
       </figure>
       <ol class="schritte">
         <li><span class="txt">Dragging on empty space draws a new rectangle; clicking an existing one selects it.</span></li>
@@ -700,24 +749,30 @@
     </section>
 
     <section class="werkzeug" id="pdf-in-bilder">
-      <p class="nr">Tool 13</p>
-      <h2>Split PDF into images</h2>
+      <p class="nr">Tool 14</p>
+      <h2>Split PDF into images and PDFs</h2>
       <p class="intro">The way back out of a PDF: save the shared file list as individual,
         sequentially numbered image files (PDF, JPEG, TIFF, or BMP per page) or as one
         multi-page TIFF file — e.g. for further processing that expects individual image
         files instead of a PDF.</p>
       <figure class="platte">
         <img src="bilder_en/7_pdf_in_bilder.jpg" alt="Split PDF into images tool with three loaded pages in the file list">
-        <figcaption><b>Fig. 14</b> — Three pages ready for export as individual files or a multi-page TIFF.</figcaption>
+        <figcaption><b>Fig. 15</b> — Three pages ready for export as individual files or a multi-page TIFF.</figcaption>
       </figure>
       <ol class="schritte">
         <li><span class="txt"><b class="ui">Export as individual numbered files …</b> for separate files — choose format, base name, start number, and digit count in the following dialog.</span></li>
         <li><span class="txt">Or <b class="ui">Export as one multi-page TIFF file …</b> for a single file containing all pages.</span></li>
       </ol>
+      <div class="hinweis">
+        <span class="label">Take out pages</span>
+        Just like in the "Create PDF" tool, <b class="ui">Take out pages</b> here lets you
+        pull out just the marked pages as their own, still multi-page PDF file (copied or
+        moved), instead of breaking them up into single pages.
+      </div>
     </section>
 
     <section class="werkzeug" id="pdf-verkleinern">
-      <p class="nr">Tool 14</p>
+      <p class="nr">Tool 15</p>
       <h2>Shrink PDF &amp; PDF/A</h2>
       <p class="intro">Three separate, independently usable functions: significantly reduce
         the file size of large scans via JPEG encoding (quality and maximum resolution
@@ -727,7 +782,7 @@
         markers for the PDF/A-2b archival format.</p>
       <figure class="platte">
         <img src="bilder_en/8_pdf_verkleinern.jpg" alt="Shrink PDF & PDF/A tool with the three sections Reduce file size, Mark as PDF/A, and Compress structure">
-        <figcaption><b>Fig. 15</b> — The three independent functions: shrinking, PDF/A marking, lossless structural compression.</figcaption>
+        <figcaption><b>Fig. 16</b> — The three independent functions: shrinking, PDF/A marking, lossless structural compression.</figcaption>
       </figure>
       <ol class="schritte">
         <li><span class="txt">For smaller files: set JPEG quality and maximum resolution, <b class="ui">Export as smaller PDF …</b>.</span></li>
@@ -741,10 +796,20 @@
         veraPDF certification — for binding archival requirements, additionally verify with
         a dedicated checking tool.
       </div>
+      <div class="hinweis">
+        <span class="label">Multiple files at once</span>
+        Each of the three functions is also available as a batch variant
+        (<b class="ui">Shrink/mark/compress multiple files individually …</b>): choose several,
+        completely independent files — each stays its own document, unlike the button above,
+        which exports the shared page list as ONE file. Then choose whether the output files
+        land in the same folders as their source files (with or without a name suffix) or
+        all together in a single chosen target folder. A failure on one file doesn't abort
+        the rest.
+      </div>
     </section>
 
     <section class="werkzeug" id="pdf-reparieren-entsperren">
-      <p class="nr">Tool 15</p>
+      <p class="nr">Tool 16</p>
       <h2>Repair &amp; unlock PDF</h2>
       <p class="intro"><strong>Three separate, independently usable functions</strong> that only
         belong together thematically (damaged resp. locked files): repair a PDF file that can no
@@ -753,7 +818,7 @@
         force).</p>
       <figure class="platte">
         <img src="bilder_en/16_pdf_reparieren_entsperren.jpg" alt="Repair & unlock PDF tool with the three sections Repair, Remove password, and Recover password">
-        <figcaption><b>Fig. 16</b> — The three independent sections: repair, remove password, recover password (dictionary attack and brute force).</figcaption>
+        <figcaption><b>Fig. 17</b> — The three independent sections: repair, remove password, recover password (dictionary attack and brute force).</figcaption>
       </figure>
       <ol class="schritte">
         <li><span class="txt"><b class="ui">Repair PDF:</b> choose the damaged file, choose a target location, <b class="ui">Repair damaged PDF file …</b> — reconstructs a broken cross-reference table or a faulty file ending, the most common causes of "PDF won't open".</span></li>
@@ -775,7 +840,7 @@
     </section>
 
     <section class="werkzeug" id="passwortschutz">
-      <p class="nr">Tool 16</p>
+      <p class="nr">Tool 17</p>
       <h2>Password protection</h2>
       <p class="intro"><strong>Four separate functions</strong> that share one set of encryption
         settings (method, permissions password, permissions): add a password to a single file,
@@ -783,7 +848,7 @@
         log of passwords that have been set.</p>
       <figure class="platte">
         <img src="bilder_en/17_passwortschutz.jpg" alt="Password protection tool with encryption settings, the three encryption actions, and the password log">
-        <figcaption><b>Fig. 17</b> — Encryption settings on top, shared by all three actions below, plus the password log.</figcaption>
+        <figcaption><b>Fig. 18</b> — Encryption settings on top, shared by all three actions below, plus the password log.</figcaption>
       </figure>
       <ol class="schritte">
         <li><span class="txt"><b class="ui">Encryption settings</b> (top, apply to all three actions): method (RC4 40/128-bit or AES 128/256-bit — AES 256-bit is the default), an optional permissions password (if left blank, the user password also acts as the permissions password), plus individually allowing or blocking printing/copying/editing.</span></li>
@@ -807,7 +872,7 @@
     </section>
 
     <section class="werkzeug" id="metadaten-bearbeiten">
-      <p class="nr">Tool 17</p>
+      <p class="nr">Tool 18</p>
       <h2>Edit metadata</h2>
       <p class="intro">Unlike every other tool, a single set of values applies to the whole
         document here, not per page: title, author, provider, product, version, release
@@ -815,7 +880,7 @@
         shows exactly how these values actually flow into them.</p>
       <figure class="platte">
         <img src="bilder_en/13_metadaten_bearbeiten.jpg" alt="Edit metadata tool with fields filled in and a text preview">
-        <figcaption><b>Fig. 18</b> — All fields filled in; the preview below shows how they map onto title/author/subject/keywords in the PDF.</figcaption>
+        <figcaption><b>Fig. 19</b> — All fields filled in; the preview below shows how they map onto title/author/subject/keywords in the PDF.</figcaption>
       </figure>
       <ol class="schritte">
         <li><span class="txt">Enter title, author, and provider — provider is prefilled with the default set in Preferences (otherwise with the one most recently used).</span></li>
@@ -827,31 +892,6 @@
         <span class="label">Provider &amp; date format configurable</span>
         Under <a href="#einstellungen">Preferences</a>, a default provider can be set, along
         with the date format for the release date (e.g. YY-MM or YYYY-MM-DD).
-      </div>
-    </section>
-
-    <section class="werkzeug" id="seiten-benennen">
-      <p class="nr">Tool 18</p>
-      <h2>Name pages</h2>
-      <p class="intro">Assigns PDF-native page labels (like in Acrobat's page navigator) --
-        independent of the actual sheet order. Handy e.g. for cover pages in roman numerals
-        (I, II, …) before and after a book block numbered in arabic numerals (1, 2, …).</p>
-      <figure class="platte">
-        <img src="bilder_en/18_seiten_benennen.jpg" alt="Name pages tool: cover pages in roman numerals before and after a book block numbered in arabic numerals">
-        <figcaption><b>Fig. 18</b> — Three defined groups: pages 1–2 as cover (i–ii), pages 3–6 as book block (1–4), pages 7–8 as cover continuation (iii–iv).</figcaption>
-      </figure>
-      <ol class="schritte">
-        <li><span class="txt">Select a page on the left that should start a new group (or use "Select range in the list" for a longer from-to range).</span></li>
-        <li><span class="txt">Choose a style -- decimal (1, 2, 3), roman upper/lower (I/i, II/ii, …), letters upper/lower (A/a, B/b, …), or "None" (a fixed prefix only, no number) -- plus an optional prefix and the start number.</span></li>
-        <li><span class="txt">Click <b class="ui">Set group here</b>. Pages without their own marker simply continue the previous group's count.</span></li>
-        <li><span class="txt">For cover pages at the start AND end of a book block: click the first group in the overview below, select the last desired page, and click <b class="ui">Continue template here</b> -- takes over style/prefix and automatically computes the matching continuation number.</span></li>
-      </ol>
-      <div class="hinweis">
-        <span class="label">Stays with the page, not the position</span>
-        A group marker is attached to the page itself, not its position in the list -- if the
-        page sequence is later reordered or extended, the marker travels along; the actual
-        start number in the PDF is only computed at export time, from whatever order is
-        current then.
       </div>
     </section>
 
@@ -925,7 +965,7 @@
     </section>
 
     <div class="fussleiste">
-      <span>Mathias' kleines PDF-Werkzeug · Version 1.12</span>
+      <span>Mathias' kleines PDF-Werkzeug · Version 1.14</span>
       <span>Provided free of charge by <a href="https://www.telefonanleitungen.de">Telefonanleitungen.de</a></span>
     </div>
   </main>

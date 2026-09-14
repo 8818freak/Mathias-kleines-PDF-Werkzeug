@@ -94,18 +94,18 @@ _LOGO_PFAD = Path(__file__).parent.parent / "logo" / "telefonanleitungen.png"
 _WERKZEUGE: list[tuple[str, type[QWidget] | None]] = [
     ("PDF erstellen", CombineToolWidget),
     ("Seiten drehen", RotateToolWidget),
-    ("Bildbereinigung", BildbereinigungToolWidget),
-    ("Leerseiten entfernen", LeerseitenToolWidget),
-    ("Seiten teilen", SplitToolWidget),
+    ("Seiten zerteilen", SplitToolWidget),
+    ("Heftseiten teilen und neu sortieren", HeftseitenToolWidget),
     ("Seiten zusammenfügen", ZusammenfuegenToolWidget),
-    ("Heftseiten teilen", HeftseitenToolWidget),
-    ("Seiten nummerieren", NummerierenToolWidget),
-    ("Lesezeichen setzen", LesezeichenToolWidget),
-    ("Seiten benennen", SeitenbeschriftungToolWidget),
-    ("Seitenmaß normieren", SeitenmassToolWidget),
     ("Seiten zuschneiden", ZuschneidenToolWidget),
-    ("Schwärzen", SchwaerzungToolWidget),
-    ("PDF in Bilder teilen", PdfZuBildernToolWidget),
+    ("Seitenreihenfolge ändern", NummerierenToolWidget),
+    ("Seiten benennen", SeitenbeschriftungToolWidget),
+    ("Bildbereinigung", BildbereinigungToolWidget),
+    ("Seiten entfernen", LeerseitenToolWidget),
+    ("Seitenmaß normieren", SeitenmassToolWidget),
+    ("Lesezeichen setzen", LesezeichenToolWidget),
+    ("Text und Bilder Schwärzen", SchwaerzungToolWidget),
+    ("PDF in Bilder und PDFs zerteilen", PdfZuBildernToolWidget),
     ("PDF verkleinern & PDF/A", VerkleinernToolWidget),
     ("PDF reparieren & entsperren", ReparaturToolWidget),
     ("Passwortschutz", PasswortschutzToolWidget),
@@ -237,6 +237,15 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(splitter)
         self._menu_erstellen()
+        # DE: currentChanged feuert nur bei einem WECHSEL -- fuer das
+        #     anfaenglich sichtbare (erste) Werkzeug einmal von Hand
+        #     anstossen, sonst fehlten dessen Aktionen im Bearbeiten-Menu
+        #     bis zum ersten Werkzeugwechsel.
+        # EN: currentChanged only fires on a CHANGE -- trigger it once by
+        #     hand for the initially visible (first) tool, otherwise its
+        #     actions would be missing from the Edit menu until the first
+        #     tool switch.
+        self._werkzeug_menu_aktualisieren(self._werkzeuge.currentIndex())
 
     # -- Menü / menu ------------------------------------------------------
 
@@ -272,6 +281,7 @@ class MainWindow(QMainWindow):
         datei_menu.addAction(action_speichern_unter)
 
         bearbeiten_menu = menu.addMenu(self.tr("Bearbeiten"))
+        self._bearbeiten_menu = bearbeiten_menu
 
         self._action_rueckgaengig = QAction(self.tr("Rückgängig"), self)
         self._action_rueckgaengig.setShortcut(QKeySequence.StandardKey.Undo)
@@ -339,6 +349,23 @@ class MainWindow(QMainWindow):
         action_alles_auswaehlen.triggered.connect(lambda: _fokus_aktion("selectAll"))
         bearbeiten_menu.addAction(action_alles_auswaehlen)
 
+        # DE: Fester Trennstrich als Einfuegepunkt fuer die Aktionen des
+        #     GERADE SICHTBAREN Werkzeugs (siehe _werkzeug_menu_aktualisieren)
+        #     -- ein Werkzeug kann optional eine bearbeiten_aktionen()-Methode
+        #     anbieten, deren QActions hier eingefuegt werden, solange es
+        #     sichtbar ist, und beim Wechsel zum naechsten Werkzeug wieder
+        #     entfernt werden. Werkzeuge ohne diese Methode zeigen hier
+        #     einfach nichts zusaetzliches.
+        # EN: Fixed separator as the insertion point for the actions of the
+        #     CURRENTLY VISIBLE tool (see _werkzeug_menu_aktualisieren) -- a
+        #     tool can optionally offer a bearbeiten_aktionen() method,
+        #     whose QActions get inserted here while it's visible, and
+        #     removed again when switching to the next tool. Tools without
+        #     that method simply show nothing extra here.
+        self._werkzeug_menu_trenner = bearbeiten_menu.addSeparator()
+        self._werkzeug_aktionen: list[QAction] = []
+        self._werkzeuge.currentChanged.connect(self._werkzeug_menu_aktualisieren)
+
         bearbeiten_menu.addSeparator()
 
         # DE: Kehrt die Reihenfolge der Seiten um -- bei markiertem Block
@@ -354,6 +381,31 @@ class MainWindow(QMainWindow):
         action_reihenfolge_umkehren = QAction(self.tr("Reihenfolge umkehren"), self)
         action_reihenfolge_umkehren.triggered.connect(self._liste.reihenfolge_umkehren)
         bearbeiten_menu.addAction(action_reihenfolge_umkehren)
+
+        # DE: Entfernt die markierten Seiten -- per Menu-Eintrag oder per
+        #     Entfernen-Taste, auch wenn gerade ein anderes Werkzeug im
+        #     Fokus ist (WindowShortcut-Kontext, Vorgabe fuer eine QAction
+        #     am Hauptfenster: greift, solange kein fokussiertes Feld -- z.
+        #     B. ein Textfeld -- die Taste selbst zuerst konsumiert). Zwei
+        #     Tasten gebunden, da macOS-Tastaturen ohne separate
+        #     "Entf"-Taste physisch nur eine Rueckloeschen-Taste haben, die
+        #     als Key_Backspace ankommt, waehrend StandardKey.Delete die
+        #     (bei manchen Tastaturen zusaetzlich per Fn erreichbare)
+        #     Vorwaerts-Entfernen-Taste abdeckt.
+        # EN: Removes the marked pages -- via menu entry or the Delete
+        #     key, even while a different tool currently has focus
+        #     (WindowShortcut context, the default for a QAction on the
+        #     main window: fires as long as no focused widget -- e.g. a
+        #     text field -- consumes the key itself first). Two keys
+        #     bound, since Mac keyboards without a separate "Del" key
+        #     physically only have one backspace-style key, which arrives
+        #     as Key_Backspace, while StandardKey.Delete covers the
+        #     (on some keyboards additionally reachable via Fn) forward-
+        #     delete key.
+        action_seiten_entfernen = QAction(self.tr("Markierte Seiten entfernen"), self)
+        action_seiten_entfernen.setShortcuts([QKeySequence(Qt.Key.Key_Backspace), QKeySequence.StandardKey.Delete])
+        action_seiten_entfernen.triggered.connect(self._liste.ausgewaehlte_entfernen)
+        bearbeiten_menu.addAction(action_seiten_entfernen)
 
         bearbeiten_menu.addSeparator()
 
@@ -415,12 +467,47 @@ class MainWindow(QMainWindow):
             action = QAction(self.tr(name), self)
             action.setCheckable(True)
             action.setChecked(i == self._seitenleiste.currentRow())
+            # DE: Befehl-1 bis Befehl-9 fuer die ersten neun Werkzeuge --
+            #     deckt bei mehr als neun Werkzeugen nicht alle ab, dafuer
+            #     gibt es die Weiterspringen-Kuerzel unten (Befehl-]/[).
+            #     Bewusst FEST statt in den Einstellungen umbelegbar --
+            #     eine echte Neubelegungs-Oberflaeche (Konfliktpruefung,
+            #     Speichern, Zuruecksetzen) waere fuer den Nutzerkreis
+            #     dieser App deutlich mehr Aufwand als der Nutzen.
+            # EN: Cmd-1 through Cmd-9 for the first nine tools -- doesn't
+            #     cover all of them with more than nine tools, that's what
+            #     the next/previous shortcuts below (Cmd-]/[) are for.
+            #     Deliberately FIXED rather than user-remappable in
+            #     Preferences -- a real rebinding UI (conflict checking,
+            #     saving, resetting) would be considerably more effort than
+            #     the benefit justifies for this app's user base.
+            if i < 9:
+                action.setShortcut(QKeySequence(f"Ctrl+{i + 1}"))
             action.triggered.connect(lambda _checked=False, i=i: self._seitenleiste.setCurrentRow(i))
             werkzeuge_gruppe.addAction(action)
             werkzeuge_menu.addAction(action)
         self._seitenleiste.currentRowChanged.connect(
             lambda zeile: werkzeuge_gruppe.actions()[zeile].setChecked(True)
         )
+
+        werkzeuge_menu.addSeparator()
+
+        def _werkzeug_weiter(schritt: int) -> None:
+            anzahl = self._seitenleiste.count()
+            if anzahl == 0:
+                return
+            neue_zeile = (self._seitenleiste.currentRow() + schritt) % anzahl
+            self._seitenleiste.setCurrentRow(neue_zeile)
+
+        action_naechstes_werkzeug = QAction(self.tr("Nächstes Werkzeug"), self)
+        action_naechstes_werkzeug.setShortcut(QKeySequence("Ctrl+]"))
+        action_naechstes_werkzeug.triggered.connect(lambda: _werkzeug_weiter(1))
+        werkzeuge_menu.addAction(action_naechstes_werkzeug)
+
+        action_vorheriges_werkzeug = QAction(self.tr("Vorheriges Werkzeug"), self)
+        action_vorheriges_werkzeug.setShortcut(QKeySequence("Ctrl+["))
+        action_vorheriges_werkzeug.triggered.connect(lambda: _werkzeug_weiter(-1))
+        werkzeuge_menu.addAction(action_vorheriges_werkzeug)
 
         hilfe_menu = menu.addMenu(self.tr("Hilfe"))
 
@@ -522,6 +609,22 @@ class MainWindow(QMainWindow):
                    ).format(ANBIETER, WEBSITE, copyright_zeile())
         )
         box.exec()
+
+    def _werkzeug_menu_aktualisieren(self, index: int) -> None:
+        """DE: Ersetzt den "aktuelles Werkzeug"-Abschnitt im Bearbeiten-Menu
+            (siehe der Trennstrich in _menu_erstellen) durch die Aktionen
+            des jetzt sichtbaren Werkzeugs, falls es eine
+            bearbeiten_aktionen()-Methode anbietet.
+        EN: Replaces the "current tool" section in the Edit menu (see the
+            separator in _menu_erstellen) with the actions of the now-
+            visible tool, if it offers a bearbeiten_aktionen() method."""
+        for aktion in self._werkzeug_aktionen:
+            self._bearbeiten_menu.removeAction(aktion)
+        widget = self._werkzeuge.widget(index)
+        bereitsteller = getattr(widget, "bearbeiten_aktionen", None)
+        self._werkzeug_aktionen = bereitsteller() if callable(bereitsteller) else []
+        for aktion in self._werkzeug_aktionen:
+            self._bearbeiten_menu.insertAction(self._werkzeug_menu_trenner, aktion)
 
     def _einstellungen_anzeigen(self) -> None:
         EinstellungenDialog(self).exec()
@@ -722,7 +825,6 @@ class MainWindow(QMainWindow):
             return
         finally:
             anzeige.schliessen()
-        self._ungespeicherte_aenderungen = False
 
         # DE: "Speichern" ueberschreibt haeufig direkt die Datei, aus der
         #     die Seiten selbst stammen (z. B. bei einer frisch geoeffneten
@@ -783,5 +885,25 @@ class MainWindow(QMainWindow):
             self._liste.mehrere_ersetzen(alle_eintraege, neue_quellen)
             if 0 <= aktuelle_zeile < self._liste.count():
                 self._liste.setCurrentRow(aktuelle_zeile)
+
+        # DE: ERST NACH dem obigen Neuaufbau auf "keine ungespeicherten
+        #     Aenderungen" setzen -- mehrere_ersetzen() sendet sein eigenes
+        #     geaendert-Signal (das ganz allgemein jede Listenaenderung als
+        #     "ungespeichert" markiert, siehe _als_ungespeichert_markieren),
+        #     das wuerde diese Markierung sonst sofort wieder auf True
+        #     zuruecksetzen, obwohl gerade erfolgreich gespeichert wurde --
+        #     die App zeigte dann faelschlich "ungespeicherte Aenderungen"
+        #     direkt nach einem erfolgreichen Speichern (typischerweise
+        #     nach Drehen+Speichern, da nur dieser Zweig ueberhaupt neu
+        #     aufbaut).
+        # EN: Only set "no unsaved changes" AFTER the rebuild above --
+        #     mehrere_ersetzen() emits its own geaendert signal (which
+        #     generically marks any list change as "unsaved", see
+        #     _als_ungespeichert_markieren), which would otherwise
+        #     immediately flip this flag back to True right after a
+        #     successful save -- the app then falsely showed "unsaved
+        #     changes" right after a successful save (typically after
+        #     rotate+save, since only this branch rebuilds at all).
+        self._ungespeicherte_aenderungen = False
 
         QMessageBox.information(self, self.tr("Gespeichert"), self.tr("PDF gespeichert unter:\n{0}").format(ziel))

@@ -21,6 +21,7 @@ EN: Produce a smaller PDF file by encoding every page lossy as JPEG
 from __future__ import annotations
 
 import io
+import os
 from pathlib import Path
 from typing import Callable
 
@@ -324,16 +325,31 @@ def strukturell_komprimieren(quelle: Path, ziel: Path) -> tuple[int, int]:
         Datenstroeme, ohne Bilder neu zu kodieren oder irgendetwas an der
         Darstellung zu aendern. Eigenstaendige Funktion (kein automatischer
         Teil des normalen Exports), da sie separat angestossen werden soll.
-        Liefert (Groesse_vorher, Groesse_nachher) in Bytes.
+        Liefert (Groesse_vorher, Groesse_nachher) in Bytes. `quelle` und
+        `ziel` duerfen identisch sein (In-Place-Ueberschreiben, z. B. beim
+        Stapel-Betrieb mit "Dateinamen behalten") -- PyMuPDF verweigert ein
+        direktes Speichern auf den noch geoeffneten Ursprungspfad
+        ("save to original must be incremental"), unvereinbar mit der hier
+        gewuenschten Garbage-Collection/Deflate-Komprimierung. Es wird
+        deshalb zunaechst in eine temporaere Datei im selben Ordner
+        geschrieben und diese danach an die Stelle von `ziel` verschoben.
 
     EN: Losslessly shrink an existing PDF file -- removes unused resp.
         duplicate objects and compresses uncompressed data streams,
         without re-encoding any images or changing anything about how it
         looks. Standalone function (not an automatic part of normal
         export), since it's meant to be triggered separately. Returns
-        (size_before, size_after) in bytes.
+        (size_before, size_after) in bytes. `quelle` and `ziel` may be
+        identical (in-place overwrite, e.g. in batch mode with "keep
+        filename") -- PyMuPDF refuses to save directly onto the still-open
+        source path ("save to original must be incremental"), incompatible
+        with the garbage-collection/deflate compression wanted here. So it
+        first writes to a temporary file in the same folder and then moves
+        that into place at `ziel`.
     """
     groesse_vorher = quelle.stat().st_size
+    in_place = quelle == ziel
+    schreibziel = ziel.with_name(f".{ziel.name}.tmp") if in_place else ziel
     with fitz.open(quelle) as pdf:
         pdf.set_metadata(pdf_metadaten())
         # DE: use_objstms=1 haelt die kompakte Objekt-Stream-Struktur bei --
@@ -346,5 +362,7 @@ def strukturell_komprimieren(quelle: Path, ziel: Path) -> tuple[int, int]:
         #     format for many-page PDFs, which can slightly outweigh the
         #     garbage-collection/deflate savings and end up making the file
         #     LARGER instead of smaller.
-        pdf.save(ziel, garbage=4, deflate=True, use_objstms=1)
+        pdf.save(schreibziel, garbage=4, deflate=True, use_objstms=1)
+    if in_place:
+        os.replace(schreibziel, ziel)
     return groesse_vorher, ziel.stat().st_size

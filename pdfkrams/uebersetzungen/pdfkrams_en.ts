@@ -95,51 +95,97 @@
 <context>
     <name>CombineToolWidget</name>
     <message>
-        <location filename="../gui/tools/combine_tool.py" line="30"/>
+        <location filename="../gui/tools/combine_tool.py" line="37"/>
         <source>Baut aus der Dateiliste links eine einzelne PDF-Datei, in der dort gezeigten Reihenfolge (inklusive bereits vorgenommener Drehungen, Spiegelungen und Teilungen).</source>
         <translation>Builds a single PDF file from the file list on the left, in the order shown there (including any rotations, mirroring, and splits already applied).</translation>
     </message>
     <message>
-        <location filename="../gui/tools/combine_tool.py" line="36"/>
+        <location filename="../gui/tools/combine_tool.py" line="43"/>
         <source>Als PDF exportieren …</source>
         <translation>Export as PDF …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/combine_tool.py" line="51"/>
+        <location filename="../gui/tools/combine_tool.py" line="58"/>
+        <source>Nur die markierten Seiten in eine neue Datei packen (in der Liste links zuerst auswählen):</source>
+        <translation>Pack only the marked pages into a new file (select them in the list on the left first):</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/combine_tool.py" line="62"/>
+        <source>Markierte Seiten als neue Datei exportieren …</source>
+        <translation>Export marked pages as new file …</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/combine_tool.py" line="64"/>
+        <source>Markierte Seiten in neue Datei verschieben …</source>
+        <translation>Move marked pages to new file …</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/combine_tool.py" line="66"/>
+        <source>Wie „… exportieren“, entfernt die markierten Seiten danach zusätzlich aus der aktuellen Liste.</source>
+        <translation>Like &quot;… export&quot;, additionally removes the marked pages from the current list afterward.</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/combine_tool.py" line="71"/>
+        <source>Seiten entnehmen</source>
+        <translation>Take out pages</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/combine_tool.py" line="86"/>
+        <location filename="../gui/tools/combine_tool.py" line="98"/>
         <source>PDF speichern unter</source>
         <translation>Save PDF as</translation>
     </message>
     <message>
-        <location filename="../gui/tools/combine_tool.py" line="52"/>
+        <location filename="../gui/tools/combine_tool.py" line="87"/>
         <source>zusammengefuegt.pdf</source>
         <translation>combined.pdf</translation>
     </message>
     <message>
-        <location filename="../gui/tools/combine_tool.py" line="53"/>
+        <location filename="../gui/tools/combine_tool.py" line="88"/>
+        <location filename="../gui/tools/combine_tool.py" line="100"/>
         <source>PDF-Datei (*.pdf)</source>
         <translation>PDF file (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../gui/tools/combine_tool.py" line="54"/>
+        <location filename="../gui/tools/combine_tool.py" line="89"/>
+        <location filename="../gui/tools/combine_tool.py" line="101"/>
         <source>PDF wird erstellt …</source>
         <translation>Creating PDF …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/combine_tool.py" line="55"/>
+        <location filename="../gui/tools/combine_tool.py" line="90"/>
+        <location filename="../gui/tools/combine_tool.py" line="102"/>
         <source>Export fehlgeschlagen</source>
         <translation>Export failed</translation>
     </message>
     <message>
-        <location filename="../gui/tools/combine_tool.py" line="56"/>
+        <location filename="../gui/tools/combine_tool.py" line="91"/>
+        <location filename="../gui/tools/combine_tool.py" line="103"/>
         <source>Fertig</source>
         <translation>Done</translation>
     </message>
     <message>
-        <location filename="../gui/tools/combine_tool.py" line="57"/>
+        <location filename="../gui/tools/combine_tool.py" line="92"/>
+        <location filename="../gui/tools/combine_tool.py" line="104"/>
         <source>PDF gespeichert unter:
 {0}</source>
         <translation>PDF saved to:
 {0}</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/combine_tool.py" line="99"/>
+        <source>auszug.pdf</source>
+        <translation>excerpt.pdf</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/combine_tool.py" line="105"/>
+        <source>Keine Auswahl</source>
+        <translation>No selection</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/combine_tool.py" line="106"/>
+        <source>Bitte zuerst Seiten in der Liste links auswählen.</source>
+        <translation>Please select pages in the list on the left first.</translation>
     </message>
 </context>
 <context>
@@ -353,22 +399,58 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
         <translation>Please select the double-page spread scans in the list first.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/heftseiten_tool.py" line="132"/>
+        <location filename="../gui/tools/heftseiten_tool.py" line="144"/>
+        <source>Seiten sind bereits gedreht</source>
+        <translation>Pages are already rotated</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/heftseiten_tool.py" line="145"/>
+        <source>Mindestens eine der ausgewählten Seiten ist bereits gedreht (z. B. über „Seiten drehen“). „Scans sind quer eingescannt“ dreht zusätzlich abwechselnd um 90° -- das addiert sich zur vorhandenen Drehung, statt sie zu ersetzen, und kann sich bei bereits korrigierten Seiten ganz aufheben (Seite erscheint wieder wie vor dem Drehen) oder verdoppeln.
+
+Trotzdem fortfahren?</source>
+        <translation>At least one of the selected pages is already rotated (e.g. via &quot;Rotate pages&quot;). &quot;Scans are scanned sideways&quot; additionally rotates alternating pages by 90° -- this adds to the existing rotation instead of replacing it, and can cancel out completely for already-corrected pages (page appears as before rotating again) or double up.
+
+Continue anyway?</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/heftseiten_tool.py" line="167"/>
         <source>Scans werden gerendert …</source>
         <translation>Rendering scans …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/heftseiten_tool.py" line="200"/>
+        <location filename="../gui/tools/heftseiten_tool.py" line="233"/>
+        <source>Scan sieht nicht wie eine Doppelseite aus</source>
+        <translation>Scan doesn&apos;t look like a double page</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/heftseiten_tool.py" line="234"/>
+        <source>Mindestens ein ausgewählter Scan ist nach seiner Drehung deutlich schmaler als die übrigen (vermutlich weil er einzeln über „Seiten drehen“ korrigiert wurde, statt über die Auswahl „Scans sind quer eingescannt“ oben). Er wird trotzdem wie eine normale Doppelseite in der Mitte geteilt -- das Ergebnis ist mit hoher Wahrscheinlichkeit falsch.
+
+Betroffen: {0}
+
+Tipp: Einzelne Seiten am besten ERST NACH dem Teilen drehen, nicht vorher -- außer alle Scans sind gleichermaßen quer eingescannt, dafür gibt es die Auswahl oben.
+
+Trotzdem fortfahren?</source>
+        <translation>At least one selected scan is, after its rotation, noticeably narrower than the rest (probably because it was individually corrected via &quot;Rotate pages&quot; instead of the &quot;Scans are scanned sideways&quot; option above). It will still be split down the middle like a normal double page -- the result is very likely wrong.
+
+Affected: {0}
+
+Tip: best to rotate individual pages only AFTER splitting, not before -- unless all scans are equally scanned sideways, that&apos;s what the option above is for.
+
+Continue anyway?</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/heftseiten_tool.py" line="288"/>
         <source>Seiten werden geteilt …</source>
         <translation>Splitting pages …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/heftseiten_tool.py" line="228"/>
+        <location filename="../gui/tools/heftseiten_tool.py" line="316"/>
         <source>Fertig</source>
         <translation>Done</translation>
     </message>
     <message>
-        <location filename="../gui/tools/heftseiten_tool.py" line="229"/>
+        <location filename="../gui/tools/heftseiten_tool.py" line="317"/>
         <source>{0} Scans zu {1} Einzelseiten geteilt und einsortiert ({2} davon überbreit, individuell geteilt).</source>
         <translation>{0} scans split into {1} individual pages and placed in order ({2} of them overwide, split individually).</translation>
     </message>
@@ -394,72 +476,87 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
 <context>
     <name>LeerseitenToolWidget</name>
     <message>
-        <location filename="../gui/tools/leerseiten_tool.py" line="57"/>
+        <location filename="../gui/tools/leerseiten_tool.py" line="74"/>
+        <source>In der Liste links markierte Seiten direkt entfernen, ohne Suche.</source>
+        <translation>Directly remove the pages marked in the list on the left, no search involved.</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/leerseiten_tool.py" line="77"/>
+        <source>Markierte Seiten jetzt entfernen</source>
+        <translation>Remove marked pages now</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/leerseiten_tool.py" line="80"/>
+        <source>Manuell entfernen</source>
+        <translation>Manual removal</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/leerseiten_tool.py" line="89"/>
         <source>Sucht Seiten, die praktisch nichts als Tinte enthalten -- typisch bei automatisiertem Scannen mit Einzug (unbedruckte Rückseiten, leere Trennblätter). Findet nur Vorschläge: unten abwählen, was tatsächlich keine Leerseite ist, bevor entfernt wird.</source>
         <translation>Searches for pages that contain practically no ink -- typical with automated ADF scanning (unprinted back sides, blank separator sheets). Only finds suggestions: deselect below whatever isn&apos;t actually a blank page before removing.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/leerseiten_tool.py" line="76"/>
+        <location filename="../gui/tools/leerseiten_tool.py" line="108"/>
         <source>Leerseiten suchen in:</source>
         <translation>Search for blank pages in:</translation>
     </message>
     <message>
-        <location filename="../gui/tools/leerseiten_tool.py" line="84"/>
+        <location filename="../gui/tools/leerseiten_tool.py" line="116"/>
         <source>Schwellwert: </source>
         <translation>Threshold: </translation>
     </message>
     <message>
-        <location filename="../gui/tools/leerseiten_tool.py" line="86"/>
+        <location filename="../gui/tools/leerseiten_tool.py" line="118"/>
         <source>Pixel dunkler als dieser Wert gelten als Tinte (0-255).</source>
         <translation>Pixels darker than this value count as ink (0-255).</translation>
     </message>
     <message>
-        <location filename="../gui/tools/leerseiten_tool.py" line="94"/>
+        <location filename="../gui/tools/leerseiten_tool.py" line="126"/>
         <source>Höchstens: </source>
         <translation>At most: </translation>
     </message>
     <message>
-        <location filename="../gui/tools/leerseiten_tool.py" line="96"/>
+        <location filename="../gui/tools/leerseiten_tool.py" line="128"/>
         <source>Seiten mit höchstens diesem Tinte-Anteil gelten als wahrscheinlich leer.</source>
         <translation>Pages with at most this ink share count as likely blank.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/leerseiten_tool.py" line="102"/>
+        <location filename="../gui/tools/leerseiten_tool.py" line="134"/>
         <source>Leerseiten suchen</source>
         <translation>Search for blank pages</translation>
     </message>
     <message>
-        <location filename="../gui/tools/leerseiten_tool.py" line="111"/>
+        <location filename="../gui/tools/leerseiten_tool.py" line="143"/>
         <source>Ausgewählte entfernen</source>
         <translation>Remove selected</translation>
     </message>
     <message>
-        <location filename="../gui/tools/leerseiten_tool.py" line="141"/>
+        <location filename="../gui/tools/leerseiten_tool.py" line="175"/>
         <source>Keine Auswahl</source>
         <translation>No selection</translation>
     </message>
     <message>
-        <location filename="../gui/tools/leerseiten_tool.py" line="141"/>
+        <location filename="../gui/tools/leerseiten_tool.py" line="175"/>
         <source>Bitte zuerst Seiten in der Liste links auswählen.</source>
         <translation>Please select pages in the list on the left first.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/leerseiten_tool.py" line="151"/>
+        <location filename="../gui/tools/leerseiten_tool.py" line="185"/>
         <source>Seiten werden geprüft …</source>
         <translation>Checking pages …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/leerseiten_tool.py" line="168"/>
+        <location filename="../gui/tools/leerseiten_tool.py" line="202"/>
         <source>Seite {0}: {1} ({2:.2f} % Tinte)</source>
         <translation>Page {0}: {1} ({2:.2f} % ink)</translation>
     </message>
     <message>
-        <location filename="../gui/tools/leerseiten_tool.py" line="176"/>
+        <location filename="../gui/tools/leerseiten_tool.py" line="210"/>
         <source>{0} von {1} geprüften Seiten wahrscheinlich leer.</source>
         <translation>{0} of {1} checked pages likely blank.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/leerseiten_tool.py" line="198"/>
+        <location filename="../gui/tools/leerseiten_tool.py" line="232"/>
         <source>{0} Seite(n) entfernt.</source>
         <translation>{0} page(s) removed.</translation>
     </message>
@@ -533,137 +630,152 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
         <translation>“{0}” is coming in one of the next steps.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="246"/>
+        <location filename="../gui/main_window.py" line="255"/>
         <source>Datei</source>
         <translation>File</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="248"/>
+        <location filename="../gui/main_window.py" line="257"/>
         <source>Dateien öffnen …</source>
         <translation>Open files …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="253"/>
+        <location filename="../gui/main_window.py" line="262"/>
         <source>Datei schließen</source>
         <translation>Close file</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="264"/>
+        <location filename="../gui/main_window.py" line="273"/>
         <source>Speichern</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="269"/>
+        <location filename="../gui/main_window.py" line="278"/>
         <source>Speichern unter …</source>
         <translation>Save as …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="274"/>
+        <location filename="../gui/main_window.py" line="283"/>
         <source>Bearbeiten</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="276"/>
+        <location filename="../gui/main_window.py" line="286"/>
         <source>Rückgängig</source>
         <translation>Undo</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="281"/>
+        <location filename="../gui/main_window.py" line="291"/>
         <source>Wiederholen</source>
         <translation>Redo</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="322"/>
+        <location filename="../gui/main_window.py" line="332"/>
         <source>Ausschneiden</source>
         <translation>Cut</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="327"/>
+        <location filename="../gui/main_window.py" line="337"/>
         <source>Kopieren</source>
         <translation>Copy</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="332"/>
+        <location filename="../gui/main_window.py" line="342"/>
         <source>Einfügen</source>
         <translation>Paste</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="337"/>
+        <location filename="../gui/main_window.py" line="347"/>
         <source>Alles auswählen</source>
         <translation>Select All</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="354"/>
+        <location filename="../gui/main_window.py" line="381"/>
         <source>Reihenfolge umkehren</source>
         <translation>Reverse order</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="360"/>
+        <location filename="../gui/main_window.py" line="405"/>
+        <source>Markierte Seiten entfernen</source>
+        <translation>Remove marked pages</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="412"/>
         <source>Einstellungen …</source>
         <translation>Preferences …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="370"/>
+        <location filename="../gui/main_window.py" line="422"/>
         <source>Ansicht</source>
         <translation>View</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="372"/>
+        <location filename="../gui/main_window.py" line="424"/>
         <source>Werkzeugliste einblenden</source>
         <translation>Show tool list</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="404"/>
+        <location filename="../gui/main_window.py" line="456"/>
         <source>Werkzeuge</source>
         <translation>Tools</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="425"/>
+        <location filename="../gui/main_window.py" line="502"/>
+        <source>Nächstes Werkzeug</source>
+        <translation>Next tool</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="507"/>
+        <source>Vorheriges Werkzeug</source>
+        <translation>Previous tool</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="512"/>
         <source>Hilfe</source>
         <translation>Help</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="427"/>
+        <location filename="../gui/main_window.py" line="514"/>
         <source>Bedienungsanleitung</source>
         <translation>User Manual</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="439"/>
+        <location filename="../gui/main_window.py" line="526"/>
         <source>Über {0} …</source>
         <translation>About {0} …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="448"/>
+        <location filename="../gui/main_window.py" line="535"/>
         <source>Nach Updates suchen …</source>
         <translation>Check for Updates …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="476"/>
+        <location filename="../gui/main_window.py" line="563"/>
         <source>Suche nach Updates …</source>
         <translation>Checking for updates …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="478"/>
+        <location filename="../gui/main_window.py" line="565"/>
         <source>Prüfung fehlgeschlagen</source>
         <translation>Check failed</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="482"/>
+        <location filename="../gui/main_window.py" line="569"/>
         <source>Kein Update verfügbar</source>
         <translation>No update available</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="483"/>
+        <location filename="../gui/main_window.py" line="570"/>
         <source>Keine neuere Version gefunden (aktuelle Version: {0}). Falls keine Internetverbindung besteht, lässt sich das nicht von „bereits aktuell“ unterscheiden.</source>
-        <translation>No newer version found (current version: {0}). If there's no internet connection, this can't be distinguished from "already up to date".</translation>
+        <translation>No newer version found (current version: {0}). If there&apos;s no internet connection, this can&apos;t be distinguished from &quot;already up to date&quot;.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="502"/>
+        <location filename="../gui/main_window.py" line="589"/>
         <source>Über {0}</source>
         <translation>About {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="508"/>
+        <location filename="../gui/main_window.py" line="595"/>
         <source>Kostenlos bereitgestellt von {0}&lt;br&gt;&lt;a href=&quot;{1}&quot;&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;Dieses Programm kommt OHNE JEDE GEWÄHRLEISTUNG. Es ist freie Software, und Sie dürfen es unter bestimmten Bedingungen weiterverbreiten -- siehe die Lizenz GNU GPL 3.0 (Datei LICENSE) für Details.&lt;br&gt;&lt;br&gt;Entwickelt und getestet wird ausschließlich auf macOS -- die Windows-Version wird nicht selbst getestet, funktioniert aber hoffentlich fehlerfrei. Bei Fehlern bitte mit einer genauen, nachvollziehbaren Beschreibung an &lt;a href=&quot;mailto:telefonmann@telefonanleitungen.de&quot;&gt;telefonmann@telefonanleitungen.de&lt;/a&gt; schreiben, dann wird so schnell wie möglich korrigiert.</source>
         <translation>Provided free of charge by {0}&lt;br&gt;&lt;a href=&quot;{1}&quot;&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;This program comes WITH ABSOLUTELY NO WARRANTY. It is free software, and you are welcome to redistribute it under certain conditions -- see the GNU GPL 3.0 license (file LICENSE) for details.&lt;br&gt;&lt;br&gt;Developed and tested exclusively on macOS -- the Windows version is not tested by the author, but hopefully works correctly. If you run into a bug, please report it with a precise, reproducible description to &lt;a href=&quot;mailto:telefonmann@telefonanleitungen.de&quot;&gt;telefonmann@telefonanleitungen.de&lt;/a&gt;, and it will be fixed as soon as possible.</translation>
     </message>
@@ -672,22 +784,22 @@ If a scan is clearly wider than the others (cover, foldout page -- often contain
         <translation>Provided free of charge by {0}&lt;br&gt;&lt;a href=&quot;{1}&quot;&gt;{1}&lt;/a&gt;&lt;br&gt;&lt;br&gt;{2}&lt;br&gt;This program comes WITH ABSOLUTELY NO WARRANTY. It is free software, and you are welcome to redistribute it under certain conditions -- see the GNU GPL 3.0 license (file LICENSE) for details.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="703"/>
+        <location filename="../gui/main_window.py" line="806"/>
         <source>PDF speichern unter</source>
         <translation>Save PDF as</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="702"/>
+        <location filename="../gui/main_window.py" line="805"/>
         <source>dokument.pdf</source>
         <translation>document.pdf</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="571"/>
+        <location filename="../gui/main_window.py" line="674"/>
         <source>Update verfügbar</source>
         <translation>Update available</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="572"/>
+        <location filename="../gui/main_window.py" line="675"/>
         <source>Version {0} ist verfügbar (installiert: {1}).
 
 Jetzt die Release-Seite öffnen?</source>
@@ -696,53 +808,53 @@ Jetzt die Release-Seite öffnen?</source>
 Open the release page now?</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="678"/>
-        <location filename="../gui/main_window.py" line="688"/>
+        <location filename="../gui/main_window.py" line="781"/>
+        <location filename="../gui/main_window.py" line="791"/>
         <source>Ungespeicherte Änderungen</source>
         <translation>Unsaved changes</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="679"/>
+        <location filename="../gui/main_window.py" line="782"/>
         <source>Diese Datei hat ungespeicherte Änderungen. Trotzdem schließen?</source>
         <translation>This file has unsaved changes. Close anyway?</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="689"/>
+        <location filename="../gui/main_window.py" line="792"/>
         <source>Es gibt ungespeicherte Änderungen. Trotzdem beenden?</source>
         <translation>There are unsaved changes. Quit anyway?</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="703"/>
+        <location filename="../gui/main_window.py" line="806"/>
         <source>PDF-Datei (*.pdf)</source>
         <translation>PDF file (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="712"/>
+        <location filename="../gui/main_window.py" line="815"/>
         <source>Keine Seiten</source>
         <translation>No pages</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="712"/>
+        <location filename="../gui/main_window.py" line="815"/>
         <source>Die Dateiliste ist leer.</source>
         <translation>The file list is empty.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="714"/>
+        <location filename="../gui/main_window.py" line="817"/>
         <source>PDF wird erstellt …</source>
         <translation>Creating PDF …</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="721"/>
+        <location filename="../gui/main_window.py" line="824"/>
         <source>Speichern fehlgeschlagen</source>
         <translation>Save failed</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="761"/>
+        <location filename="../gui/main_window.py" line="909"/>
         <source>Gespeichert</source>
         <translation>Saved</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="761"/>
+        <location filename="../gui/main_window.py" line="909"/>
         <source>PDF gespeichert unter:
 {0}</source>
         <translation>PDF saved to:
@@ -753,20 +865,24 @@ Open the release page now?</translation>
         <translation>Rotate pages</translation>
     </message>
     <message>
-        <source>Seiten teilen</source>
+        <source>Seiten zerteilen</source>
         <translation>Split pages</translation>
+    </message>
+    <message>
+        <source>Seiten benennen</source>
+        <translation>Name pages</translation>
     </message>
     <message>
         <source>Seiten zusammenfügen</source>
         <translation>Combine pages</translation>
     </message>
     <message>
-        <source>Heftseiten teilen</source>
-        <translation>Split booklet pages</translation>
+        <source>Heftseiten teilen und neu sortieren</source>
+        <translation>Split booklet pages and reorder</translation>
     </message>
     <message>
-        <source>Seiten nummerieren</source>
-        <translation>Number pages</translation>
+        <source>Seitenreihenfolge ändern</source>
+        <translation>Change page order</translation>
     </message>
     <message>
         <source>Seitenmaß normieren</source>
@@ -777,8 +893,8 @@ Open the release page now?</translation>
         <translation>Create PDF</translation>
     </message>
     <message>
-        <source>PDF in Bilder teilen</source>
-        <translation>Split PDF into images</translation>
+        <source>PDF in Bilder und PDFs zerteilen</source>
+        <translation>Split PDF into images and PDFs</translation>
     </message>
     <message>
         <source>PDF verkleinern &amp; PDF/A</source>
@@ -801,12 +917,12 @@ Open the release page now?</translation>
         <translation>Image cleanup</translation>
     </message>
     <message>
-        <source>Leerseiten entfernen</source>
-        <translation>Remove blank pages</translation>
+        <source>Seiten entfernen</source>
+        <translation>Remove pages</translation>
     </message>
     <message>
-        <source>Schwärzen</source>
-        <translation>Redact</translation>
+        <source>Text und Bilder Schwärzen</source>
+        <translation>Redact text and images</translation>
     </message>
     <message>
         <source>Metadaten bearbeiten</source>
@@ -1418,75 +1534,139 @@ Open the release page now?</translation>
 <context>
     <name>PdfZuBildernToolWidget</name>
     <message>
-        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="39"/>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="46"/>
         <source>Exportiert die Dateiliste links (inklusive bereits vorgenommener Drehungen, Spiegelungen und Teilungen) als Bilder -- entweder als einzelne durchnummerierte Dateien oder als eine mehrseitige TIFF-Datei.</source>
         <translation>Exports the file list on the left (including any rotation, mirroring, and splitting already applied) as images -- either as individual, sequentially numbered files or as one multi-page TIFF file.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="46"/>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="53"/>
         <source>Als einzelne nummerierte Dateien exportieren …</source>
         <translation>Export as individual numbered files …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="48"/>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="55"/>
         <source>PDF, JPEG, TIFF oder BMP -- eine Datei je Seite bzw. Teilstück, z. B. 0001.jpg, 0002.jpg, …</source>
         <translation>PDF, JPEG, TIFF, or BMP -- one file per page or part, e.g. 0001.jpg, 0002.jpg, …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="53"/>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="60"/>
         <source>Als eine mehrseitige TIFF-Datei exportieren …</source>
         <translation>Export as one multi-page TIFF file …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="75"/>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="73"/>
+        <source>Nur die markierten Seiten als eigene, neue PDF-Datei entnehmen (bleibt mehrseitig, wird NICHT in Einzelseiten zerlegt):</source>
+        <translation>Take out only the marked pages as their own new PDF file (stays multi-page, is NOT broken up into single pages):</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="77"/>
+        <source>Markierte Seiten als neue Datei exportieren …</source>
+        <translation>Export marked pages as new file …</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="79"/>
+        <source>Markierte Seiten in neue Datei verschieben …</source>
+        <translation>Move marked pages to new file …</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="81"/>
+        <source>Wie „… exportieren“, entfernt die markierten Seiten danach zusätzlich aus der aktuellen Liste.</source>
+        <translation>Like "… export", additionally removes the marked pages from the current list afterward.</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="86"/>
+        <source>Seiten entnehmen</source>
+        <translation>Take out pages</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="109"/>
         <source>Dateien werden geschrieben …</source>
         <translation>Writing files …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="85"/>
-        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="106"/>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="119"/>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="140"/>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="153"/>
         <source>Export fehlgeschlagen</source>
         <translation>Export failed</translation>
     </message>
     <message>
-        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="90"/>
-        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="110"/>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="124"/>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="144"/>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="154"/>
         <source>Fertig</source>
         <translation>Done</translation>
     </message>
     <message>
-        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="90"/>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="124"/>
         <source>{0} Dateien gespeichert in:
 {1}</source>
         <translation>{0} files saved to:
 {1}</translation>
     </message>
     <message>
-        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="95"/>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="129"/>
         <source>TIFF speichern unter</source>
         <translation>Save TIFF as</translation>
     </message>
     <message>
-        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="95"/>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="129"/>
         <source>seiten.tif</source>
         <translation>pages.tif</translation>
     </message>
     <message>
-        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="95"/>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="129"/>
         <source>TIFF-Datei (*.tif *.tiff)</source>
         <translation>TIFF file (*.tif *.tiff)</translation>
     </message>
     <message>
-        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="100"/>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="134"/>
         <source>TIFF wird erstellt …</source>
         <translation>Creating TIFF …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="110"/>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="144"/>
         <source>{0} Seiten gespeichert in:
 {1}</source>
         <translation>{0} pages saved to:
 {1}</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="149"/>
+        <source>PDF speichern unter</source>
+        <translation>Save PDF as</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="150"/>
+        <source>auszug.pdf</source>
+        <translation>excerpt.pdf</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="151"/>
+        <source>PDF-Datei (*.pdf)</source>
+        <translation>PDF file (*.pdf)</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="152"/>
+        <source>PDF wird erstellt …</source>
+        <translation>Creating PDF …</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="155"/>
+        <source>PDF gespeichert unter:
+{0}</source>
+        <translation>PDF saved to:
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="156"/>
+        <source>Keine Auswahl</source>
+        <translation>No selection</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/pdf_zu_bildern_tool.py" line="157"/>
+        <source>Bitte zuerst Seiten in der Liste links auswählen.</source>
+        <translation>Please select pages in the list on the left first.</translation>
     </message>
 </context>
 <context>
@@ -1916,52 +2096,62 @@ Add it to the password log (see “Password protection” tool)?</translation>
         <translation>180°</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="188"/>
+        <location filename="../gui/tools/rotate_tool.py" line="198"/>
+        <source>Markierte Seiten 90° nach links drehen</source>
+        <translation>Rotate marked pages 90° left</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/rotate_tool.py" line="201"/>
+        <source>Markierte Seiten 90° nach rechts drehen</source>
+        <translation>Rotate marked pages 90° right</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/rotate_tool.py" line="206"/>
         <source>Horizontal spiegeln</source>
         <translation>Mirror horizontally</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="190"/>
+        <location filename="../gui/tools/rotate_tool.py" line="208"/>
         <source>Vertikal spiegeln</source>
         <translation>Mirror vertically</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="197"/>
+        <location filename="../gui/tools/rotate_tool.py" line="215"/>
         <source>Zurücksetzen</source>
         <translation>Reset</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="198"/>
+        <location filename="../gui/tools/rotate_tool.py" line="216"/>
         <source>Drehung auf 0° und Spiegelung aus, für den gewählten Bereich.</source>
         <translation>Sets rotation to 0° and mirroring off, for the selected scope.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="200"/>
+        <location filename="../gui/tools/rotate_tool.py" line="218"/>
         <source>Feinwinkel übertragen</source>
         <translation>Apply fine angle</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="202"/>
+        <location filename="../gui/tools/rotate_tool.py" line="220"/>
         <source>Den in der Vorschau eingestellten Winkel der aktuellen Seite auf den gewählten Bereich übertragen.</source>
         <translation>Applies the angle set in the preview for the current page to the selected scope.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="210"/>
+        <location filename="../gui/tools/rotate_tool.py" line="228"/>
         <source>Schräglage automatisch erkennen</source>
         <translation>Detect skew automatically</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="212"/>
+        <location filename="../gui/tools/rotate_tool.py" line="230"/>
         <source>Schlägt für den gewählten Bereich je Seite einen Geraderichtungs-Winkel vor, anhand der Textzeilen im Bild -- funktioniert nur bei Seiten mit erkennbarem Zeilenmuster (nicht bei Fotos o. ä.), die dann unverändert bleiben. Vorschlag wird direkt übernommen, aber wie gewohnt noch von Hand nachjustierbar.</source>
         <translation>Suggests a straightening angle for each page in the selected scope, based on the text lines in the image -- only works for pages with a detectable line pattern (not photos etc.), which are then left unchanged. The suggestion is applied directly, but as usual can still be fine-tuned by hand.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="231"/>
+        <location filename="../gui/tools/rotate_tool.py" line="249"/>
         <source>Abwechselnd 90° drehen</source>
         <translation>Rotate alternately by 90°</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="233"/>
+        <location filename="../gui/tools/rotate_tool.py" line="251"/>
         <source>Für Hefte, die als Doppelseiten quer gescannt wurden: dreht jede zweite Seite um +90°, die dazwischenliegenden um -90° (gerade/ungerade entgegengesetzt).</source>
         <translation>For booklets scanned as sideways double pages: rotates every other page by +90°, the ones in between by -90° (odd/even opposite).</translation>
     </message>
@@ -1974,84 +2164,84 @@ Add it to the password log (see “Password protection” tool)?</translation>
         <translation>For booklets scanned sideways as double-page spreads: rotates every other page by +90°, and the ones in between by -90°.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="240"/>
+        <location filename="../gui/tools/rotate_tool.py" line="258"/>
         <source>Als PDF exportieren …</source>
         <translation>Export as PDF …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="361"/>
+        <location filename="../gui/tools/rotate_tool.py" line="379"/>
         <source>{0} %</source>
         <translation>{0} %</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="457"/>
+        <location filename="../gui/tools/rotate_tool.py" line="501"/>
         <source>Keine Auswahl</source>
         <translation>No selection</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="457"/>
+        <location filename="../gui/tools/rotate_tool.py" line="501"/>
         <source>Bitte zuerst Seiten in der Liste links auswählen.</source>
         <translation>Please select pages in the list on the left first.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="462"/>
+        <location filename="../gui/tools/rotate_tool.py" line="506"/>
         <source>Schräglage wird erkannt …</source>
         <translation>Detecting skew …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="481"/>
+        <location filename="../gui/tools/rotate_tool.py" line="525"/>
         <source>Teilweise kein Vorschlag</source>
         <translation>No suggestion for some pages</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="482"/>
+        <location filename="../gui/tools/rotate_tool.py" line="526"/>
         <source>Für {0} von {1} Seite(n) wurde keine zuverlässige Schräglage erkannt (unverändert gelassen):
 {2}</source>
         <translation>No reliable skew was detected for {0} of {1} page(s) (left unchanged):
 {2}</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="492"/>
+        <location filename="../gui/tools/rotate_tool.py" line="536"/>
         <source>Zu wenige Seiten</source>
         <translation>Too few pages</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="493"/>
+        <location filename="../gui/tools/rotate_tool.py" line="537"/>
         <source>Dafür müssen mindestens zwei Seiten im gewählten Bereich liegen.</source>
         <translation>This requires at least two pages within the selected scope.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="509"/>
+        <location filename="../gui/tools/rotate_tool.py" line="553"/>
         <source>PDF speichern unter</source>
         <translation>Save PDF as</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="510"/>
+        <location filename="../gui/tools/rotate_tool.py" line="554"/>
         <source>gedreht.pdf</source>
         <translation>rotated.pdf</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="511"/>
+        <location filename="../gui/tools/rotate_tool.py" line="555"/>
         <source>PDF-Datei (*.pdf)</source>
         <translation>PDF file (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="512"/>
+        <location filename="../gui/tools/rotate_tool.py" line="556"/>
         <source>PDF wird erstellt …</source>
         <translation>Creating PDF …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="513"/>
+        <location filename="../gui/tools/rotate_tool.py" line="557"/>
         <source>Export fehlgeschlagen</source>
         <translation>Export failed</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="514"/>
+        <location filename="../gui/tools/rotate_tool.py" line="558"/>
         <source>Fertig</source>
         <translation>Done</translation>
     </message>
     <message>
-        <location filename="../gui/tools/rotate_tool.py" line="515"/>
+        <location filename="../gui/tools/rotate_tool.py" line="559"/>
         <source>PDF gespeichert unter:
 {0}</source>
         <translation>PDF saved to:
@@ -2692,155 +2882,171 @@ Add it to the password log (see “Password protection” tool)?</translation>
         <translation>Exports the file list on the left as a significantly smaller PDF file -- each page is encoded lossy as JPEG instead of losslessly. Often 10-100x smaller for scanned documents. Not suitable for pages with real vector text (which gets turned into pixels).</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="86"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="91"/>
         <source>JPEG-Qualität: </source>
         <translation>JPEG quality: </translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="89"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="94"/>
         <source>Auflösung begrenzen auf</source>
         <translation>Limit resolution to</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="101"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="106"/>
         <source>Zusätzlich als PDF/A-2b kennzeichnen</source>
         <translation>Also mark as PDF/A-2b</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="129"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="134"/>
         <source>Als kleinere PDF exportieren …</source>
         <translation>Export as smaller PDF …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="136"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="152"/>
         <source>Dateigröße verringern</source>
         <translation>Reduce file size</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="147"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="164"/>
         <source>Versieht eine beliebige, bereits vorhandene PDF-Datei nachträglich mit den üblichen Kennzeichen für das Archivformat PDF/A-2b (eingebettetes sRGB-Farbprofil + passende Metadaten). Diese Kennzeichen werden von Software verlässlich erkannt, sind aber keine förmliche Zertifizierung -- für eine verbindliche Prüfung z. B. mit dem kostenlosen Prüfwerkzeug veraPDF gegenchecken.</source>
         <translation>Retrofits any existing PDF file with the usual markers for the PDF/A-2b archival format (embedded sRGB color profile + matching metadata). These markers are reliably recognized by software but are not a formal certification -- for a binding check, verify with e.g. the free tool veraPDF.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="155"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="172"/>
         <source>Bestehende PDF-Datei als PDF/A-2b kennzeichnen …</source>
         <translation>Mark existing PDF file as PDF/A-2b …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="158"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="177"/>
         <source>PDF/A kennzeichnen</source>
         <translation>Mark as PDF/A</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="165"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="185"/>
         <source>Verkleinert eine beliebige, bereits vorhandene PDF-Datei verlustfrei -- entfernt nicht mehr benutzte bzw. doppelte Objekte und komprimiert unkomprimierte Datenströme, ohne Bilder neu zu kodieren oder an der Darstellung etwas zu ändern. Meist nur wenige Prozent, aber ohne jeden Qualitätsverlust.</source>
         <translation>Losslessly shrinks any existing PDF file -- removes unused resp. duplicate objects and compresses uncompressed data streams, without re-encoding images or changing anything about the appearance. Usually only a few percent, but with zero quality loss.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="172"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="192"/>
         <source>Bestehende PDF-Datei verlustfrei komprimieren …</source>
         <translation>Losslessly compress existing PDF file …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="175"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="197"/>
         <source>PDF-Struktur komprimieren (verlustfrei)</source>
         <translation>Compress PDF structure (lossless)</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="230"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="253"/>
         <source>PDF speichern unter</source>
         <translation>Save PDF as</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="229"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="252"/>
         <source>verkleinert.pdf</source>
         <translation>shrunk.pdf</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="71"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="76"/>
         <source>Exportiert die Dateiliste links als deutlich kleinere PDF-Datei -- jede Seite wird verlustbehaftet als JPEG statt verlustfrei kodiert. Bei gescannten Dokumenten oft 10-100x kleiner. Nicht geeignet für Seiten mit echtem Vektortext (der wird dabei zu Pixeln). Bereits effizient komprimierte Seiten (z. B. JPEG2000- oder JBIG2-Scans) werden unverändert übernommen, statt sie zu JPEG umzukodieren -- das würde sie oft eher vergrößern als verkleinern.</source>
         <translation>Exports the file list on the left as a significantly smaller PDF file -- every page is encoded lossy as JPEG instead of losslessly. Often 10-100x smaller for scanned documents. Not suitable for pages with real vector text (which gets rasterized). Pages already efficiently compressed (e.g. JPEG2000 or JBIG2 scans) are carried over unchanged instead of being re-encoded as JPEG -- that would often make them bigger rather than smaller.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="123"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="128"/>
         <source>Datei analysieren</source>
         <translation>Analyze file</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="192"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="149"/>
+        <source>Mehrere Dateien einzeln verkleinern …</source>
+        <translation>Shrink multiple files individually …</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/verkleinern_tool.py" line="174"/>
+        <source>Mehrere Dateien einzeln als PDF/A-2b kennzeichnen …</source>
+        <translation>Mark multiple files individually as PDF/A-2b …</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/verkleinern_tool.py" line="194"/>
+        <source>Mehrere Dateien einzeln verlustfrei komprimieren …</source>
+        <translation>Losslessly compress multiple files individually …</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/verkleinern_tool.py" line="215"/>
         <source>Keine Seiten</source>
         <translation>No pages</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="192"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="215"/>
         <source>Die Dateiliste ist leer.</source>
         <translation>The file list is empty.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="197"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="220"/>
         <source>Datei wird analysiert …</source>
         <translation>Analyzing file …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="201"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="224"/>
         <source>Analyse fehlgeschlagen</source>
         <translation>Analysis failed</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="206"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="229"/>
         <source>Keine der {0} Seite(n) ist bereits effizient komprimiert -- die JPEG-Neukodierung sollte die Datei hier tatsächlich spürbar verkleinern.</source>
         <translation>None of the {0} page(s) are already efficiently compressed -- JPEG re-encoding should actually shrink the file noticeably here.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="212"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="235"/>
         <source>Alle {0} Seite(n) sind bereits effizient komprimiert (JBIG2/JPEG2000) und werden unverändert übernommen -- eine weitere Verkleinerung wird hier vermutlich wenig oder gar nichts bringen (kann die Datei sogar vergrößern).</source>
         <translation>All {0} page(s) are already efficiently compressed (JBIG2/JPEG2000) and will be carried over unchanged -- further shrinking is unlikely to help much here (it may even make the file bigger).</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="220"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="243"/>
         <source>{0} von {1} Seite(n) ({2:.0f} %) sind bereits effizient komprimiert (JBIG2/JPEG2000) und werden unverändert übernommen. Bei den übrigen {3} Seite(n) sollte die JPEG-Neukodierung tatsächlich verkleinern.</source>
         <translation>{0} of {1} page(s) ({2:.0f} %) are already efficiently compressed (JBIG2/JPEG2000) and will be carried over unchanged. For the remaining {3} page(s), JPEG re-encoding should actually shrink the file.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="230"/>
-        <location filename="../gui/tools/verkleinern_tool.py" line="286"/>
-        <location filename="../gui/tools/verkleinern_tool.py" line="290"/>
-        <location filename="../gui/tools/verkleinern_tool.py" line="307"/>
-        <location filename="../gui/tools/verkleinern_tool.py" line="312"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="253"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="309"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="313"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="330"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="335"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="375"/>
         <source>PDF-Datei (*.pdf)</source>
         <translation>PDF file (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="237"/>
-        <location filename="../gui/tools/verkleinern_tool.py" line="318"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="260"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="341"/>
         <source>PDF wird komprimiert …</source>
         <translation>Compressing PDF …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="247"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="270"/>
         <source>Export fehlgeschlagen</source>
         <translation>Export failed</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="256"/>
-        <location filename="../gui/tools/verkleinern_tool.py" line="296"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="279"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="319"/>
         <source>PDF/A-Kennzeichnung wird erstellt …</source>
         <translation>Creating PDF/A marking …</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="262"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="285"/>
         <source>PDF/A-Kennzeichnung fehlgeschlagen</source>
         <translation>PDF/A marking failed</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="263"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="286"/>
         <source>Die PDF wurde exportiert, aber die PDF/A-Kennzeichnung ist fehlgeschlagen:
 {0}</source>
         <translation>The PDF was exported, but the PDF/A marking failed:
 {0}</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="267"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="290"/>
         <source>{0} Seiten gespeichert unter:
 {1}
 
@@ -2851,12 +3057,12 @@ Größe: {2}</source>
 Size: {2}</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="271"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="294"/>
         <source> (Original: {0})</source>
         <translation> (original: {0})</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="274"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="297"/>
         <source>
 
 Hinweis: Die neue Datei ist nicht kleiner als das Original. Das kann passieren, wenn die Quelle bereits effizient komprimiert ist (z. B. JPEG2000-Scans) -- JPEG ist nicht immer der sparsamere Codec. Versuchen Sie eine niedrigere JPEG-Qualität oder eine geringere Höchstauflösung.</source>
@@ -2865,43 +3071,45 @@ Hinweis: Die neue Datei ist nicht kleiner als das Original. Das kann passieren, 
 Note: the new file is not smaller than the original. This can happen when the source is already efficiently compressed (e.g. JPEG2000 scans) -- JPEG is not always the more economical codec. Try a lower JPEG quality or a lower maximum resolution.</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="280"/>
-        <location filename="../gui/tools/verkleinern_tool.py" line="302"/>
-        <location filename="../gui/tools/verkleinern_tool.py" line="326"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="303"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="325"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="349"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="433"/>
         <source>Fertig</source>
         <translation>Done</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="286"/>
-        <location filename="../gui/tools/verkleinern_tool.py" line="307"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="309"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="330"/>
         <source>PDF-Datei wählen</source>
         <translation>Choose PDF file</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="290"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="313"/>
         <source>PDF/A speichern unter</source>
         <translation>Save PDF/A as</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="300"/>
-        <location filename="../gui/tools/verkleinern_tool.py" line="322"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="323"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="345"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="419"/>
         <source>Fehlgeschlagen</source>
         <translation>Failed</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="302"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="325"/>
         <source>PDF/A-2b-Kennzeichnung gespeichert unter:
 {0}</source>
         <translation>PDF/A-2b marking saved to:
 {0}</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="311"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="334"/>
         <source>Komprimierte PDF speichern unter</source>
         <translation>Save compressed PDF as</translation>
     </message>
     <message>
-        <location filename="../gui/tools/verkleinern_tool.py" line="327"/>
+        <location filename="../gui/tools/verkleinern_tool.py" line="350"/>
         <source>Gespeichert unter:
 {0}
 
@@ -2910,6 +3118,46 @@ Note: the new file is not smaller than the original. This can happen when the so
 {0}
 
 {1} → {2} ({3} % smaller)</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/verkleinern_tool.py" line="375"/>
+        <source>Dateien wählen</source>
+        <translation>Choose files</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/verkleinern_tool.py" line="389"/>
+        <source>Mehrdeutiges Ziel</source>
+        <translation>Ambiguous target</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/verkleinern_tool.py" line="390"/>
+        <source>Mehrere Ausgabedateien hätten denselben Namen im selben Ordner und würden sich gegenseitig überschreiben. Trotzdem fortfahren?</source>
+        <translation>Several output files would have the same name in the same folder and would overwrite each other. Continue anyway?</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/verkleinern_tool.py" line="416"/>
+        <source>Dateien werden verarbeitet …</source>
+        <translation>Processing files …</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/verkleinern_tool.py" line="422"/>
+        <source>{0} von {1} Datei(en) erfolgreich verarbeitet.</source>
+        <translation>{0} of {1} file(s) processed successfully.</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/verkleinern_tool.py" line="424"/>
+        <source>{0} → {1} insgesamt</source>
+        <translation>{0} → {1} total</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/verkleinern_tool.py" line="428"/>
+        <source>Fehler bei:</source>
+        <translation>Errors on:</translation>
+    </message>
+    <message>
+        <location filename="../gui/tools/verkleinern_tool.py" line="431"/>
+        <source>Fertig mit Fehlern</source>
+        <translation>Done with errors</translation>
     </message>
 </context>
 <context>
@@ -3186,6 +3434,49 @@ Afterwards, freely drag each part with the mouse (clicking selects it). For the 
     <message>
         <source>Alle Seiten</source>
         <translation>All pages</translation>
+    </message>
+</context>
+<context>
+    <name>_BatchZielDialog</name>
+    <message>
+        <location filename="../gui/widgets/batch_ziel_dialog.py" line="42"/>
+        <source>Ziel für mehrere Dateien</source>
+        <translation>Target for multiple files</translation>
+    </message>
+    <message>
+        <location filename="../gui/widgets/batch_ziel_dialog.py" line="46"/>
+        <source>Im selben Ordner wie jede Originaldatei</source>
+        <translation>In the same folder as each original file</translation>
+    </message>
+    <message>
+        <location filename="../gui/widgets/batch_ziel_dialog.py" line="48"/>
+        <source>In diesem Ordner:</source>
+        <translation>In this folder:</translation>
+    </message>
+    <message>
+        <location filename="../gui/widgets/batch_ziel_dialog.py" line="49"/>
+        <source>(noch keiner gewählt)</source>
+        <translation>(none chosen yet)</translation>
+    </message>
+    <message>
+        <location filename="../gui/widgets/batch_ziel_dialog.py" line="52"/>
+        <source>Wählen …</source>
+        <translation>Choose …</translation>
+    </message>
+    <message>
+        <location filename="../gui/widgets/batch_ziel_dialog.py" line="57"/>
+        <source>Namen ergänzen um „{0}“</source>
+        <translation>Add &quot;{0}&quot; to the name</translation>
+    </message>
+    <message>
+        <location filename="../gui/widgets/batch_ziel_dialog.py" line="86"/>
+        <source>Zielordner wählen</source>
+        <translation>Choose target folder</translation>
+    </message>
+    <message>
+        <location filename="../gui/widgets/batch_ziel_dialog.py" line="102"/>
+        <source>Achtung: Ohne Namenszusatz im selben Ordner werden die Originaldateien überschrieben.</source>
+        <translation>Warning: without a name suffix, using the same folder will overwrite the original files.</translation>
     </message>
 </context>
 <context>

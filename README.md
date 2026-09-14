@@ -37,8 +37,11 @@ internet connection and no additional software required.*
 ## Funktionen / Features
 
 - **PDF erstellen** -- PDF/JPG/BMP/TIF(F) (auch mehrseitige TIFFs) zu einer
-  PDF-Datei zusammenfügen.
-  *Combine PDF/JPG/BMP/TIF(F) files (including multi-page TIFFs) into one PDF.*
+  PDF-Datei zusammenfügen. Auch nur markierte Seiten als eigene, neue Datei
+  entnehmen (kopiert oder verschoben).
+  *Combine PDF/JPG/BMP/TIF(F) files (including multi-page TIFFs) into one
+  PDF. Also take out just the marked pages into their own new file (copied
+  or moved).*
 - **Seiten drehen** -- frei mit der Maus gerade ziehen, oder 90°/180°,
   Spiegeln, "abwechselnd drehen" für gescannte Doppelseiten; Schräglage
   lässt sich auch automatisch per Textzeilen-Erkennung vorschlagen. Die
@@ -57,12 +60,14 @@ internet connection and no additional software required.*
   (threshold, optionally auto-suggested via Otsu's method) and
   despeckling (removing small dark specks/dust), both steps
   independently toggleable, with a live preview.*
-- **Leerseiten entfernen** -- sucht wahrscheinlich leere Seiten (typisch
-  bei automatisiertem Scannen mit Einzug), zeigt sie als Vorschläge zum
-  Abwählen statt automatisch zu löschen.
-  *Finds likely blank pages (typical with automated ADF scanning), shows
-  them as suggestions to deselect instead of deleting automatically.*
-- **Seiten teilen** -- beliebiges Raster aus Zeilen × Spalten, Schnittlinien
+- **Seiten entfernen** -- markierte Seiten manuell sofort löschen, oder
+  automatisch nach wahrscheinlich leeren Seiten suchen lassen (typisch bei
+  automatisiertem Scannen mit Einzug), als Vorschläge zum Abwählen statt
+  automatisch zu löschen.
+  *Manually delete marked pages right away, or search automatically for
+  likely blank pages (typical with automated ADF scanning), shown as
+  suggestions to deselect instead of deleting automatically.*
+- **Seiten zerteilen** -- beliebiges Raster aus Zeilen × Spalten, Schnittlinien
   mit der Maus ziehen, automatische Ausrichtung auf ruhige Bildbereiche.
   *Split a page into an arbitrary row × column grid, drag the cut lines by
   hand, with automatic alignment to quiet image areas.*
@@ -71,12 +76,12 @@ internet connection and no additional software required.*
   Feindrehung und Randbeschnitt je Teil.
   *Combine several parts (e.g. A4 scans of a large drawing) into one page:
   grid layout, freely draggable, per-part fine rotation and edge crop.*
-- **Heftseiten teilen** -- gescannte Doppelseiten aus gehefteten Broschüren
-  automatisch in die richtige Reihenfolge bringen (inkl. überbreiter
-  Umschlag-/Aufklappseiten).
+- **Heftseiten teilen und neu sortieren** -- gescannte Doppelseiten aus
+  gehefteten Broschüren automatisch in die richtige Reihenfolge bringen
+  (inkl. überbreiter Umschlag-/Aufklappseiten).
   *Automatically reorder scanned saddle-stitch booklet spreads into the
   correct page sequence (including overwide cover/foldout pages).*
-- **Seiten nummerieren** -- eine durcheinandergeratene Seitenfolge per
+- **Seitenreihenfolge ändern** -- eine durcheinandergeratene Seitenfolge per
   Zielnummer neu anordnen, plus automatische Sortierung/Umbenennung nach
   Aufnahmedatum.
   *Rearrange a scrambled page sequence by assigning target numbers, plus
@@ -102,25 +107,35 @@ internet connection and no additional software required.*
   a punch-hole strip or binding margin), with draggable lines in the
   preview and a live display of the resulting size including a format
   suggestion.*
-- **Schwärzen** -- beliebig viele Bereiche einer Seite dauerhaft
-  unkenntlich machen (frei gezeichnete, verschiebbare Rechtecke, die
-  beim Speichern wirklich in die Bildpixel eingebrannt werden, nicht nur
-  optisch überdeckt), mit wählbarer Farbe und einem Knopf zum Übertragen
-  auf weitere Seiten.
+- **Text und Bilder Schwärzen** -- beliebig viele Bereiche einer Seite
+  dauerhaft unkenntlich machen (frei gezeichnete, verschiebbare Rechtecke,
+  die beim Speichern wirklich in die Bildpixel eingebrannt werden, nicht
+  nur optisch überdeckt), mit wählbarer Farbe und einem Knopf zum
+  Übertragen auf weitere Seiten.
   *Permanently obscure any number of areas on a page (freely drawn,
   movable rectangles that are actually burned into the image pixels on
   save, not just visually covered), with a selectable color and a button
   to transfer them onto further pages.*
-- **PDF in Bilder teilen** -- als einzelne durchnummerierte Bilddateien oder
-  als eine mehrseitige TIFF-Datei exportieren.
-  *Export as individually numbered image files or as one multi-page TIFF.*
+- **PDF in Bilder und PDFs zerteilen** -- als einzelne durchnummerierte
+  Bild- oder PDF-Dateien oder als eine mehrseitige TIFF-Datei exportieren.
+  Auch nur markierte Seiten als eigene, weiterhin mehrseitige PDF-Datei
+  entnehmen (kopiert oder verschoben), statt sie in Einzelseiten zu
+  zerlegen.
+  *Export as individually numbered image or PDF files or as one
+  multi-page TIFF. Also take out just the marked pages as their own,
+  still multi-page PDF file (copied or moved), instead of breaking them
+  up into single pages.*
 - **PDF verkleinern & PDF/A** -- Dateigröße durch JPEG-Kodierung deutlich
   verringern (erkennt bereits effizient komprimierte Schwarzweißseiten und
   lässt sie unverändert), verlustfreie Struktur-Komprimierung, sowie
-  PDF/A-2b-Kennzeichnung für die Archivierung.
+  PDF/A-2b-Kennzeichnung für die Archivierung. Jede der drei Funktionen
+  auch als Stapel-Variante für mehrere, komplett eigenständige Dateien auf
+  einmal.
   *Substantially shrink file size via JPEG encoding (detects already
   efficiently compressed black-and-white pages and leaves them untouched),
-  lossless structural compression, and PDF/A-2b marking for archival.*
+  lossless structural compression, and PDF/A-2b marking for archival. Each
+  of the three functions also available as a batch variant for several,
+  completely independent files at once.*
 - **PDF reparieren & entsperren** -- drei getrennte Funktionen: eine
   beschädigte PDF-Datei reparieren, die sich nicht mehr öffnen lässt;
   den Passwortschutz einer Datei entfernen, wenn das Passwort bekannt

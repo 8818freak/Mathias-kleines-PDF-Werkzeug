@@ -1,19 +1,26 @@
 """
-DE: Werkzeug "Leerseiten entfernen": sucht im gewählten Bereich nach
-    wahrscheinlich leeren Seiten (per Tinte-Anteil, siehe core/
-    leerseiten.py) -- typisch beim automatisierten Scannen mit Einzug
-    (Duplex mit gelegentlich unbedruckter Rückseite, leere Trennblätter).
-    Findet nur VORSCHLÄGE, löscht nichts automatisch: die gefundenen
-    Seiten erscheinen in einer Übersicht mit Häkchen (alle vorausgewählt),
-    zum Abwählen einzelner Seiten vor dem tatsächlichen Entfernen.
+DE: Werkzeug "Seiten entfernen": zwei Wege, Seiten aus der Liste zu
+    entfernen. 1. Manuell: die in der Liste links markierten Seiten sofort
+    entfernen, ganz ohne Suche -- fuer den Fall, dass man ohnehin schon
+    weiss, welche Seiten weg sollen. 2. Automatisch vorgeschlagen: sucht im
+    gewählten Bereich nach wahrscheinlich leeren Seiten (per Tinte-Anteil,
+    siehe core/leerseiten.py) -- typisch beim automatisierten Scannen mit
+    Einzug (Duplex mit gelegentlich unbedruckter Rückseite, leere
+    Trennblätter). Findet dabei nur VORSCHLÄGE, löscht nichts automatisch:
+    die gefundenen Seiten erscheinen in einer Übersicht mit Häkchen (alle
+    vorausgewählt), zum Abwählen einzelner Seiten vor dem tatsächlichen
+    Entfernen.
 
-EN: "Remove blank pages" tool: searches the selected scope for likely
-    blank pages (via ink share, see core/leerseiten.py) -- typical with
-    automated ADF scanning (duplex with an occasionally unprinted back
-    side, blank separator sheets). Only finds SUGGESTIONS, doesn't delete
-    anything automatically: the pages found appear in an overview with
-    checkboxes (all preselected), so individual pages can be deselected
-    before actually removing them.
+EN: "Remove pages" tool: two ways to remove pages from the list.
+    1. Manual: immediately remove the pages marked in the list on the
+    left, no search involved -- for when you already know which pages
+    should go. 2. Automatically suggested: searches the selected scope for
+    likely blank pages (via ink share, see core/leerseiten.py) -- typical
+    with automated ADF scanning (duplex with an occasionally unprinted
+    back side, blank separator sheets). Only finds SUGGESTIONS, doesn't
+    delete anything automatically: the pages found appear in an overview
+    with checkboxes (all preselected), so individual pages can be
+    deselected before actually removing them.
 """
 
 from __future__ import annotations
@@ -22,6 +29,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QComboBox,
     QDoubleSpinBox,
+    QFrame,
     QGroupBox,
     QHBoxLayout,
     QLabel,
@@ -52,6 +60,30 @@ class LeerseitenToolWidget(QWidget):
     def __init__(self, liste: PageListWidget, parent=None) -> None:
         super().__init__(parent)
         self.liste = liste
+
+        # DE: Manuelles Entfernen -- direkt die markierten Seiten loeschen,
+        #     ganz ohne Suche. Ruft dieselbe Methode auf wie der
+        #     "Auswahl entfernen"-Knopf im Datei-Panel links -- hier nur
+        #     zusaetzlich sichtbar, weil er inhaltlich zu diesem Werkzeug
+        #     passt.
+        # EN: Manual removal -- directly delete the marked pages, no
+        #     search involved. Calls the same method as the "Remove
+        #     selection" button in the file panel on the left -- just
+        #     also shown here since it fits this tool's purpose.
+        manuell_hinweis = QLabel(
+            self.tr("In der Liste links markierte Seiten direkt entfernen, ohne Suche.")
+        )
+        manuell_hinweis.setWordWrap(True)
+        btn_manuell_entfernen = QPushButton(self.tr("Markierte Seiten jetzt entfernen"))
+        btn_manuell_entfernen.clicked.connect(self.liste.ausgewaehlte_entfernen)
+
+        manuell_gruppe = QGroupBox(self.tr("Manuell entfernen"))
+        manuell_layout = QVBoxLayout(manuell_gruppe)
+        manuell_layout.addWidget(manuell_hinweis)
+        manuell_layout.addWidget(btn_manuell_entfernen)
+
+        trenner = QFrame()
+        trenner.setFrameShape(QFrame.Shape.HLine)
 
         hinweis = QLabel(
             self.tr("Sucht Seiten, die praktisch nichts als Tinte enthalten -- typisch bei "
@@ -113,6 +145,8 @@ class LeerseitenToolWidget(QWidget):
         self._btn_entfernen.clicked.connect(self._entfernen)
 
         layout = QVBoxLayout(self)
+        layout.addWidget(manuell_gruppe)
+        layout.addWidget(trenner)
         layout.addWidget(hinweis)
         layout.addWidget(gruppe)
         layout.addWidget(self._ergebnis_info)

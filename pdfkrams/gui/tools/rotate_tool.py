@@ -15,7 +15,7 @@ EN: "Rotate pages" tool: freely straighten pages via mouse drag, plus quick
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QColor, QKeySequence
+from PySide6.QtGui import QAction, QColor, QKeySequence
 from PySide6.QtWidgets import (
     QButtonGroup,
     QComboBox,
@@ -165,24 +165,42 @@ class RotateToolWidget(QWidget):
         gruppe_layout.addWidget(self._geltungsbereich)
 
         drehen_zeile = QHBoxLayout()
-        for text, delta, taste in (
-            (self.tr("↺ 90°"), -90.0, "Ctrl+L"),
-            (self.tr("↻ 90°"), 90.0, "Ctrl+R"),
-            (self.tr("180°"), 180.0, None),
+        for text, delta in (
+            (self.tr("↺ 90°"), -90.0),
+            (self.tr("↻ 90°"), 90.0),
+            (self.tr("180°"), 180.0),
         ):
             btn = QPushButton(text)
             btn.clicked.connect(lambda _checked=False, d=delta: self._schnelldrehung(d))
-            if taste is not None:
-                # DE: "Ctrl" wird von Qt auf macOS automatisch zu Cmd --
-                #     dieselbe Konvention wie bei den Standard-Kuerzeln
-                #     (z. B. QKeySequence.StandardKey.Save).
-                # EN: Qt automatically maps "Ctrl" to Cmd on macOS -- the
-                #     same convention as the standard shortcuts (e.g.
-                #     QKeySequence.StandardKey.Save).
-                btn.setShortcut(QKeySequence(taste))
-                btn.setShortcutEnabled(True)
             drehen_zeile.addWidget(btn)
         gruppe_layout.addLayout(drehen_zeile)
+
+        # DE: Die Tastaturkuerzel Befehl-L/-R fuer diese beiden Drehungen
+        #     leben NICHT an den Knoepfen oben (die richten sich nach dem
+        #     "Anwenden auf"-Feld, siehe _ziel_elemente -- Vorgabe ist
+        #     "Aktuelle Seite"), sondern als eigene QActions, die immer auf
+        #     ALLE markierten Seiten wirken (siehe bearbeiten_aktionen()) --
+        #     ausdruecklicher Nutzerwunsch: die Tastenkuerzel sollen sich
+        #     verlaesslich wie in der Dateiliste selbst verhalten (Mehrfach-
+        #     auswahl wirkt auf alle markierten Eintraege), unabhaengig
+        #     davon, wie das Dropdown gerade eingestellt ist. main_window.py
+        #     zeigt diese Actions im Bearbeiten-Menu, solange dieses
+        #     Werkzeug sichtbar ist.
+        # EN: The Cmd-L/-R keyboard shortcuts for these two rotations do
+        #     NOT live on the buttons above (those follow the "apply to"
+        #     field, see _ziel_elemente -- default is "current page"), but
+        #     as their own QActions that always act on ALL marked pages
+        #     (see bearbeiten_aktionen()) -- an explicit user request: the
+        #     shortcuts should reliably behave like the file list itself
+        #     (a multi-selection acts on every marked entry), regardless of
+        #     how the dropdown happens to be set. main_window.py shows
+        #     these actions in the Edit menu while this tool is visible.
+        self._action_links_drehen = QAction(self.tr("Markierte Seiten 90° nach links drehen"), self)
+        self._action_links_drehen.setShortcut(QKeySequence("Ctrl+L"))
+        self._action_links_drehen.triggered.connect(lambda: self._schnelldrehung_markierung(-90.0))
+        self._action_rechts_drehen = QAction(self.tr("Markierte Seiten 90° nach rechts drehen"), self)
+        self._action_rechts_drehen.setShortcut(QKeySequence("Ctrl+R"))
+        self._action_rechts_drehen.triggered.connect(lambda: self._schnelldrehung_markierung(90.0))
 
         spiegeln_zeile = QHBoxLayout()
         btn_spiegel_h = QPushButton(self.tr("Horizontal spiegeln"))
@@ -403,6 +421,32 @@ class RotateToolWidget(QWidget):
             wp.rotation = normalisiert(wp.rotation + delta_grad)
             self.liste.item_aktualisieren(item)
         self._auswahl_geaendert()
+
+    def _schnelldrehung_markierung(self, delta_grad: float) -> None:
+        """DE: Wie _schnelldrehung(), aber IMMER auf alle markierten
+            Eintraege (Mehrfachauswahl) angewendet, notfalls den
+            fokussierten Eintrag -- unabhaengig vom "Anwenden auf"-Feld.
+            Fuer die Tastenkuerzel Befehl-L/-R, siehe deren Erzeugung oben.
+        EN: Like _schnelldrehung(), but ALWAYS applied to every marked
+            entry (multi-selection), falling back to the focused entry --
+            independent of the "apply to" field. For the Cmd-L/-R
+            keyboard shortcuts, see where they're created above."""
+        ziel = self.liste.selectedItems() or ([self.liste.currentItem()] if self.liste.currentItem() else [])
+        if not ziel:
+            return
+        self.liste.vor_aenderung_sichern()
+        for item in ziel:
+            wp = item.data(Qt.ItemDataRole.UserRole)
+            wp.rotation = normalisiert(wp.rotation + delta_grad)
+            self.liste.item_aktualisieren(item)
+        self._auswahl_geaendert()
+
+    def bearbeiten_aktionen(self) -> list[QAction]:
+        """DE: Aktionen, die main_window.py im Bearbeiten-Menu zeigen soll,
+            solange dieses Werkzeug sichtbar ist.
+        EN: Actions main_window.py should show in the Edit menu while
+            this tool is visible."""
+        return [self._action_links_drehen, self._action_rechts_drehen]
 
     def _spiegeln(self, achse: str) -> None:
         self.liste.vor_aenderung_sichern()

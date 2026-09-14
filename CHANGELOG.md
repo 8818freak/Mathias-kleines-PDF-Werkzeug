@@ -4,6 +4,68 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 
 *All notable changes to this project are documented here.*
 
+## [1.14] – 2026-09-14
+
+### Hinzugefügt / Added
+
+- Werkzeugliste neu sortiert und mehrere Werkzeuge umbenannt, um Gruppen
+  ähnlicher Aufgaben zusammenzuführen (z. B. alle Seiten-Umordnen-Werkzeuge
+  nebeneinander): „Seiten teilen“ → „Seiten zerteilen“, „Heftseiten
+  teilen“ → „Heftseiten teilen und neu sortieren“, „Seiten nummerieren“ →
+  „Seitenreihenfolge ändern“, „Leerseiten entfernen“ → „Seiten entfernen“
+  (jetzt zusätzlich mit direkter manueller Entfernen-Funktion, ohne
+  Suche), „Schwärzen“ → „Text und Bilder Schwärzen“, „PDF in Bilder
+  teilen“ → „PDF in Bilder und PDFs zerteilen“.
+  *Tool list reordered and several tools renamed to group similar tasks
+  together (e.g. all page-reordering tools next to each other): "Split
+  pages" → "Split pages" (unchanged in EN), "Split booklet pages" →
+  "Split booklet pages and reorder", "Number pages" → "Change page
+  order", "Remove blank pages" → "Remove pages" (now additionally with a
+  direct manual removal action, no search needed), "Redact" → "Redact
+  text and images", "Split PDF into images" → "Split PDF into images and
+  PDFs".*
+- „Seiten entnehmen“ in „PDF erstellen“ und „PDF in Bilder und PDFs
+  zerteilen“ -- nur die markierten Seiten als eigene, neue (bei letzterem
+  weiterhin mehrseitige) PDF-Datei exportieren, als Kopie oder verschoben
+  (aus der aktuellen Liste entfernt).
+  *"Take out pages" in "Create PDF" and "Split PDF into images and PDFs"
+  -- export just the marked pages as their own new (for the latter, still
+  multi-page) PDF file, as a copy or moved (removed from the current
+  list).*
+- Stapelverarbeitung für alle drei Funktionen in „PDF verkleinern &
+  PDF/A“ -- mehrere, komplett eigenständige Dateien auf einmal einzeln
+  verarbeiten (statt der gemeinsamen Dateiliste als eine Datei), mit
+  freier Wahl zwischen gleichem Ordner (mit/ohne Namenszusatz) oder einem
+  einzigen Zielordner für alle. Ein Fehler bei einer Datei bricht die
+  übrigen nicht ab.
+  *Batch processing for all three functions in "Shrink PDF & PDF/A" --
+  process several, completely independent files individually at once
+  (instead of the shared page list as one file), with a free choice
+  between the same folder (with/without name suffix) or a single target
+  folder for all. A failure on one file doesn't abort the rest.*
+- Bearbeiten-Menü zeigt jetzt zusätzlich die Schnellaktionen des gerade
+  sichtbaren Werkzeugs (bislang bei „Seiten drehen“: Befehl-L/-R drehen
+  jetzt immer ALLE markierten Seiten, unabhängig vom „Anwenden auf“-Feld).
+  Neu außerdem: Befehl-1 bis -9 sowie Befehl-]/[ zum direkten Springen
+  zwischen Werkzeugen, und Rückschritt/Entfernen löschen markierte Seiten
+  werkzeugübergreifend.
+  *The Edit menu now additionally shows the currently visible tool's
+  quick actions (so far for "Rotate pages": Cmd-L/-R now always rotate
+  ALL marked pages, independent of the "apply to" field). Also new:
+  Cmd-1 through -9 plus Cmd-]/[ to jump directly between tools, and
+  Backspace/Delete remove marked pages regardless of which tool is open.*
+
+### Behoben / Fixed
+
+- Nach dem Drehen und Speichern zeigte die App fälschlich „ungespeicherte
+  Änderungen“ an, obwohl korrekt gespeichert wurde -- der beim Speichern
+  nötige Listen-Neuaufbau löste selbst ein „geändert“-Signal aus, das den
+  Status sofort wieder zurücksetzte.
+  *After rotating and saving, the app incorrectly showed "unsaved
+  changes" even though saving had succeeded -- the list rebuild needed
+  after saving itself triggered a "changed" signal that immediately
+  reset the status again.*
+
 ## [1.13.2] – 2026-09-13
 
 ### Behoben / Fixed
