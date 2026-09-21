@@ -88,6 +88,11 @@ class HilfeFenster(QWidget):
         QShortcut(QKeySequence.StandardKey.Find, self, activated=self._suchfeld.setFocus)
         QShortcut(QKeySequence.StandardKey.FindNext, self, activated=lambda: self._suchen(rueckwaerts=False))
         QShortcut(QKeySequence.StandardKey.FindPrevious, self, activated=lambda: self._suchen(rueckwaerts=True))
+        # DE: Cmd+W (Strg+W) schliesst das Fenster -- war nie verdrahtet,
+        #     kein automatisches Verhalten eines einfachen QWidget.
+        # EN: Cmd+W (Ctrl+W) closes the window -- was never wired up,
+        #     not an automatic behavior of a plain QWidget.
+        QShortcut(QKeySequence.StandardKey.Close, self, activated=self.close)
 
         layout = QVBoxLayout(self)
         layout.addLayout(such_zeile)

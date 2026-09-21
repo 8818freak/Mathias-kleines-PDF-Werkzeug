@@ -30,7 +30,7 @@ from __future__ import annotations
 
 from typing import Callable
 
-from PySide6.QtCore import QCoreApplication, QObject, Qt, QThread, Signal
+from PySide6.QtCore import QCoreApplication, QObject, Qt, QThread, Signal, Slot
 from PySide6.QtWidgets import QProgressDialog, QWidget
 
 
@@ -83,27 +83,48 @@ def im_hintergrund_ausfuehren(parent: QWidget, titel: str, funktion: Callable):
 
     ergebnis_box: dict = {}
 
-    def bei_fortschritt(erledigt: int, gesamt: int) -> None:
-        if gesamt > 0:
-            dialog.setMaximum(gesamt)
-            dialog.setValue(erledigt)
-            dialog.setLabelText(
-                QCoreApplication.translate("Fortschrittsanzeige", "{0} ({1} von {2})").format(
-                    titel, erledigt, gesamt
+    # DE: Echtes QObject als Empfaenger statt einer simplen Python-Closure
+    #     -- siehe die ausfuehrliche Begruendung bei _StillesEmpfangsobjekt
+    #     weiter unten: nur so behandelt Qt die Verbindung zuverlaessig als
+    #     QueuedConnection und ruft diese Methoden im Hauptthread auf, statt
+    #     faelschlich im Hintergrund-Thread (der dort direkt angefasste
+    #     `dialog` wuerde sonst von auesserhalb des Hauptthreads veraendert
+    #     -- undefiniertes Verhalten unter Cocoa, im schlimmsten Fall ein
+    #     Absturz).
+    # EN: A real QObject as receiver instead of a plain Python closure --
+    #     see the detailed rationale at _StillesEmpfangsobjekt below: only
+    #     this way does Qt reliably treat the connection as a
+    #     QueuedConnection and call these methods on the main thread,
+    #     instead of wrongly on the background thread (the `dialog`
+    #     touched there directly would otherwise be modified from outside
+    #     the main thread -- undefined behavior under Cocoa, in the worst
+    #     case a crash).
+    class _Empfaenger(QObject):
+        @Slot(int, int)
+        def fortschritt(self, erledigt: int, gesamt: int) -> None:
+            if gesamt > 0:
+                dialog.setMaximum(gesamt)
+                dialog.setValue(erledigt)
+                dialog.setLabelText(
+                    QCoreApplication.translate("Fortschrittsanzeige", "{0} ({1} von {2})").format(
+                        titel, erledigt, gesamt
+                    )
                 )
-            )
 
-    def bei_fertig(ergebnis) -> None:
-        ergebnis_box["wert"] = ergebnis
-        thread.quit()
+        @Slot(object)
+        def fertig(self, ergebnis) -> None:
+            ergebnis_box["wert"] = ergebnis
+            thread.quit()
 
-    def bei_fehler(exc: Exception) -> None:
-        ergebnis_box["fehler"] = exc
-        thread.quit()
+        @Slot(Exception)
+        def fehler(self, exc: Exception) -> None:
+            ergebnis_box["fehler"] = exc
+            thread.quit()
 
-    worker.fortschritt.connect(bei_fortschritt)
-    worker.fertig.connect(bei_fertig)
-    worker.fehler.connect(bei_fehler)
+    empfaenger = _Empfaenger()
+    worker.fortschritt.connect(empfaenger.fortschritt)
+    worker.fertig.connect(empfaenger.fertig)
+    worker.fehler.connect(empfaenger.fehler)
     thread.finished.connect(dialog.close)
 
     thread.start()
@@ -121,6 +142,56 @@ def im_hintergrund_ausfuehren(parent: QWidget, titel: str, funktion: Callable):
     if "fehler" in ergebnis_box:
         raise ergebnis_box["fehler"]
     return ergebnis_box.get("wert")
+
+
+class _StillesEmpfangsobjekt(QObject):
+    """
+    DE: Reines Empfangsobjekt fuer worker.fertig/fehler, im Hauptthread
+        erzeugt (im_hintergrund_still_ausfuehren wird immer vom
+        Hauptthread aus aufgerufen). NOTWENDIG, damit Qt die Verbindung
+        korrekt als QueuedConnection behandelt: Qt entscheidet
+        Direct/Queued anhand der Thread-Zugehoerigkeit des EMPFAENGER-
+        QObject -- bei einer Verbindung auf eine simple Python-Closure
+        (kein QObject) fehlt dieser Bezug, Qt ruft die Closure dann
+        DIREKT im Sender-Thread (dem Hintergrund-Thread) auf, statt sie
+        sicher in den Hauptthread zu queuen. Faengt `bei_fertig`/
+        `bei_fehler` also faelschlich im Hintergrund-Thread ab, statt im
+        Hauptthread -- fatal, sobald diese Callbacks selbst GUI-Elemente
+        anfassen (z. B. eine QMessageBox oeffnen): macOS stuerzt dann ab,
+        weil ein natives Fenster ausserhalb des Hauptthreads erzeugt wird
+        (reale Absturzursache der stillen Update-Pruefung).
+    EN: Plain receiver object for worker.fertig/fehler, created on the
+        main thread (im_hintergrund_still_ausfuehren is always called
+        from the main thread). NECESSARY for Qt to treat the connection
+        correctly as a QueuedConnection: Qt decides Direct/Queued based
+        on the RECEIVER QObject's thread affinity -- a connection to a
+        plain Python closure (not a QObject) has no such affinity to go
+        by, so Qt calls the closure DIRECTLY on the sender's thread (the
+        background thread) instead of safely queuing it to the main
+        thread. This wrongly catches `bei_fertig`/`bei_fehler` on the
+        background thread instead of the main thread -- fatal as soon as
+        those callbacks themselves touch GUI elements (e.g. opening a
+        QMessageBox): macOS then crashes because a native window gets
+        created off the main thread (the real cause of the silent update
+        check's crash).
+    """
+
+    def __init__(self, thread: QThread, bei_fertig: Callable, bei_fehler: Callable | None) -> None:
+        super().__init__()
+        self._thread = thread
+        self._bei_fertig = bei_fertig
+        self._bei_fehler = bei_fehler
+
+    @Slot(object)
+    def fertig(self, ergebnis) -> None:
+        self._bei_fertig(ergebnis)
+        self._thread.quit()
+
+    @Slot(Exception)
+    def fehler(self, exc: Exception) -> None:
+        if self._bei_fehler is not None:
+            self._bei_fehler(exc)
+        self._thread.quit()
 
 
 def im_hintergrund_still_ausfuehren(
@@ -166,25 +237,19 @@ def im_hintergrund_still_ausfuehren(
     #     (a PySide6 quirk). The result would be a crash ("QThread:
     #     Destroyed while thread is still running"). So it's kept alive
     #     here in a list on `parent` until thread.finished fires.
+    empfaenger = _StillesEmpfangsobjekt(thread, bei_fertig, bei_fehler)
+
     if not hasattr(parent, "_stille_hintergrund_threads"):
         parent._stille_hintergrund_threads = []
-    parent._stille_hintergrund_threads.append((thread, worker))
+    parent._stille_hintergrund_threads.append((thread, worker, empfaenger))
 
     def _aufraeumen() -> None:
-        parent._stille_hintergrund_threads.remove((thread, worker))
+        parent._stille_hintergrund_threads.remove((thread, worker, empfaenger))
 
-    def _fertig(ergebnis) -> None:
-        bei_fertig(ergebnis)
-        thread.quit()
-
-    def _fehler(exc: Exception) -> None:
-        if bei_fehler is not None:
-            bei_fehler(exc)
-        thread.quit()
-
-    worker.fertig.connect(_fertig)
-    worker.fehler.connect(_fehler)
+    worker.fertig.connect(empfaenger.fertig)
+    worker.fehler.connect(empfaenger.fehler)
     thread.finished.connect(worker.deleteLater)
     thread.finished.connect(thread.deleteLater)
+    thread.finished.connect(empfaenger.deleteLater)
     thread.finished.connect(_aufraeumen)
     thread.start()

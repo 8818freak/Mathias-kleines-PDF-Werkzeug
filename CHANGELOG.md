@@ -4,6 +4,40 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 
 *All notable changes to this project are documented here.*
 
+## [1.14.1] – 2026-09-21
+
+### Behoben / Fixed
+
+- Absturz (SIGABRT) beim Programmstart, sobald die (optionale) stille
+  Update-Prüfung tatsächlich eine neuere Version fand -- die
+  Rückmeldung an das Hauptfenster lief über eine einfache
+  Python-Closure statt ein echtes QObject, wodurch Qt die
+  Thread-Zugehörigkeit nicht erkennen konnte und die Callback-Funktion
+  faelschlich im Hintergrund-Thread statt im Hauptthread aufrief.
+  Versuchte diese Callback-Funktion daraufhin, ein natives Fenster zu
+  öffnen (die Update-verfügbar-Meldung), stürzte macOS ab, weil ein
+  Fenster außerhalb des Hauptthreads erzeugt wurde. Betraf nur, wer die
+  Update-Prüfung in den Einstellungen aktiviert hatte, wirkte sich aber
+  bereits beim naechsten Programmstart aus, sobald tatsächlich eine
+  neue Version vorlag -- also insbesondere direkt nach jeder
+  Veröffentlichung. Beide betroffenen Hintergrund-Ausführungspfade
+  (still und mit Fortschrittsanzeige) abgesichert.
+  *Crash (SIGABRT) on startup as soon as the (optional) silent update
+  check actually found a newer version -- the callback to the main
+  window went through a plain Python closure instead of a real QObject,
+  so Qt couldn't determine thread affinity and wrongly invoked the
+  callback on the background thread instead of the main thread. When
+  that callback then tried to open a native window (the "update
+  available" message), macOS crashed because a window was created off
+  the main thread. Only affected users who had enabled the update check
+  in Preferences, but took effect on the very next launch once a newer
+  version was actually available -- i.e. especially right after every
+  release. Both affected background-execution paths (silent and with a
+  progress dialog) hardened.*
+- Befehl-W (Strg-W) schloss das Hilfefenster nicht -- war nie
+  verdrahtet.
+  *Cmd+W (Ctrl+W) didn't close the Help window -- was never wired up.*
+
 ## [1.14] – 2026-09-14
 
 ### Hinzugefügt / Added
