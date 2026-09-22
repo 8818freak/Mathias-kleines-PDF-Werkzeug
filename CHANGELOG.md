@@ -4,6 +4,44 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier festgehalten.
 
 *All notable changes to this project are documented here.*
 
+## [1.14.2] – 2026-09-22
+
+### Behoben / Fixed
+
+- Shift-Klick-Bereichsauswahl in der Dateiliste markierte zusätzlich die
+  allererste Seite, ohne das sichtbar zu zeigen -- z. B. Seite 2 anklicken,
+  dann Umschalt+Klick auf Seite 20 markierte fälschlich auch Seite 1 mit.
+  Ursache: Qts eigenes `setSpacing()` in Kombination mit dem für den
+  Drag&Drop-Fix (1.12) nötigen ListMode+Flow(LeftToRight)+Wrapping
+  verfälscht die Ankerberechnung für Bereichsauswahl -- eine weitere
+  Eigenheit dieser exakten Kombination auf dieser Plattform (per
+  isoliertem Minimaltest bestätigt). Der Kachelabstand kommt jetzt
+  stattdessen aus dem Rand des eigenen Anzeige-Delegates statt aus
+  `setSpacing()`.
+  *Shift-click range selection in the file list additionally marked the
+  very first page, without showing this visibly -- e.g. clicking page 2,
+  then Shift-clicking page 20 wrongly also marked page 1. Cause: Qt's own
+  `setSpacing()` combined with the ListMode+Flow(LeftToRight)+Wrapping
+  needed for the drag&drop fix (1.12) corrupts the anchor calculation for
+  range selection -- another quirk of this exact combination on this
+  platform (confirmed via an isolated minimal test). Tile spacing now
+  comes from the custom display delegate's margin instead of
+  `setSpacing()`.*
+- Rückgängig/Wiederholen (Befehl-Z / Umschalt-Befehl-Z) reagierte nicht,
+  solange ein Zahlenfeld (z. B. Spalten/Zeilen bei „Seiten zerteilen“)
+  noch den Tastaturfokus hatte -- das Feld fing die Tastenkombination für
+  sein eigenes, dort bedeutungsloses internes Text-Undo ab, bevor sie das
+  App-weite Rückgängig erreichte. Betraf praktisch jedes Zahlenfeld in
+  der App. Echte Textfelder (Titel, Präfix, Lesezeichen, …) bleiben
+  bewusst unverändert -- dort kann ein eigenes Undo sinnvoll sein.
+  *Undo/Redo (Cmd-Z / Shift-Cmd-Z) didn't respond while a numeric field
+  (e.g. columns/rows in "Split pages") still had keyboard focus -- the
+  field intercepted the shortcut for its own, there meaningless, internal
+  text undo before it reached the app-wide Undo. Affected practically
+  every numeric field in the app. Genuine text fields (title, prefix,
+  bookmark, …) are deliberately left unchanged -- a field-local undo can
+  make sense there.*
+
 ## [1.14.1] – 2026-09-21
 
 ### Behoben / Fixed

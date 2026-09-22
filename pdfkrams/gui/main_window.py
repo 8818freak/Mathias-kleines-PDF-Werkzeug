@@ -28,10 +28,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PySide6.QtCore import QCoreApplication, QSize, Qt, QUrl
+from PySide6.QtCore import QCoreApplication, QEvent, QSize, Qt, QUrl
 from PySide6.QtGui import QAction, QActionGroup, QDesktopServices, QKeySequence, QPixmap
 from PySide6.QtWidgets import (
     QAbstractItemView,
+    QAbstractSpinBox,
     QApplication,
     QLabel,
     QLineEdit,
@@ -246,6 +247,11 @@ class MainWindow(QMainWindow):
         #     actions would be missing from the Edit menu until the first
         #     tool switch.
         self._werkzeug_menu_aktualisieren(self._werkzeuge.currentIndex())
+        # DE: Siehe eventFilter() weiter unten -- faengt Befehl-Z/-Umschalt-Z
+        #     ab, solange ein Zahlenfeld den Fokus haelt.
+        # EN: See eventFilter() below -- intercepts Cmd-Z/-Shift-Z while a
+        #     numeric field holds focus.
+        QApplication.instance().installEventFilter(self)
 
     # -- Menü / menu ------------------------------------------------------
 
@@ -609,6 +615,48 @@ class MainWindow(QMainWindow):
                    ).format(ANBIETER, WEBSITE, copyright_zeile())
         )
         box.exec()
+
+    def eventFilter(self, obj, event) -> bool:  # noqa: N802 (Qt-Ueberschreibung)
+        """
+        DE: Zahlenfelder (QSpinBox/QDoubleSpinBox, ueberall in der App fuer
+            Winkel, Seitenzahlen, DPI, … verwendet) haben ein eigenes,
+            eingebautes Text-Undo, das Befehl-Z/Umschalt+Befehl-Z
+            abfaengt, BEVOR es das App-weite Rueckgaengig/Wiederholen
+            ueberhaupt erreicht -- dort aber bedeutungslos (nur eine
+            einzelne Zahl, keine relevante Bearbeitungshistorie). Ergebnis
+            ohne diesen Filter: haelt so ein Feld noch den Fokus (z. B.
+            nach Eintippen einer Spaltenzahl kurz vor dem eigentlichen
+            Teilen/Anwenden), tut Befehl-Z scheinbar gar nichts -- das
+            App-weite Rueckgaengig wird nie ausgeloest. Faengt beide
+            Kuerzel deshalb hier zuerst ab, solange ein Zahlenfeld den
+            Fokus haelt, und loest stattdessen das App-weite
+            Rueckgaengig/Wiederholen aus -- praktisch immer das eigentlich
+            Gemeinte. Echte Textfelder (Titel, Praefix, Lesezeichen, …)
+            bleiben bewusst unangetastet: dort kann eine mehrschrittige
+            Texteingabe ein eigenes Undo durchaus sinnvoll gebrauchen.
+        EN: Numeric fields (QSpinBox/QDoubleSpinBox, used throughout the
+            app for angles, page numbers, DPI, …) have their own built-in
+            text undo that intercepts Cmd-Z/Shift-Cmd-Z BEFORE it ever
+            reaches the app-wide Undo/Redo -- meaningless there anyway
+            (just a single number, no relevant edit history). Without
+            this filter: if such a field still holds focus (e.g. right
+            after typing a column count, just before actually
+            splitting/applying), Cmd-Z appears to do nothing at all -- the
+            app-wide Undo never fires. So intercept both shortcuts here
+            first while a numeric field holds focus, and trigger the
+            app-wide Undo/Redo instead -- practically always what's
+            actually meant. Genuine text fields (title, prefix, bookmark,
+            …) are deliberately left untouched: multi-step text entry
+            there can reasonably want its own undo.
+        """
+        if event.type() == QEvent.Type.KeyPress and isinstance(obj, QAbstractSpinBox):
+            if event.matches(QKeySequence.StandardKey.Undo):
+                self._action_rueckgaengig.trigger()
+                return True
+            if event.matches(QKeySequence.StandardKey.Redo):
+                self._action_wiederholen.trigger()
+                return True
+        return super().eventFilter(obj, event)
 
     def _werkzeug_menu_aktualisieren(self, index: int) -> None:
         """DE: Ersetzt den "aktuelles Werkzeug"-Abschnitt im Bearbeiten-Menu

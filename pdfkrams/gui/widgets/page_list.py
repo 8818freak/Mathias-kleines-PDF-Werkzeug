@@ -218,7 +218,14 @@ class _GestapelteDarstellung(QStyledItemDelegate):
     # DE: Abstand zwischen Miniatur und Text sowie Rand um die Zelle, in Pixeln.
     # EN: Gap between thumbnail and text, and margin around the cell, in pixels.
     _ABSTAND = 4
-    _RAND = 6
+    # DE: Auch der Abstand ZWISCHEN Kacheln, nicht nur der Rand innerhalb
+    #     einer einzelnen Zelle -- siehe die Begruendung bei setSpacing()
+    #     weiter unten, warum dieser Abstand hier statt ueber Qts eigenes
+    #     setSpacing() erzeugt wird.
+    # EN: Also the gap BETWEEN tiles, not just the margin inside a single
+    #     cell -- see the rationale at setSpacing() below for why this gap
+    #     is produced here instead of via Qt's own setSpacing().
+    _RAND = 10
     # DE: Maximale Texthoehe (mehrzeilig, bei langer Beschriftung), in Pixeln.
     # EN: Maximum text height (multi-line, for a long caption), in pixels.
     _TEXT_HOEHE_MAX = 54
@@ -348,7 +355,27 @@ class PageListWidget(QListWidget):
         self.setItemDelegate(_GestapelteDarstellung(self))
         self.setDragDropMode(QListWidget.DragDropMode.InternalMove)
         self.setSelectionMode(QListWidget.SelectionMode.ExtendedSelection)
-        self.setSpacing(8)
+        # DE: BEWUSST kein setSpacing() -- genau diese Kombination
+        #     (ListMode+Flow(LeftToRight)+Wrapping UND setSpacing()>0)
+        #     verfaelscht Shift-Klick-Bereichsauswahl: ein Klick auf Seite
+        #     N, dann Shift-Klick auf Seite M markiert zusaetzlich Seite 1
+        #     mit, obwohl currentIndex/currentRow beide korrekt N zeigen
+        #     (per isoliertem Minimaltest bestaetigt, ausserhalb jedes
+        #     eigenen Codes -- ein nacktes QListWidget mit exakt dieser
+        #     Kombination reproduziert den Fehler ebenso; ohne
+        #     setSpacing() verschwindet er). Der optische Abstand zwischen
+        #     Kacheln kommt stattdessen ueber den Rand im eigenen Delegate
+        #     (_GestapelteDarstellung._RAND).
+        # EN: DELIBERATELY no setSpacing() -- this exact combination
+        #     (ListMode+Flow(LeftToRight)+Wrapping AND setSpacing()>0)
+        #     corrupts Shift-click range selection: clicking page N, then
+        #     Shift-clicking page M also marks page 1, even though
+        #     currentIndex/currentRow both correctly show N (confirmed via
+        #     an isolated minimal test, outside any of our own code -- a
+        #     bare QListWidget with exactly this combination reproduces it
+        #     just the same; without setSpacing() it disappears). The
+        #     visual gap between tiles instead comes from the margin in
+        #     our own delegate (_GestapelteDarstellung._RAND).
         self.setWordWrap(True)
         self.model().rowsMoved.connect(self._per_drag_verschoben)
 
