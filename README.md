@@ -11,6 +11,27 @@ Kostenlos bereitgestellt von [Telefonanleitungen.de](https://www.telefonanleitun
 
 ![Screenshot](docs/screenshot.png)
 
+## Ideale Vorlage für OCR / Ideal input for OCR
+
+Weil dieses Werkzeug Scans zerstörungsfrei begradigt, schwarze Ränder
+abschneidet, vertauschte Broschürenseiten zurücksortiert und Text-/
+Strichseiten säubert -- **ohne dabei die native Auflösung der Scans zu
+verändern** --, eignet es sich gut als Vorstufe für eine anschließende
+Texterkennung (OCR). Der eigentliche OCR-Schritt bleibt einer darauf
+spezialisierten Software überlassen (z. B. ABBYY FineReader oder dem
+quelloffenen Tesseract); dieses Programm liefert dafür sauber ausgerichtetes,
+korrekt beschnittenes Bildmaterial in unveränderter Auflösung. Eine
+OCR-/Texterkennung ist derzeit **nicht** eingebaut.
+
+*Because this tool straightens scans non-destructively, crops black borders,
+restores the order of scrambled booklet spreads and cleans up text/line pages
+-- **without changing the scans' native resolution** -- it works well as a
+preparation step before optical character recognition (OCR). The OCR step
+itself is left to dedicated software (e.g. ABBYY FineReader or the open-source
+Tesseract); this program provides cleanly aligned, correctly cropped images at
+unchanged resolution for it. OCR/text recognition is **not** built in at this
+time.*
+
 ## Was es kann / What it does
 
 Fügt Seiten aus verschiedenen Dateien zu einer PDF zusammen, dreht schief
@@ -33,6 +54,19 @@ to an exact DIN format or size in mm (including automatically cropping
 black scan borders), breaks a PDF apart into individual image files, and
 substantially shrinks the file size of large scans. All in one app, no
 internet connection and no additional software required.*
+
+![Seitenmaß normieren](docs/pdf-werkzeug-seitenmass.jpg)
+
+*„Seitenmaß normieren": exaktes DIN-/US-/Freimaß mit automatischer Erkennung und
+Abschneiden schwarzer Scan-Ränder. / "Normalize page size": exact DIN/US/custom
+size with automatic detection and cropping of black scan borders.*
+
+![Seiten zusammenfügen](docs/pdf-werkzeug-zusammenfuegen.jpg)
+
+*„Seiten zusammenfügen": mehrere Teilscans einer großformatigen Vorlage (z. B.
+Schaltplan) Kante an Kante zu einer Seite, mit Feindrehung und Randbeschnitt je
+Teil. / "Combine pages": several part-scans of a large original edge-to-edge
+into one page, with per-part fine rotation and edge crop.*
 
 ## Funktionen / Features
 
@@ -215,6 +249,19 @@ measurement unit (mm/inch) for "Normalize page size" -- both deliberately
 not tied to the system language, since the PDFs being edited can come
 from any country.*
 
+## Als Nächstes geplant / Coming next
+
+Für das nächste Release ist ein eingebauter **PDF-Betrachter** als erstes
+Werkzeug geplant -- auch als eigenes, auskoppelbares Fenster, das man auf einen
+zweiten Monitor legen kann und das die Ergebnisse der eigenen Bearbeitung direkt
+mitanzeigt, während man arbeitet. Das erleichtert das Arbeiten in vielen Fällen
+spürbar.
+
+*The next release is planned to add a built-in **PDF viewer** as the first tool
+-- also as a separate, detachable window that can be placed on a second monitor
+and shows the results of your editing live while you work. This makes working
+noticeably easier in many cases.*
+
 ## Systemvoraussetzungen / System requirements
 
 - **macOS** 11 (Big Sur) oder neuer, 64-Bit (Apple Silicon oder Intel).
@@ -360,3 +407,14 @@ self-contained app/exe can be built.*
 ## Lizenz / License
 
 [GNU General Public License v3.0](LICENSE)
+
+Die mitgelieferten Bibliotheken stehen unter ihren eigenen Lizenzen --
+insbesondere **PyMuPDF (AGPL-3.0)** und **PySide6/Qt (LGPL-3.0)**, dazu
+pikepdf/certifi (MPL-2.0), Pillow (HPND) und NumPy (BSD). Alle sind mit der
+GPLv3 kombinierbar; Einzelheiten und die geforderten Hinweise stehen in
+[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
+*The bundled libraries are under their own licenses -- notably **PyMuPDF
+(AGPL-3.0)** and **PySide6/Qt (LGPL-3.0)**, plus pikepdf/certifi (MPL-2.0),
+Pillow (HPND) and NumPy (BSD). All are compatible with the GPLv3; details and
+the required notices are in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).*
