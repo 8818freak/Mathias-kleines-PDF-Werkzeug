@@ -76,6 +76,13 @@ Schaltplan) Kante an Kante zu einer Seite, mit Feindrehung und Randbeschnitt je
 Teil. / "Combine pages": several part-scans of a large original edge-to-edge
 into one page, with per-part fine rotation and edge crop.*
 
+![Seiten zerteilen](docs/pdf-werkzeug-teilen.gif)
+
+*„Seiten zerteilen": Schnittlinien mit der Maus setzen und eine gescannte
+Doppelseite in einzelne Seiten trennen -- Spalten und Zeilen ergeben ein
+beliebiges Raster. / "Split pages": place cut lines with the mouse and separate a
+scanned spread into individual pages -- columns and rows form an arbitrary grid.*
+
 ## Funktionen / Features
 
 - **PDF erstellen** -- PDF/JPG/BMP/TIF(F) (auch mehrseitige TIFFs) zu einer
