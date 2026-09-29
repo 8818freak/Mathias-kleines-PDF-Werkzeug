@@ -227,6 +227,15 @@ scanned spread into individual pages -- columns and rows form an arbitrary grid.
   automatically when saving, including an automatic filename suggestion
   for Save As.*
 
+![Heftseiten teilen und neu sortieren](docs/pdf-werkzeug-heftseiten.gif)
+
+*„Heftseiten teilen und neu sortieren": aus den Doppelseiten-Scans eines
+Sattelhefts werden mit einem Klick die Einzelseiten in der richtigen
+Lesereihenfolge -- automatisch, ohne manuelles Ziehen. / "Split and reorder
+saddle-stitch spreads": one click turns the double-page scans of a stapled
+booklet into single pages in the correct reading order -- automatically, with no
+manual dragging.*
+
 Alle Werkzeuge arbeiten auf derselben gemeinsamen Dateiliste -- einmal
 laden, mit mehreren Werkzeugen nacheinander bearbeiten, ohne zwischendurch
 exportieren zu müssen. Seiten lassen sich in der Übersicht auch direkt mit
