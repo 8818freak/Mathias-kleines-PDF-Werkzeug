@@ -32,6 +32,14 @@ Tesseract); this program provides cleanly aligned, correctly cropped images at
 unchanged resolution for it. OCR/text recognition is **not** built in at this
 time.*
 
+![Seite mit der Maus geraderücken](docs/pdf-werkzeug-drehen.gif)
+
+*Geraderücken mit farbiger Wasserwaage: frei mit der Maus ziehen oder per
+Pfeiltasten in 0,1°-Schritten feinjustieren -- die native Auflösung bleibt dabei
+unangetastet. / Straightening with a colored spirit level: drag freely with the
+mouse or fine-tune in 0.1° steps with the arrow keys -- the native resolution
+stays untouched.*
+
 ## Was es kann / What it does
 
 Fügt Seiten aus verschiedenen Dateien zu einer PDF zusammen, dreht schief
