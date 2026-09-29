@@ -388,6 +388,18 @@ environment and then build with [PyInstaller](https://pyinstaller.org/).
 (The Linux variant isn't tested by the author -- see the script's comment
 for details.)*
 
+## Dokumentation / Documentation
+
+Eine ausführliche, durchsuchbare Bedienungsanleitung ist direkt in der App
+eingebaut (Menü „Hilfe" bzw. Cmd+?/F1). Online zusätzlich hier:
+
+- **Produktseite & Download / Product page & download:**
+  <https://telefonanleitungen.de/php/page.php?87>
+- **Anleitung / Manual:** <https://telefonanleitungen.de/php/page.php?88>
+
+*A detailed, searchable user manual is built right into the app (Help menu resp.
+Cmd+?/F1). It is also available online at the links above.*
+
 ## Technik / Tech stack
 
 - [PySide6](https://pypi.org/project/PySide6/) (Qt für Python) -- Oberfläche
